@@ -21,6 +21,7 @@ for (( i=0;i<${#ChangeFile[*]};i++ ))
 do
     chown $runuser ${ChangeFile[i]}
 done
+chown -R $runuser:$runuser .git
 }
 
 function RollbackCode {
