@@ -2,3 +2,4 @@ data/pullog
 !data/.gitignore
 backup/*
 !backup/.gitignore
+config/projinfo
