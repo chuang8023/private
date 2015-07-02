@@ -1,3 +1,3 @@
-#Project Name(alias,not branch name)|Type(production\development)|Path
+#Project Name(alias,not branch name)|Type(production\development)|Project Path|Database type(base\aliyun)
 qycloud|production|/var/www/www.qycloud.com.cn|aliyun
 dev|development|/var/www/dev.qycloud.com.cn|aliyun
