@@ -1,0 +1,21 @@
+#the code's owner
+runuser=anyuankeji
+
+#Projects' info type:
+#  MySQL
+#  File
+#Default value:
+#INFOType="File"
+INFOType="File"
+
+#If INFOType="MySQL"
+#DBIp=127.0.0.1
+#DBName=rundeck
+#DBUser=
+#DBPasswd=
+
+#Backup target dirpath
+#Default value:
+#BackupDir="$(cd `dirname $0`;pwd)/backup"
+BackupDir="$(cd `dirname $0`;pwd)/backup"
+
