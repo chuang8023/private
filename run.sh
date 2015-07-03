@@ -92,10 +92,10 @@ case $Param1 in
 "update")
     DBUrl=$Param3
     Main
-    EchoGitLog
     modifyDBurl
     PullCode
     BackupDB
+    EchoGitLog
     MigrateAll
     Rbuild
     Resque
