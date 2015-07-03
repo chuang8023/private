@@ -93,6 +93,7 @@ case $Param1 in
     DBUrl=$Param3
     Main
     modifyDBurl
+    GetGitLog
     PullCode
     BackupDB
     EchoGitLog
