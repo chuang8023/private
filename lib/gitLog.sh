@@ -16,6 +16,10 @@ cd $ProjPath
 CommitID=`git log | head -n 1 | awk '{print $2}'`
 echo ""
 echo "Commit id is $CommitID before update ."
-LastLog=`cat $DataPath/pullog | grep "$ProjName" | tail -n 1 | awk -F"|" '{print $3}'`
+if [[ -f $DataPath/pullog ]]; then
+    LastLog=`cat $DataPath/pullog | grep "$ProjName" | tail -n 1 | awk -F"|" '{print $3}'`
+else
+    LastLog=""
+fi
 cd - 1>/dev/null 2>&1
 }
