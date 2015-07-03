@@ -2,7 +2,6 @@ function RunRbuild {
 echo ""
 echo "Running rbuild ..."
 sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
-cd $ProjPath
 sudo -u $runuser /usr/bin/env TERM=xterm rbuild -rf 1>/dev/null
 if [[ $? == 0 ]]; then
     echo ""
@@ -15,6 +14,7 @@ sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
 }
 
 function Rbuild () {
+cd $ProjPath
 if [[ $1 == "-f" ]]; then
     RunRbuild
 else
@@ -29,4 +29,5 @@ else
         echo "Not need to run rbuild !"
     fi
 fi
+cd - 1>/dev/null 2>&1
 }

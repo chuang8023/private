@@ -130,19 +130,22 @@ unset _Status
 }
 
 function BackupDB () {
+cd $ProjPath
 if [[ $1 == "-f" ]]; then
     RunBackup
 fi
-
 NeedMigrate=`git diff $CommitID | grep "diff --git a/db/migrations/"`
 if [[ $NeedMigrate != "" && $DBType == "base" ]]; then
     RunBackup
 fi
+cd - 1>/dev/null 2>&1
 }
 
 function RollbackDB {
+cd $ProjPath
 NeedMigrate=`git diff $CommitID | grep "diff --git a/db/migrations/"`
 if [[ $NeedMigrate != "" && $DBType == "base" ]]; then
     RunRollback
 fi
+cd - 1>/dev/null 2>&1
 }
