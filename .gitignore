@@ -3,5 +3,5 @@ data/pullog
 backup/*
 !backup/.gitignore
 config/projinfo
-template/
+template/*
 !template/.gitignore
