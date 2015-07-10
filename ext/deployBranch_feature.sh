@@ -84,8 +84,12 @@ DatabaseName=${Branch}_${sBranchName}
 function CopyTemplate {
 echo ""
 echo "Copy template to www.$Branch.$sBranchName.aysaas.com ..."
-mkdir /var/www/www.$Branch.$sBranchName.aysaas.com
-cp -r $CodePath/* /var/www/www.$Branch.$sBranchName.aysaas.com/
+if [[ ! -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
+    cp -r $CodePath /var/www/www.$Branch.$sBranchName.aysaas.com
+else
+    rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
+    cp -r $CodePath /var/www/www.$Branch.$sBranchName.aysaas.com
+fi
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 ln -sf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
@@ -199,6 +203,15 @@ echo ""
 echo "Delete from database is OK !"
 }
 
+function DelInfo {
+echo ""
+echo "Delete project info"
+RowNum=`cat $RundeckPath/config/projinfo | grep -n "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun" | awk -F":" '{print $1}' | head -n 1`
+sed -i "${RowNum}d" $RundeckPath/config/projinfo
+echo ""
+echo "Delete project info is OK !"
+}
+
 function OutPut () {
 Param1=$1
 case $Param1 in
@@ -244,6 +257,7 @@ case $Param1 in
     DelCode
     DelNginxConf
     DelDB
+    DelInfo
     ReService
     OutPut del
 esac
