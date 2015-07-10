@@ -1,6 +1,6 @@
 #!/bin/bash
 #rundeck path
-RundeckPath=/root/rundeck
+RundeckPath=/root/scripts/rundeck
 
 #run user
 RunUser=anyuan
