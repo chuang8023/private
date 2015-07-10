@@ -9,9 +9,9 @@ RunUser=anyuan
 # 源码:$CodePath
 # Nginx:$NginxConfPath
 # 数据库:$DBPath
-CodePath=/root/rundeck/template/feature/www.feature.templateRelease.aysaas.com
-NginxConfPath=/root/rundeck/template/feature/www.feature.templateRelease.aysaas.com-nginx
-DBPath=/root/rundeck/template/feature/template.sql
+CodePath=/root/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com
+NginxConfPath=/root/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com-nginx
+DBPath=/root/scripts/rundeck/template/feature/template.sql
 
 #Database info
 SQLname="template.sql"
@@ -230,10 +230,10 @@ case $Param1 in
     ManageDB
     ReService
     CreateCrontab
+    EchoFeatureInfo
     ;;
 "echo")
     InPut
-    EchoFeatureInfo
     OutPut deploy
     ;;
 "delete")
