@@ -84,7 +84,8 @@ DatabaseName=${Branch}_${sBranchName}
 function CopyTemplate {
 echo ""
 echo "Copy template to www.$Branch.$sBranchName.aysaas.com ..."
-cp -r $CodePath /var/www/www.$Branch.$sBranchName.aysaas.com
+mkdir /var/www/www.$Branch.$sBranchName.aysaas.com
+cp -r $CodePath/* /var/www/www.$Branch.$sBranchName.aysaas.com/
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 ln -sf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
