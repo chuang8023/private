@@ -56,7 +56,7 @@ fi
 }
 
 function InPut {
-ReleaseName=$Param2
+ReleaseName=`echo $Param2 | sed 's/^ *\| *$//g'`
 CheckTemplate
 cd $CodePath
 echo "Test branch name $ReleaseName ..."
