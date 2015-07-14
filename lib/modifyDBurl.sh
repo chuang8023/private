@@ -12,6 +12,7 @@ if [[ $DBUrl != "" ]]; then
     else
         echo ""
         echo "Modify database URL is Fail !"
+        exit 1
     fi
     cd - 1>/dev/null 2>&1
 fi
