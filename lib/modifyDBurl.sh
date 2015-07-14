@@ -3,7 +3,7 @@ if [[ $DBUrl != "" ]]; then
     echo ""
     echo "Modify database URL ..."
     cd $ProjPath
-    sed -i "s/host'.*/host' => '$DBUrl',/" $ProjConfPath/database.php
+    sed -i "s/'host'.*/'host' => '$DBUrl',/" $ProjConfPath/database.php
     cd $ProjPath
     ./script/phpmig status 1>/dev/null 2>&1
     if [[ $? == 0 ]]; then
