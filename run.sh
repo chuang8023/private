@@ -30,7 +30,7 @@ unset _Tag
 }
 
 function Main {
-ProjName=$Param2
+ProjName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
 
 if [[ $ProjName == "" ]]; then
     echo ""
