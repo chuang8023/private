@@ -1,12 +1,14 @@
-function ChkResque {
-Resque1=`./deploy/resque status | grep "Resque:default" | grep "stopped"`
-Resque2=`./deploy/resque status | grep "Resque:rules_engine" | grep "stopped"`
+function ChkResque () {
+Resque1=`ENV=$ProjType ./deploy/resque status | grep "Resque:default" | grep "stopped"`
+Resque2=`ENV=$ProjType ./deploy/resque status | grep "Resque:rules_engine" | grep "stopped"`
+
 if [[ $Resque1 != "" && $Resque2 != "" ]]; then
     echo ""
     echo "Stop resque is OK !"
-    sudo -u $runuser /usr/bin/env TERM=xterm ./deploy/resque start 1>/dev/null
-    Resque1=`./deploy/resque status | grep "Resque:default" | grep "running"`
-    Resque2=`./deploy/resque status | grep "Resque:rules_engine" | grep "running"`
+    sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/resque start 1>/dev/null
+    Resque1=`ENV=$ProjType ./deploy/resque status | grep "Resque:default" | grep "running"`
+    Resque2=`ENV=$ProjType ./deploy/resque status | grep "Resque:rules_engine" | grep "running"`
+
     if [[ $Resque1 != "" && $Resque2 != "" ]]; then
         echo ""
         echo "Start resque is Ok !"
@@ -21,9 +23,9 @@ function Resque {
 echo ""
 echo "Restarting resque ..."
 cd $ProjPath
-./deploy/resque stop 1>/dev/null
-./deploy/resque stop 1>/dev/null
-./deploy/resque stop 1>/dev/null
+ENV=$ProjType ./deploy/resque stop 1>/dev/null
+ENV=$ProjType ./deploy/resque stop 1>/dev/null
+ENV=$ProjType ./deploy/resque stop 1>/dev/null
 ChkResque
 if [[ $Resque1 == "" || $Resque2 == "" ]]; then
     PIDNum=(`ps -ef | grep -v "grep" | grep "resque" | grep "$ProjRealPath" | awk '{print $2}'`)
