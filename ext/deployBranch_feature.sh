@@ -55,23 +55,25 @@ if [[ ! -f $DBPath ]]; then
 fi
 }
 
-function InPut {
-ReleaseName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
-CheckTemplate
-cd $CodePath
-echo "Test branch name $ReleaseName ..."
-git fetch origin $ReleaseName:$ReleaseName 1>/dev/null 2>&1
-if [[ $? != 0 ]]; then
-    echo ""
-    echo "Branch name is wrong !"
-    exit 1
-else
-    echo ""
-    echo "Test branch name $ReleaseName is OK !"
-    git branch -D $ReleaseName 1>/dev/null 2>&1
-    cd - 1>/dev/null 2>&1
+function InPut () {
+_Param1=$1
+if [[ $_Param1 != "NoCheck" ]]; then
+    ReleaseName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
+    CheckTemplate
+    cd $CodePath
+    echo "Test branch name $ReleaseName ..."
+    git fetch origin $ReleaseName:$ReleaseName 1>/dev/null 2>&1
+    if [[ $? != 0 ]]; then
+        echo ""
+        echo "Branch name is wrong !"
+        exit 1
+    else
+        echo ""
+        echo "Test branch name $ReleaseName is OK !"
+        git branch -D $ReleaseName 1>/dev/null 2>&1
+        cd - 1>/dev/null 2>&1
+    fi
 fi
-
 Branch=`echo $ReleaseName | awk -F"/" '{print $1}'`
 sBranchName=`echo $ReleaseName | awk -F"/" '{print $2}'`
 
@@ -79,6 +81,7 @@ Branch=`ConversionA2a "$Branch"`
 sBranchName=`ConversionA2a "$sBranchName"`
 
 DatabaseName=${Branch}_${sBranchName}
+unset _Param1
 }
 
 function CopyTemplate {
@@ -216,8 +219,8 @@ echo "Delete project info is OK !"
 }
 
 function OutPut () {
-Param1=$1
-case $Param1 in
+_Param1=$1
+case $_Param1 in
 "deploy")
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
@@ -236,6 +239,7 @@ echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ;;
 esac
+unset _Param1
 }
 
 ##############################################
@@ -252,7 +256,7 @@ case $Param1 in
     EchoFeatureInfo
     ;;
 "echo")
-    InPut
+    InPut NoCheck
     OutPut deploy
     ;;
 "delete")
