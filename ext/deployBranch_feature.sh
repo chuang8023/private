@@ -65,7 +65,7 @@ if [[ $_Param1 != "NoCheck" ]]; then
     git fetch origin $ReleaseName:$ReleaseName 1>/dev/null 2>&1
     if [[ $? != 0 ]]; then
         echo ""
-        echo "Branch name is wrong !"
+        echo "Branch name is wrong or network  is not good , check branch name and try it again !"
         exit 1
     else
         echo ""
