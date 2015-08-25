@@ -20,7 +20,7 @@ if [[ $1 == "-f" ]]; then
 else
     minAssets=`cat $ProjConfPath/assets.php | grep "minAssets" | grep "true"`
     if [[ $minAssets != "" ]]; then
-        NeedRbuild=`git diff $CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | grep ".js\|.css"`
+        NeedRbuild=`git diff $CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | egrep "\.js|\.css"`
         if [[ $NeedRbuild != "" ]]; then
             RunRbuild
         else
