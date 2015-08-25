@@ -23,6 +23,9 @@ else
         NeedRbuild=`git diff $CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | grep ".js\|.css"`
         if [[ $NeedRbuild != "" ]]; then
             RunRbuild
+        else
+            echo ""
+            echo "No .js or .css !"
         fi
     else
         echo ""
