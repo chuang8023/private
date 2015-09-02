@@ -62,7 +62,7 @@ if [[ $_Param1 != "NoCheck" ]]; then
     CheckTemplate
     cd $CodePath
     echo "Test branch name $ReleaseName ..."
-    git fetch origin $ReleaseName:$ReleaseName 1>/dev/null 2>&1
+    git fetch origin $ReleaseName:$ReleaseName 1>/dev/null
     if [[ $? != 0 ]]; then
         echo ""
         echo "Branch name is wrong or network  is not good , check branch name and try it again !"
@@ -110,8 +110,8 @@ function PullBranch {
 echo ""
 echo "Pull branch $ReleaseName ..."
 cd /var/www/www.$Branch.$sBranchName.aysaas.com
-git fetch origin $ReleaseName:$ReleaseName 1>/dev/null 2>&1
-git checkout $ReleaseName 1>/dev/null 2>&1
+git fetch origin $ReleaseName:$ReleaseName 1>/dev/null
+git checkout $ReleaseName 1>/dev/null
 NoUsed=(`git branch | grep -v "*" | grep -v "$ReleaseName"`)
 for (( i=0;i<${#NoUsed};i++ ))
 do
