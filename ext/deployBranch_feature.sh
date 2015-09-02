@@ -57,8 +57,8 @@ fi
 
 function InPut () {
 _Param1=$1
+ReleaseName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
 if [[ $_Param1 != "NoCheck" ]]; then
-    ReleaseName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
     CheckTemplate
     cd $CodePath
     echo "Test branch name $ReleaseName ..."
