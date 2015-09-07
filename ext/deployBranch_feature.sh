@@ -93,7 +93,7 @@ else
     rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
     cp -r $CodePath /var/www/www.$Branch.$sBranchName.aysaas.com
 fi
-chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
+#chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 ln -sf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
 if [[ $? != 0 ]]; then
@@ -118,6 +118,7 @@ do
     git branch -D ${NoUsed[i]} 1>/dev/null 2>&1
 done
 chmod -R 777 log upload
+chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
 echo ""
 echo "Pull branch $ReleaseName is OK !"
