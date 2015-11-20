@@ -117,6 +117,7 @@ for (( i=0;i<${#NoUsed};i++ ))
 do
     git branch -D ${NoUsed[i]} 1>/dev/null 2>&1
 done
+./script/vendor unpackaging
 chmod -R 777 log upload
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
