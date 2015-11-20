@@ -16,12 +16,13 @@ fi
 }
 
 function ChangePullOwn {
-ChangeFile=(`git diff $CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3-`)
-for (( i=0;i<${#ChangeFile[*]};i++ ))
-do
-    chown $runuser:$runuser ${ChangeFile[i]} 2>/dev/null
-done
-chown -R $runuser:$runuser .git
+#ChangeFile=(`git diff $CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3-`)
+#for (( i=0;i<${#ChangeFile[*]};i++ ))
+#do
+#    chown $runuser:$runuser ${ChangeFile[i]} 2>/dev/null
+#done
+#chown -R $runuser:$runuser .git
+find $ProjPath -user root -exec chown $runuser:$runuser {} \;
 }
 
 function RollbackCode {
