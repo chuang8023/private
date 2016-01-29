@@ -2,7 +2,8 @@ function PullCode {
 echo ""
 echo "$BranchName pulling the new code ..."
 cd $ProjPath
-git pull origin $BranchName 1>/dev/null 2>&1
+git checkout .
+git pull --rebase origin $BranchName 1>/dev/null 2>&1
 if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""
