@@ -1,6 +1,6 @@
 function ShowMigrate {
 cd $ProjPath
-./script/phpmig status | grep -v "** MISSING **" | tail -n 30
+ENV=$ProjType ./script/phpmig status | grep -v "** MISSING **" | tail -n 30
 cd - 1>/dev/null 2>&1
 }
 
@@ -11,12 +11,12 @@ cd $ProjPath
 #else
 #    _MigStat=`./script/phpmig.php status | grep down`
 #fi
-./script/phpmig status | grep "20120822094445" 1>/dev/null
+ENV=$ProjType ./script/phpmig status | grep "20120822094445" 1>/dev/null
 if [[ $? != 0 ]]; then
     echo "wrong"
 fi
 
-_MigStat=`./script/phpmig status | grep "down"`
+_MigStat=`ENV=$ProjType ./script/phpmig status | grep "down"`
 if [[ $? == 0 ]]; then
     echo $_MigStat
 fi
@@ -37,7 +37,7 @@ else
     echo ""
     echo "Running migrate ..."
     cd $ProjPath
-    ./script/phpmig migrate 1>/dev/null 
+    ENV=$ProjType ./script/phpmig migrate 1>/dev/null 
     if [[ $? == 0 ]]; then
         MigStat=`CheckMigrate`
         if [[ $MigStat == "" ]]; then
@@ -60,13 +60,13 @@ function MigrateOne {
 cd $ProjPath
 echo ""
 echo "Down migration $MigrationID ..."
-./script/phpmig down $MigrationID 1>/dev/null 2>&1
+ENV=$ProjType ./script/phpmig down $MigrationID 1>/dev/null 2>&1
 if [[ $? == 0 ]]; then
     echo ""
     echo "Down migration $MigrationID is OK !"
     echo ""
     echo "Starting migration $MigrationID ..."
-    ./script/phpmig up $MigrationID 1>/dev/null 2>&1
+    ENV=$ProjType ./script/phpmig up $MigrationID 1>/dev/null 2>&1
     if [[ $? == 0 ]]; then
         echo ""
         echo "Start migration $MigrationID is OK !"
