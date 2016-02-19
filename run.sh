@@ -15,6 +15,7 @@ cd `dirname $0`
 . lib/minAssets.sh
 . lib/cache.sh
 . lib/database.sh
+. lib/branch.sh
 
 function RealPath () {
 _Path=$1
@@ -152,5 +153,15 @@ case $Param1 in
 "backupDB")
     Main
     BackupDB -f
+    ;;
+"showBranch")
+    Main
+    ShowBranch
+    ;;
+"gco")
+    _BranchName=$Param3
+    Main
+    ChkoutBranch $_BranchName
+    unset _BranchName
     ;;
 esac

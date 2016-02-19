@@ -42,4 +42,5 @@ fi
 ;;
 esac
 cd - 1>/dev/null 2>&1
+unset _Option
 }
