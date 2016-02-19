@@ -30,8 +30,7 @@ fi
 echo ""
 echo "Checkout to $_Option ..."
 git fetch origin $_Option 1>/dev/null 2>&1 &&
-git checkout $_Option &&
-git pull --rebase origin $_Option 1>/dev/null 2>&1
+git checkout $_Option
 echo ""
 if [[ $? == 0 ]]; then
     ChangePullOwn
