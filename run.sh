@@ -141,14 +141,16 @@ case $Param1 in
     Rbuild -f
     ;;
 "rebuild_org_tree")
-    Ent=$Param3
+    _Ent=$Param3
     Main
-    Cache rebuild_org_tree
+    Cache $_Ent rebuild_org_tree
+    unset _Ent
     ;;
 "rebuild_to_redis")
-    Ent=$Param3
+    _Ent=$Param3
     Main
-    Cache rebuild_to_redis
+    Cache $_Ent rebuild_to_redis
+    unset _Ent
     ;;
 "backupDB")
     Main
@@ -163,5 +165,9 @@ case $Param1 in
     Main
     ChkoutBranch $_BranchName
     unset _BranchName
+    ;;
+"cleanUserChatToken")
+    Main
+    CleanUserChatToken
     ;;
 esac
