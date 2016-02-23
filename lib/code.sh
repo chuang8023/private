@@ -23,7 +23,7 @@ function ChangePullOwn {
 #    chown $runuser:$runuser ${ChangeFile[i]} 2>/dev/null
 #done
 #chown -R $runuser:$runuser .git
-find $ProjPath -user root -exec chown $runuser:$runuser {} \;
+find . -user root -exec chown $runuser:$runuser {} \;
 }
 
 function RollbackCode {
