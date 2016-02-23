@@ -49,11 +49,13 @@ unset _Option
 function CleanUserChatToken {
 echo ""
 echo "deleting table sys_user_chat_token ..."
+
 DB=`cat $ProjConfPath/database.php | grep -w -m 1 dbname | awk -F "'" '{print $4}'`
-USER=`${DBCONF}|grep -w -m 1 user | awk -F "'" '{print $4}'`
-HOST=`${DBCONF}|grep -w -m 1 host | awk -F "'" '{print $4}'`
-PASS=`${DBCONF}|grep -w -m 1 password | awk -F "'" '{print $4}'`
+USER=`cat $ProjConfPath/database.php | grep -w -m 1 user | awk -F "'" '{print $4}'`
+HOST=`cat $ProjConfPath/database.php | grep -w -m 1 host | awk -F "'" '{print $4}'`
+PASS=`cat $ProjConfPath/database.php | grep -w -m 1 password | awk -F "'" '{print $4}'`
 mysql -u${USER} -p${PASS} -h${HOST} -e "use ${DB};truncate sys_user_chat_token;"
+
 echo ""
 echo "delete table sys_user_chat_token is OK !"
 }
