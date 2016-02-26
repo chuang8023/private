@@ -167,7 +167,9 @@ case $Param1 in
     unset _BranchName
     ;;
 "cleanUserChatToken")
+    _DBHost=$Param3
     Main
-    CleanUserChatToken
+    CleanUserChatToken $_DBHost
+    unset _DBHost
     ;;
 esac

@@ -46,17 +46,22 @@ cd - 1>/dev/null 2>&1
 unset _Option
 }
 
-function CleanUserChatToken {
-echo ""
-echo "deleting table sys_user_chat_token ..."
+function CleanUserChatToken () {
+_Option=$1
 
-DB=`cat $ProjConfPath/database.php | grep -w -m 1 dbname | awk -F "'" '{print $4}'`
-USER=`cat $ProjConfPath/database.php | grep -w -m 1 user | awk -F "'" '{print $4}'`
-HOST=`cat $ProjConfPath/database.php | grep -w -m 1 host | awk -F "'" '{print $4}'`
-PASS=`cat $ProjConfPath/database.php | grep -w -m 1 password | awk -F "'" '{print $4}'`
-mysql -u${USER} -p${PASS} -h${HOST} -e "use ${DB};truncate sys_user_chat_token;"
+if [[ -n $_Option ]]; then
+    echo ""
+    echo "deleting table sys_user_chat_token ..."
 
-echo ""
-echo "delete table sys_user_chat_token is OK !"
+    DB=`cat $ProjConfPath/database.php | grep -w -m 1 dbname | awk -F "'" '{print $4}'`
+    USER=`cat $ProjConfPath/database.php | grep -w -m 1 user | awk -F "'" '{print $4}'`
+    HOST=`cat $ProjConfPath/database.php | grep -w -m 1 host | awk -F "'" '{print $4}'`
+    PASS=`cat $ProjConfPath/database.php | grep -w -m 1 password | awk -F "'" '{print $4}'`
+    mysql -u${USER} -p${PASS} -h${HOST} -e "use ${DB};truncate sys_user_chat_token;"
+
+    echo ""
+    echo "delete table sys_user_chat_token is OK !"
+fi
+unset _Option
 }
 
