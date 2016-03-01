@@ -59,7 +59,9 @@ fi
 
 function EMail {
 if [[ -n $_EMail ]]; then
-    heirloom-mailx -s "$Title" $_EMail < /tmp/_HookMail_$_Branch
+    iconv -f UTF-8 -t GB2312 /tmp/_HookMail_$_Branch /tmp/_HookMail_$_Branch_GB
+    heirloom-mailx -s "$Title" $_EMail < /tmp/_HookMail_$_Branch_GB
+    rm -rf /tmp/_HookMail_$_Branch_GB
 fi
 rm -rf /tmp/_HookMail_$_Branch
 }
