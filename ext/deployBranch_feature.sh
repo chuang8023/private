@@ -262,7 +262,7 @@ case $Param1 in
     OutPut deploy
     ;;
 "delete")
-    InPut
+    InPut "NoCheck"
     DelCode
     DelNginxConf
     DelDB
