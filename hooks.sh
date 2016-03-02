@@ -89,5 +89,7 @@ if [[ -n $Branch ]]; then
     if [[ ! -n $IsFeature && $ServerType == "release" ]]; then
         Update
     fi
-    EMail
+    if [[ -n $Title && -n $Content ]]; then
+        EMail
+    fi
 fi
