@@ -5,9 +5,14 @@ Branch=$1
 EMail=$2
 IsDel=$3
 
-#如果是201、pre上使用则变为"release"; 如果是223使用，则写"feature"
-ServerType="feature"
 ScriptPath="/root/scripts/rundeck"
+
+function GetServerType {
+IPAddr=`ip -oneline route get 192.168.0.1 | awk '{print $5}'`
+cd `dirname $0`
+ServerType=`cat config/serverType | grep $IPAddr | awk -F":" '{print $1}'`
+cd - >/dev/null 2>&1
+}
 
 function IsNew {
 ConfigPath="$(cd `dirname $0`;pwd)/config"
@@ -75,6 +80,7 @@ rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
 if [[ -n $Branch ]]; then
+    GetServerType
     IsFeature
     if [[ -n $IsFeature && $ServerType == "feature" ]]; then
         IsNew
