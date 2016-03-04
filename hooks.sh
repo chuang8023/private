@@ -40,13 +40,13 @@ $ScriptPath/ext/deployBranch_feature.sh "deploy" $Branch > /tmp/_HookMail_${Bran
 $ScriptPath/run.sh "update" $Branch >> /tmp/_HookMail_${Branch//\//_} &&\
 $ScriptPath/run.sh "rbuild" $Branch >> /tmp/_HookMail_${Branch//\//_} &&\
 if [[ $? == 0 ]]; then
-    echo "分支部署成功 !" > /tmp/_HookDeployURL_${Branch//\//_}
+    echo "分支${Branch}部署成功 !" > /tmp/_HookDeployURL_${Branch//\//_}
     echo "" >> /tmp/_HookDeployURL_${Branch//\//_}
     $ScriptPath/ext/deployBranch_feature.sh "echo" $Branch >> /tmp/_HookDeployURL_${Branch//\//_}
     Content=`cat /tmp/_HookDeployURL_${Branch//\//_}`
     rm -rf /tmp/_HookDeployURL_${Branch//\//_}
 else
-    Content="分支部署失败 !"
+    Content="分支${Branch}部署失败 !"
 fi
 }
 
@@ -54,9 +54,9 @@ function Update {
 Title="更新分支结果"
 $ScriptPath/run.sh "update" $Branch > /tmp/_HookMail_${Branch//\//_}
 if [[ $? == 0 ]]; then
-    Content="更新分支成功！"
+    Content="更新分支${Branch}成功！"
 else
-    Content="更新分支失败! "
+    Content="更新分支${Branch}失败! "
 fi
 }
 
@@ -64,17 +64,21 @@ function Del {
 Title="删除分支结果"
 $ScriptPath/ext/deployBranch_feature.sh "delete" $Branch > /tmp/_HookMail_${Branch//\//_}
 if [[ $? == 0 ]]; then
-    Content="删除分支成功！"
+    Content="删除分支${Branch}成功！"
 else
-    Content="删除分支失败! "
+    Content="删除分支${Branch}失败! "
 fi
 }
 
-function EMail {
-if [[ $EMail != "null" ]]; then
-    iconv -f UTF-8 -t GB2312 /tmp/_HookMail_${Branch//\//_} > /tmp/${Branch//\//_}_Logging.txt
-    echo "$Content" | heirloom-mailx -s "$Title" -a "/tmp/${Branch//\//_}_Logging.txt" $EMail
-    rm -rf /tmp/${Branch//\//_}_Logging.txt
+function EMail () {
+UserName=($*)
+
+if [[ $EMail != "null" || ${#UserName[*]} != "0" ]]; then
+    if [[ -n $Title && -n $Content ]]; then
+        iconv -f UTF-8 -t GB2312 /tmp/_HookMail_${Branch//\//_} > /tmp/${Branch//\//_}_Logging.txt
+        echo "$Content" | heirloom-mailx -s "$Title" -a "/tmp/${Branch//\//_}_Logging.txt" $EMail ${UserName[*]}
+        rm -rf /tmp/${Branch//\//_}_Logging.txt
+    fi
 fi
 rm -rf /tmp/_HookMail_${Branch//\//_}
 }
@@ -86,16 +90,17 @@ if [[ -n $Branch ]]; then
         IsNew
         if [[ $IsDel == "1" ]]; then
             Del
+            EMail
         elif [[ $IsNew == "0" ]]; then
             Update
+            EMail
         else
             Deploy
+            EMail "cmwang@a-y.com.cn"
         fi
     fi
     if [[ ! -n $IsFeature && $ServerType == "release" ]]; then
         Update
-    fi
-    if [[ -n $Title && -n $Content ]]; then
-        EMail
+        EMail "cmwang@a-y.com.cn"
     fi
 fi
