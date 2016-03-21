@@ -24,6 +24,16 @@ cd - 1>/dev/null 2>&1
 unset _MigStat
 }
 
+function Migrate () {
+_ID=$1
+if [[ $_ID == "all" ]]; then
+    MigrateAll
+else
+    MigrateOne "$_ID"
+fi
+unset _ID
+}
+
 function MigrateAll {
 MigStat=`CheckMigrate`
 if [[ $MigStat == "" ]]; then
@@ -56,28 +66,30 @@ else
 fi
 }
 
-function MigrateOne {
+function MigrateOne () {
+_MigrationID=$1
 cd $ProjPath
 echo ""
-echo "Down migration $MigrationID ..."
-ENV=$ProjType ./script/phpmig down $MigrationID 1>/dev/null 2>&1
+echo "Down migration $_MigrationID ..."
+ENV=$ProjType ./script/phpmig down $_MigrationID 1>/dev/null 2>&1
 if [[ $? == 0 ]]; then
     echo ""
-    echo "Down migration $MigrationID is OK !"
+    echo "Down migration $_MigrationID is OK !"
     echo ""
-    echo "Starting migration $MigrationID ..."
-    ENV=$ProjType ./script/phpmig up $MigrationID 1>/dev/null 2>&1
+    echo "Starting migration $_MigrationID ..."
+    ENV=$ProjType ./script/phpmig up $_MigrationID 1>/dev/null 2>&1
     if [[ $? == 0 ]]; then
         echo ""
-        echo "Start migration $MigrationID is OK !"
+        echo "Start migration $_MigrationID is OK !"
     else
         echo ""
-        echo "Starting migration $MigrationID is Fail !"
+        echo "Starting migration $_MigrationID is Fail !"
         exit 1
     fi
 else
     echo ""
-    echo "Down migration $MigrationID is Fail !"
+    echo "Down migration $_MigrationID is Fail !"
     exit 1
 fi
+unset _MigrationID
 }

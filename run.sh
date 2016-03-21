@@ -98,7 +98,7 @@ case $Param1 in
     PullCode
     BackupDB
     EchoGitLog
-    MigrateAll
+    Migrate "all"
     Rbuild
     Resque
     ;;
@@ -111,7 +111,7 @@ case $Param1 in
     Main
     RollbackCode
     RollbackDB
-    MigrateAll
+    Migrate "all"
     Rbuild
     Resque
     ;;
@@ -124,37 +124,38 @@ case $Param1 in
     ShowMigrate
     ;;
 "migrate")
-    MigrationID=$Param3
+    _ID=$Param3
     Main
-    MigrateOne
+    Migrate "$_ID"
+    unset _ID
     ;;
 "closeMinAssets")
     Main
-    MinAssets close
+    MinAssets "close"
     ;;
 "openMinAssets")
     Main
-    MinAssets open
+    MinAssets "open"
     ;;
 "rbuild")
     Main
-    Rbuild -f
+    Rbuild "-f"
     ;;
 "rebuild_org_tree")
     _Ent=$Param3
     Main
-    Cache $_Ent rebuild_org_tree
+    Cache "$_Ent" "rebuild_org_tree"
     unset _Ent
     ;;
 "rebuild_to_redis")
     _Ent=$Param3
     Main
-    Cache $_Ent rebuild_to_redis
+    Cache "$_Ent" "rebuild_to_redis"
     unset _Ent
     ;;
 "backupDB")
     Main
-    BackupDB -f
+    BackupDB "-f"
     ;;
 "showBranch")
     Main
@@ -163,13 +164,13 @@ case $Param1 in
 "gco")
     _BranchName=$Param3
     Main
-    ChkoutBranch $_BranchName
+    ChkoutBranch "$_BranchName"
     unset _BranchName
     ;;
 "cleanUserChatToken")
     _DBHost=$Param3
     Main
-    CleanUserChatToken $_DBHost
+    CleanUserChatToken "$_DBHost"
     unset _DBHost
     ;;
 esac

@@ -10,11 +10,7 @@ _Option=$1
 
 ShowBranch
 
-cd $ProjPath
-echo ""
-echo "The current git status:"
-echo "--------------------------"
-git status
+GitStatus
 
 echo ""
 echo "Stash away changes to dirty working directory now ..."
@@ -40,4 +36,12 @@ else
     exit 1
 fi
 cd - 1>/dev/null 2>&1
+}
+
+function GitStatus {
+cd $ProjPath
+echo ""
+echo "The current git status:"
+echo "--------------------------"
+git status
 }
