@@ -115,9 +115,13 @@ case $Param1 in
     Rbuild
     Resque
     ;;
-"rresque")
+"resqueStat")
     Main
-    Resque
+    ResqueStat
+    ;;
+"restartResque")
+    Main
+    RestartResque
     ;;
 "showMigrate")
     Main
