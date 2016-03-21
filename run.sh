@@ -11,7 +11,7 @@ cd `dirname $0`
 . lib/code.sh
 . lib/rbuild.sh
 . lib/resque.sh
-. lib/gitLog.sh
+. lib/pullLog.sh
 . lib/minAssets.sh
 . lib/cache.sh
 . lib/database.sh
@@ -102,9 +102,9 @@ case $Param1 in
     Rbuild
     Resque
     ;;
-"showGitLog")
+"showPullLog")
     Main
-    ShowGitLog
+    ShowPullLog
     ;;
 "rollback")
     CommitID=$Param3

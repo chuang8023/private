@@ -1,17 +1,17 @@
-function EchoGitLog {
+function EchoPullLog {
 if [[ $LastLog != $CommitID ]]; then
     echo "$ProjName|$TimeStamp|$CommitID" >> $DataPath/pullog
 fi
 }
 
-function ShowGitLog {
+function ShowPullLog {
 echo ""
-echo "Last 10 git log :"
+echo "Last 10 pull log :"
 echo "=================================================="
 cat $DataPath/pullog | grep "$ProjName" | tail -n 10
 }
 
-function GetGitLog {
+function GetPullLog {
 cd $ProjPath
 CommitID=`git log | head -n 1 | awk '{print $2}'`
 echo ""
