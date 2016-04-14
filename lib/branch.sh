@@ -9,39 +9,34 @@ function ChkoutBranch () {
 _Option=$1
 
 ShowBranch
-
 GitStatus
-
-echo ""
-echo "Stash away changes to dirty working directory now ..."
-git stash
-echo ""
-if [[ $? == 0 ]]; then
-    echo "Stash is OK !"
-else
-    echo "Stash is Fail !"
-    exit 1
-fi
-
-echo ""
-echo "Checkout to $_Option ..."
-git fetch origin $_Option 1>/dev/null 2>&1 &&
-git checkout $_Option
-echo ""
-if [[ $? == 0 ]]; then
-    ChangePullOwn
-    echo "Checkout to $_Option is OK !"
-else
-    echo "Checkout to $_Option is Fail !"
-    exit 1
-fi
-cd - 1>/dev/null 2>&1
-}
-
-function GitStatus {
 cd $ProjPath
 echo ""
-echo "The current git status:"
-echo "--------------------------"
-git status
+if [[ $_Option == "all" ]]; then
+    echo "Drop all changes that are not saved ..."
+    git checkout .
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "OK !"
+        GitStatus
+    else
+        echo ""
+        echo "Fail !"
+        exit 1
+    fi
+else
+    echo "Checkout to $_Option ..."
+    git fetch origin $_Option 1>/dev/null 2>&1 &&
+    git checkout $_Option
+    if [[ $? == 0 ]]; then
+        ChangePullOwn
+        echo ""
+        echo "Checkout to $_Option is OK !"
+    else
+        echo ""
+        echo "Checkout to $_Option is Fail !"
+        exit 1
+    fi
+fi
+cd - 1>/dev/null 2>&1
 }

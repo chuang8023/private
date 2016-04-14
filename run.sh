@@ -16,6 +16,7 @@ cd `dirname $0`
 . lib/cache.sh
 . lib/database.sh
 . lib/branch.sh
+. lib/git.sh
 
 function RealPath () {
 _Path=$1
@@ -176,5 +177,17 @@ case $Param1 in
     Main
     CleanUserChatToken "$_DBHost"
     unset _DBHost
+    ;;
+"stash")
+    Main
+    GitStash
+    ;;
+"stashpop")
+    Main
+    GitStashPop
+    ;;
+"gst")
+    Main
+    GitStatus
     ;;
 esac
