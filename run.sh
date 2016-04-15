@@ -197,15 +197,32 @@ case $Param1 in
     ;;
 "createTempDB")
     Main
-    tempDBHost="`php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB`.mysql.rds.aliyuncs.com"
-    modifyDBurl
-    BackupDB
-    Migrate "all"
-    CleanUserChatToken 1
-    Resque
+    DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB).mysql.rds.aliyuncs.com"
+    _IsSuccess=`echo $tempDBHost | grep "^sub"`   #后期可以把判断条件换成ping
+    if [[ $_IsSuccess ]]; then
+        modifyDBurl
+        BackupDB
+        Migrate "all"
+        CleanUserChatToken 1
+        Resque
+    fi
+    unset _IsSuccess
     ;;
 "deleteTempDB")
     Main
     php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId deleteTempDB
+    ;;
+"autoTempDB")
+    Main
+    DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId).mysql.rds.aliyuncs.com"
+    _IsSuccess=`echo $tempDBHost | grep "^sub"`    #后期可以把判断条件换成ping
+    if [[ $_IsSuccess ]]; then
+        modifyDBurl
+        BackupDB
+        Migrate "all"
+        CleanUserChatToken 1
+        Resque
+    fi
+    unset _IsSuccess
     ;;
 esac
