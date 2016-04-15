@@ -193,11 +193,25 @@ case $Param1 in
     ;;
 "tempDBStatus")
     Main
-    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId tempDBStatus
+    _Status=$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId tempDBStatus)
+    if [[ $_Status != "" ]]; then
+        echo $_Status
+    else
+        echo "Cannot get temp database status !"
+        exit 1
+    fi
+    unset _status
     ;;
 "tempDBExpireTime")
     Main
-    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId expireTime
+    _Time=$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId expireTime)
+    if [[ $_Time != "" ]]; then
+        echo $_Time
+    else
+        echo "Cannot get temp database expire time !"
+        exit 1
+    fi
+    unset _Time
     ;;
 "createTempDB")
     Main
