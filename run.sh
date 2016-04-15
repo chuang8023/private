@@ -191,6 +191,10 @@ case $Param1 in
     Main
     GitStatus
     ;;
+"tempDBStatus")
+    Main
+    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId tempDBStatus
+    ;;
 "tempDBExpireTime")
     Main
     php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId expireTime
