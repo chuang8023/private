@@ -197,7 +197,12 @@ case $Param1 in
     ;;
 "createTempDB")
     Main
-    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB
+    tempDBHost="`php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB`.mysql.rds.aliyuncs.com"
+    modifyDBurl
+    BackupDB
+    Migrate "all"
+    CleanUserChatToken 1
+    Resque
     ;;
 "deleteTempDB")
     Main
