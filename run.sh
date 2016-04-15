@@ -201,10 +201,6 @@ case $Param1 in
     _IsSuccess=`echo $tempDBHost | grep "^sub"`   #后期可以把判断条件换成ping
     if [[ $_IsSuccess ]]; then
         modifyDBurl
-        BackupDB
-        Migrate "all"
-        CleanUserChatToken 1
-        Resque
     fi
     unset _IsSuccess
     ;;
@@ -218,10 +214,6 @@ case $Param1 in
     _IsSuccess=`echo $tempDBHost | grep "^sub"`    #后期可以把判断条件换成ping
     if [[ $_IsSuccess ]]; then
         modifyDBurl
-        BackupDB
-        Migrate "all"
-        CleanUserChatToken 1
-        Resque
     fi
     unset _IsSuccess
     ;;
