@@ -205,6 +205,9 @@ case $Param1 in
     _IsSuccess=`echo $tempDBHost | grep "^sub"`   #后期可以把判断条件换成ping
     if [[ $_IsSuccess ]]; then
         modifyDBurl
+        echo "Create temp database successfully !"
+        echo "use function \"View temporary instance status\""
+        echo "when the status is \"Running\", run migrate"
     fi
     unset _IsSuccess
     ;;
