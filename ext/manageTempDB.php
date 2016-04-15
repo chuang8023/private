@@ -144,6 +144,15 @@ function CreateTempDB($dbId) {
     return $tempDBId;
 }
 
+function TempDBStatus($dbInfo) {
+    if (isset($dbInfo['Items']['DBInstanceAttribute']['0']['DBInstanceStatus']) && !empty($dbInfo['Items']['DBInstanceAttribute']['0']['DBInstanceStatus'])) {
+        $dbStatus = $dbInfo['Items']['DBInstanceAttribute']['0']['DBInstanceStatus'];
+    } else {
+        $dbStatus = '';
+    }
+    return $dbStatus;
+}
+
 //------------------------------------------------------------------------------------------------------------------------
 
 function AutoManage($dbId) {
@@ -204,6 +213,18 @@ if (isset($argv['2']) && !empty($argv['2'])) {
         case 'createTempDB':
             $tempDBId = CreateTempDB($dbId);
             echo $tempDBId . "\n";
+            break;
+        case 'tempDBStatus':
+            $dbInfo = GetDBInfo($dbId);
+            $tempDBId = GetTempDBId($dbInfo);
+            if (!empty($tempDBId)) {
+                $temDBInfo = GetDBInfo($tempDBId);
+                $tempDBStatus = TempDBStatus($temDBInfo);
+                echo $tempDBStatus . "\n";
+            } else {
+                echo "Cannot get temp database status !\n";
+                exit(1);
+            }
             break;
         default :
             echo "Error argvs !\n";
