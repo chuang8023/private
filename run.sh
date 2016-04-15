@@ -50,6 +50,7 @@ if [[ $INFOType == "File" ]]; then
             ProjPath=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'`
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
             DBType=`echo $LINE | awk -F"|" '{print $4}' | awk 'gsub(/^ *| *$/,"")'`
+            DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
     unset _ChkName
@@ -189,5 +190,17 @@ case $Param1 in
 "gst")
     Main
     GitStatus
+    ;;
+"tempDBExpireTime")
+    Main
+    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId expireTime
+    ;;
+"createTempDB")
+    Main
+    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB
+    ;;
+"deleteTempDB")
+    Main
+    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId deleteTempDB
     ;;
 esac

@@ -7,7 +7,6 @@ require __DIR__ . '/aliyunAPI.php';
  */
  $key = 'e7QcE1SfNze9eAuC';
  $secret = 'o8CLhEK6k3iyrjYPmL3TlTBBtK3I9y';
- $dbId = 'rds26h77108r3o8c4jwj';
  $host = 'https://rds.aliyuncs.com/';
  $format = 'JSON';          //请勿随意修改
  
@@ -171,7 +170,14 @@ function AutoManage($dbId) {
 }
 
 if (isset($argv['1']) && !empty($argv['1'])) {
-    switch ($argv['1']) {
+    $dbId = $argv['1'];
+} else {
+    echo "Error argvs !\n";
+    exit(1);
+}
+
+if (isset($argv['2']) && !empty($argv['2'])) {
+    switch ($argv['2']) {
         case 'expireTime':
             $dbInfo = GetDBInfo($dbId);
             $tempDBId = GetTempDBId($dbInfo);
