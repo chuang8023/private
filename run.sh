@@ -202,7 +202,7 @@ case $Param1 in
 "createTempDB")
     Main
     DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB).mysql.rds.aliyuncs.com"
-    _IsSuccess=`echo $tempDBHost | grep "^sub"`   #后期可以把判断条件换成ping
+    _IsSuccess=`echo $DBUrl | grep "^sub"`   #后期可以把判断条件换成ping
     if [[ $_IsSuccess ]]; then
         modifyDBurl
         echo "Create temp database successfully !"
@@ -218,7 +218,7 @@ case $Param1 in
 "autoTempDB")
     Main
     DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId).mysql.rds.aliyuncs.com"
-    _IsSuccess=`echo $tempDBHost | grep "^sub"`    #后期可以把判断条件换成ping
+    _IsSuccess=`echo $DBUrl | grep "^sub"`    #后期可以把判断条件换成ping
     if [[ $_IsSuccess ]]; then
         modifyDBurl
     fi
