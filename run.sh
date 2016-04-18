@@ -96,13 +96,13 @@ case $Param1 in
     DBUrl=$Param3
     Main
     modifyDBurl
-    GetGitLog
+    GetPullLog
     PullCode
     BackupDB
-    EchoGitLog
+    EchoPullLog
     Migrate "all"
     Rbuild
-    Resque
+    RestartResque
     ;;
 "showPullLog")
     Main
