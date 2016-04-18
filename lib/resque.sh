@@ -1,4 +1,4 @@
-function ChkiStopResque () {
+function ChkStopResque () {
 Resque1=`ENV=$ProjType ./deploy/resque status | grep "Resque:default" | grep "stopped"`
 Resque2=`ENV=$ProjType ./deploy/resque status | grep "Resque:rules_engine" | grep "stopped"`
 
