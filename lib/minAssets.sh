@@ -1,5 +1,5 @@
 function MinAssets () {
-_Status=$1
+local _Status=$1
 
 if [[ $_Status == "close" ]]; then
     echo ""
@@ -27,5 +27,4 @@ if [[ $_Status == "open" ]]; then
         exit 1
     fi
 fi
-unset _Status
 }

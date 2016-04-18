@@ -19,16 +19,14 @@ cd `dirname $0`
 . lib/git.sh
 
 function RealPath () {
-_Path=$1
-_Tag=`ls -la $_Path | head -n 1 | cut -b 1`
+local _Path=$1
+local _Tag=`ls -la $_Path | head -n 1 | cut -b 1`
 if [[ $_Tag == "l" ]]; then
-    _Path=`ls -la $_Path | awk -F" -> " '{print $2}'`
+    local _Path=`ls -la $_Path | awk -F" -> " '{print $2}'`
     RealPath $_Path
 else
     echo "$_Path"
 fi
-unset _Path
-unset _Tag
 }
 
 function Main {
@@ -45,7 +43,7 @@ if [[ $INFOType == "File" ]]; then
     DataPath="$(cd `dirname $0`;pwd)/data"
     while read LINE
     do
-        _ChkName=`echo $LINE | grep -v "#" | awk -F"|" '{print $1}' | awk 'gsub(/^ *| *$/,"")'`
+        local _ChkName=`echo $LINE | grep -v "#" | awk -F"|" '{print $1}' | awk 'gsub(/^ *| *$/,"")'`
         if [[ $_ChkName == $ProjName ]]; then
             ProjPath=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'`
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
@@ -53,7 +51,6 @@ if [[ $INFOType == "File" ]]; then
             DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
-    unset _ChkName
 fi
 
 if [[ $ProjPath == "" ]]; then
@@ -93,15 +90,15 @@ TimeStamp=`date +%y%m%d%H%M%S`
 
 case $Param1 in
 "update")
-    DBUrl=$Param3
+    _DBUrl=$Param3
     Main
-    modifyDBurl
+    modifyDBurl "$_DBUrl" "check"
     GetPullLog
     PullCode
     BackupDB
     EchoPullLog
     Migrate "all"
-    Rbuild
+    Rbuild "$CommitID"
     RestartResque
     ;;
 "showPullLog")
@@ -109,12 +106,12 @@ case $Param1 in
     ShowPullLog
     ;;
 "rollback")
-    CommitID=$Param3
+    _CommitID=$Param3
     Main
-    RollbackCode
-    RollbackDB
+    RollbackCode "$_CommitID"
+    RollbackDB "$_CommitID"
     Migrate "all"
-    Rbuild
+    Rbuild "$CommitID"
     Resque
     ;;
 "resqueStat")
@@ -133,7 +130,6 @@ case $Param1 in
     _ID=$Param3
     Main
     Migrate "$_ID"
-    unset _ID
     ;;
 "closeMinAssets")
     Main
@@ -151,13 +147,11 @@ case $Param1 in
     _Ent=$Param3
     Main
     Cache "$_Ent" "rebuild_org_tree"
-    unset _Ent
     ;;
 "rebuild_to_redis")
     _Ent=$Param3
     Main
     Cache "$_Ent" "rebuild_to_redis"
-    unset _Ent
     ;;
 "backupDB")
     Main
@@ -171,13 +165,11 @@ case $Param1 in
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
-    unset _BranchName
     ;;
 "cleanUserChatToken")
     _DBHost=$Param3
     Main
     CleanUserChatToken "$_DBHost"
-    unset _DBHost
     ;;
 "stash")
     Main
@@ -200,7 +192,6 @@ case $Param1 in
         echo "Cannot get temp database status !"
         exit 1
     fi
-    unset _status
     ;;
 "tempDBExpireTime")
     Main
@@ -211,19 +202,17 @@ case $Param1 in
         echo "Cannot get temp database expire time !"
         exit 1
     fi
-    unset _Time
     ;;
 "createTempDB")
     Main
-    DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB).mysql.rds.aliyuncs.com"
+    _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB).mysql.rds.aliyuncs.com"
     _IsSuccess=`echo $DBUrl | grep "^sub"`   #后期可以把判断条件换成ping
     if [[ $_IsSuccess ]]; then
-        modifyDBurl
+        modifyDBurl "$_DBUrl" "nocheck"
         echo "Create temp database successfully !"
         echo "use function \"View temporary instance status\""
         echo "when the status is \"Running\", run migrate"
     fi
-    unset _IsSuccess
     ;;
 "deleteTempDB")
     Main
@@ -231,11 +220,10 @@ case $Param1 in
     ;;
 "autoTempDB")
     Main
-    DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId).mysql.rds.aliyuncs.com"
+    _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId).mysql.rds.aliyuncs.com"
     _IsSuccess=`echo $DBUrl | grep "^sub"`    #后期可以把判断条件换成ping
     if [[ $_IsSuccess ]]; then
-        modifyDBurl
+        modifyDBurl "$_DBUrl" "nocheck"
     fi
-    unset _IsSuccess
     ;;
 esac

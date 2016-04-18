@@ -1,21 +1,25 @@
-function modifyDBurl {
-if [[ $DBUrl != "" ]]; then
+function modifyDBurl () {
+local _DBUrl=$1
+local _IsCheck=$2
+
+if [[ $_DBUrl != "" ]]; then
     echo ""
     echo "Modify database URL ..."
-    DBNum=$(sed -n "/'default' => array/=" $ProjConfPath/database.php)
-    DBNum=$((${DBNum} + 1))
-    sed -i "${DBNum},/)/s/'host.*/'host'     => '$DBUrl',/" $ProjConfPath/database.php
-    cd $ProjPath
-    ENV=$ProjType ./script/phpmig status 1>/dev/null 2>&1
-    if [[ $? == 0 ]]; then
-        echo ""
-        echo "Modify database URL is OK !"
-    else
-        echo ""
-        echo "Modify database URL is Fail !"
-        exit 1
+    local DBNum=$(grep -n "'servers'  => \[" $ProjConfPath/database.php)
+    local DBNum=$((${DBNum} + 3))
+    sed -i "${DBNum},/,/s/'host.*/'host'     => '$_DBUrl',/" $ProjConfPath/database.php
+    if [[ $_IsCheck == "check" ]]; then
+        cd $ProjPath
+        ENV=$ProjType ./script/phpmig status 1>/dev/null 2>&1
+        if [[ $? == 0 ]]; then
+            echo ""
+            echo "Modify database URL is OK !"
+        else
+            echo ""
+            echo "Modify database URL is Fail !"
+            exit 1
+        fi
+        cd - 1>/dev/null 2>&1
     fi
-    unset DBNum
-    cd - 1>/dev/null 2>&1
 fi
 }

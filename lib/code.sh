@@ -26,21 +26,23 @@ function ChangePullOwn {
 find . -user root -exec chown $runuser:$runuser {} \;
 }
 
-function RollbackCode {
-if [[ $CommitID != "" ]]; then
+function RollbackCode () {
+local _CommitID=$1
+
+if [[ $_CommitID != "" ]]; then
     echo ""
-    echo "$BranchName rollbacking code to $CommitID ..."
+    echo "$BranchName rollbacking code to $_CommitID ..."
     cd $ProjPath
-    git reset --hard $CommitID 1>/dev/null 2>&1
+    git reset --hard $_CommitID 1>/dev/null 2>&1
     if [[ $? == 0 ]]; then
         echo ""
         echo "$BranchName rollback code is OK !"
-        echo "Now commit id is $CommitID"
+        echo "Now commit id is $_CommitID"
         cd - 1>/dev/null 2>&1
     else
         echo ""
         echo "$BranchName rollback code is Fail !"
-        echo "Now commit id is $CommitID"
+        echo "Now commit id is $_CommitID"
         exit 1
     fi
 else

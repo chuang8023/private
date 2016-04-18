@@ -6,7 +6,7 @@ echo $BranchName
 }
 
 function ChkoutBranch () {
-_Option=$1
+local _Option=$1
 
 ShowBranch
 GitStatus

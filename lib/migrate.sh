@@ -16,26 +16,24 @@ if [[ $? != 0 ]]; then
     echo "wrong"
 fi
 
-_MigStat=`ENV=$ProjType ./script/phpmig status | grep "down"`
+local _MigStat=`ENV=$ProjType ./script/phpmig status | grep "down"`
 if [[ $? == 0 ]]; then
     echo $_MigStat
 fi
 cd - 1>/dev/null 2>&1
-unset _MigStat
 }
 
 function Migrate () {
-_ID=$1
+local _ID=$1
 if [[ $_ID == "all" ]]; then
     MigrateAll
 else
     MigrateOne "$_ID"
 fi
-unset _ID
 }
 
 function MigrateAll {
-MigStat=`CheckMigrate`
+local MigStat=`CheckMigrate`
 if [[ $MigStat == "" ]]; then
     echo ""
     echo "Migrate status is OK !"
@@ -49,7 +47,7 @@ else
     cd $ProjPath
     ENV=$ProjType ./script/phpmig migrate 1>/dev/null 
     if [[ $? == 0 ]]; then
-        MigStat=`CheckMigrate`
+        local MigStat=`CheckMigrate`
         if [[ $MigStat == "" ]]; then
             echo ""
             echo "Migrate status is OK !"
@@ -67,7 +65,7 @@ fi
 }
 
 function MigrateOne () {
-_MigrationID=$1
+local _MigrationID=$1
 cd $ProjPath
 echo ""
 echo "Down migration $_MigrationID ..."
@@ -91,5 +89,4 @@ else
     echo "Down migration $_MigrationID is Fail !"
     exit 1
 fi
-unset _MigrationID
 }
