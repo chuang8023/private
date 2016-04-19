@@ -15,7 +15,7 @@ sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
 }
 
 function Rbuild () {
-local _CommitID = $1
+local _CommitID=$1
 
 cd $ProjPath
 if [[ $1 == "-f" ]]; then
