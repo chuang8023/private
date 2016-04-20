@@ -69,24 +69,28 @@ local _MigrationID=$1
 cd $ProjPath
 echo ""
 echo "Down migration $_MigrationID ..."
-ENV=$ProjType ./script/phpmig down $_MigrationID 1>/dev/null 2>&1
+ENV=$ProjType ./script/phpmig down $_MigrationID 1>/dev/null 2>/tmp/rundeck_errinfo
 if [[ $? == 0 ]]; then
     echo ""
     echo "Down migration $_MigrationID is OK !"
     echo ""
     echo "Starting migration $_MigrationID ..."
-    ENV=$ProjType ./script/phpmig up $_MigrationID 1>/dev/null 2>&1
+    ENV=$ProjType ./script/phpmig up $_MigrationID 1>/dev/null 2>/tmp/rundeck_errinfo
     if [[ $? == 0 ]]; then
         echo ""
         echo "Start migration $_MigrationID is OK !"
     else
         echo ""
         echo "Starting migration $_MigrationID is Fail !"
+        echo "------------------------------------------------------"
+        cat /tmp/rundeck_errinfo
         exit 1
     fi
 else
     echo ""
     echo "Down migration $_MigrationID is Fail !"
+    echo "------------------------------------------------------"
+    cat /tmp/rundeck_errinfo
     exit 1
 fi
 }

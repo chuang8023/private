@@ -10,13 +10,15 @@ if [[ $_DBUrl != "" ]]; then
     sed -i "${DBNum},/,/s/'host.*/'host'     => '$_DBUrl',/" $ProjConfPath/database.php
     if [[ $_IsCheck == "check" ]]; then
         cd $ProjPath
-        ENV=$ProjType ./script/phpmig status 1>/dev/null 2>&1
+        ENV=$ProjType ./script/phpmig status 1>/dev/null 2>/tmp/rundeck_errinfo
         if [[ $? == 0 ]]; then
             echo ""
             echo "Modify database URL is OK !"
         else
             echo ""
             echo "Modify database URL is Fail !"
+            echo "--------------------------------------------"
+            cat /tmp/rundeck_errinfo
             exit 1
         fi
         cd - 1>/dev/null 2>&1

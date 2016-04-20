@@ -26,7 +26,7 @@ if [[ $_Option == "all" ]]; then
     fi
 else
     echo "Checkout to $_Option ..."
-    git fetch origin $_Option 1>/dev/null 2>&1 &&
+    git fetch origin $_Option 1>/dev/null 2>/tmp/rundeck_errinfo &&
     git checkout $_Option
     if [[ $? == 0 ]]; then
         ChangePullOwn
@@ -35,6 +35,8 @@ else
     else
         echo ""
         echo "Checkout to $_Option is Fail !"
+        echo "--------------------------------------"
+        cat /tmp/rundeck_errinfo
         exit 1
     fi
 fi
