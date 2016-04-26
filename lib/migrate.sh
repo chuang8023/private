@@ -92,7 +92,7 @@ else
 fi
 }
 
-function autoMigrate {
+function AutoMigrate {
 local tempDBStatus=`TempDBStatus "$DBId"`
 if [[ $tempDBStatus == "Running" ]]; then
     MigrateAll 2>>$LogPath/automigrate.log
