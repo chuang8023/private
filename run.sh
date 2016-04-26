@@ -208,7 +208,7 @@ case $Param1 in
     _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB).mysql.rds.aliyuncs.com"
     _IsSuccess=`echo $_DBUrl | grep "^sub"`   #后期可以把判断条件换成ping
     if [[ $_IsSuccess != "" ]]; then
-        modifyDBurl "$_DBUrl" "nocheck"
+        modifyDBurl "${_DBUrl/_/-}" "nocheck"
         echo "Create temp database successfully !"
         echo "use function \"View temporary instance status\""
         echo "when the status is \"Running\", run migrate"
@@ -223,7 +223,7 @@ case $Param1 in
     _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId).mysql.rds.aliyuncs.com"
     _IsSuccess=`echo $_DBUrl | grep "^sub"`    #后期可以把判断条件换成ping
     if [[ $_IsSuccess != "" ]]; then
-        modifyDBurl "$_DBUrl" "nocheck"
+        modifyDBurl "${_DBUrl/_/-}" "nocheck"
     fi
     ;;
 esac
