@@ -58,6 +58,16 @@ fi
 
 function UpdateVendor {
 cd $ProjPath
+echo ""
+echo "Updating vendor ..."
 ./script/vendor unpackaging
+if [[ $? == 0 ]]; then
+    echo ""
+    echo "Update vendor is OK !"
+else
+    echo ""
+    echo "Update vendor is fail !"
+    exit 1
+fi
 cd - 1>/dev/null 2>&1
 }
