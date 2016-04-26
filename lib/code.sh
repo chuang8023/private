@@ -62,6 +62,7 @@ echo ""
 echo "Updating vendor ..."
 ./script/vendor unpackaging
 if [[ $? == 0 ]]; then
+    ChangePullOwn
     echo ""
     echo "Update vendor is OK !"
 else
