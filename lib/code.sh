@@ -3,7 +3,7 @@ echo ""
 echo "$BranchName pulling the new code ..."
 cd $ProjPath
 git checkout .
-git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_errinfo
+git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""
@@ -13,7 +13,7 @@ else
     echo ""
     echo "$BranchName pull the new code is Fail !"
     echo "---------------------------------------------"
-    cat /tmp/rundeck_errinfo
+    cat /tmp/rundeck_code_errinfo
     exit 1
 fi
 }
@@ -35,7 +35,7 @@ if [[ $_CommitID != "" ]]; then
     echo ""
     echo "$BranchName rollbacking code to $_CommitID ..."
     cd $ProjPath
-    git reset --hard $_CommitID 1>/dev/null 2>/tmp/rundeck_errinfo
+    git reset --hard $_CommitID 1>/dev/null 2>/tmp/rundeck_code_errinfo
     if [[ $? == 0 ]]; then
         echo ""
         echo "$BranchName rollback code is OK !"
@@ -46,7 +46,7 @@ if [[ $_CommitID != "" ]]; then
         echo "$BranchName rollback code is Fail !"
         echo "Now commit id is $_CommitID"
         echo "----------------------------------------------"
-        cat /tmp/rundeck_errinfo
+        cat /tmp/rundeck_code_errinfo
         exit 1
     fi
 else

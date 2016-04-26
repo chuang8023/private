@@ -42,6 +42,7 @@ fi
 if [[ $INFOType == "File" ]]; then
     ConfigPath="$(cd `dirname $0`;pwd)/config"
     DataPath="$(cd `dirname $0`;pwd)/data"
+    LogPath="$(cd `dirname $0`;pwd)/log"
     while read LINE
     do
         local _ChkName=`echo $LINE | grep -v "#" | awk -F"|" '{print $1}' | awk 'gsub(/^ *| *$/,"")'`
@@ -208,4 +209,7 @@ case $Param1 in
     Main
     UpdateVendor
     ;;
+"autoMigrate")
+    Main
+    AutoMigrate
 esac
