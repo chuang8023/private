@@ -226,4 +226,8 @@ case $Param1 in
         modifyDBurl "${_DBUrl/_/-}" "nocheck"
     fi
     ;;
+"updateVendor")
+    Main
+    UpdateVendor
+    ;;
 esac

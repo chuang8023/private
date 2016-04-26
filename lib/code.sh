@@ -55,3 +55,9 @@ else
     exit 1
 fi
 }
+
+function UpdateVendor {
+cd $ProjPath
+./script/vendor unpackaging
+cd - 1>/dev/null 2>&1
+}
