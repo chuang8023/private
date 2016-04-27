@@ -5,3 +5,5 @@ backup/*
 config/projinfo
 template/*
 !template/.gitignore
+log/*
+!log/.gitignore

@@ -17,6 +17,7 @@ cd `dirname $0`
 . lib/database.sh
 . lib/branch.sh
 . lib/git.sh
+. lib/tempDB.sh
 
 function RealPath () {
 local _Path=$1
@@ -41,6 +42,7 @@ fi
 if [[ $INFOType == "File" ]]; then
     ConfigPath="$(cd `dirname $0`;pwd)/config"
     DataPath="$(cd `dirname $0`;pwd)/data"
+    LogPath="$(cd `dirname $0`;pwd)/log"
     while read LINE
     do
         local _ChkName=`echo $LINE | grep -v "#" | awk -F"|" '{print $1}' | awk 'gsub(/^ *| *$/,"")'`
@@ -185,45 +187,29 @@ case $Param1 in
     ;;
 "tempDBStatus")
     Main
-    _Status=$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId tempDBStatus)
-    if [[ $_Status != "" ]]; then
-        echo $_Status
-    else
-        echo "Cannot get temp database status !"
-        exit 1
-    fi
+    TempDBStatus "$DBId"
     ;;
 "tempDBExpireTime")
     Main
-    _Time=$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId expireTime)
-    if [[ $_Time != "" ]]; then
-        echo $_Time
-    else
-        echo "Cannot get temp database expire time !"
-        exit 1
-    fi
+    TempDBExpireTime "$DBId"
     ;;
 "createTempDB")
     Main
-    _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId createTempDB).mysql.rds.aliyuncs.com"
-    _IsSuccess=`echo $DBUrl | grep "^sub"`   #后期可以把判断条件换成ping
-    if [[ $_IsSuccess ]]; then
-        modifyDBurl "$_DBUrl" "nocheck"
-        echo "Create temp database successfully !"
-        echo "use function \"View temporary instance status\""
-        echo "when the status is \"Running\", run migrate"
-    fi
+    CreateTempDB "$DBId"
     ;;
 "deleteTempDB")
     Main
-    php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId deleteTempDB
+    DeleteTempDB "$DBId"
     ;;
 "autoTempDB")
     Main
-    _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $DBId).mysql.rds.aliyuncs.com"
-    _IsSuccess=`echo $DBUrl | grep "^sub"`    #后期可以把判断条件换成ping
-    if [[ $_IsSuccess ]]; then
-        modifyDBurl "$_DBUrl" "nocheck"
-    fi
+    AutoTempDB "$DBId"
     ;;
+"updateVendor")
+    Main
+    UpdateVendor
+    ;;
+"autoMigrate")
+    Main
+    AutoMigrate
 esac

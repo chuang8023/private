@@ -6,11 +6,6 @@ cd - 1>/dev/null 2>&1
 
 function CheckMigrate {
 cd $ProjPath
-#if [[ -f ./script/phpmig ]]; then
-#   _MigStat=`./script/phpmig status | grep down`
-#else
-#    _MigStat=`./script/phpmig.php status | grep down`
-#fi
 ENV=$ProjType ./script/phpmig status | grep "20120822094445" 1>/dev/null
 if [[ $? != 0 ]]; then
     echo "wrong"
@@ -45,7 +40,7 @@ else
     echo ""
     echo "Running migrate ..."
     cd $ProjPath
-    ENV=$ProjType ./script/phpmig migrate 1>/dev/null 
+    ENV=$ProjType ./script/phpmig migrate 1>/dev/null 2>/tmp/rundeck_migrate_errinfo
     if [[ $? == 0 ]]; then
         local MigStat=`CheckMigrate`
         if [[ $MigStat == "" ]]; then
@@ -58,6 +53,8 @@ else
     else
         echo ""
         echo "It looks like something wrong when run migrate !"
+        echo "------------------------------------------------------"
+        cat /tmp/rundeck_migrate_errinfo
         exit 1
     fi
     cd - 1>/dev/null 2>&1
@@ -69,13 +66,13 @@ local _MigrationID=$1
 cd $ProjPath
 echo ""
 echo "Down migration $_MigrationID ..."
-ENV=$ProjType ./script/phpmig down $_MigrationID 1>/dev/null 2>/tmp/rundeck_errinfo
+ENV=$ProjType ./script/phpmig down $_MigrationID 1>/dev/null 2>/tmp/rundeck_migrate_errinfo
 if [[ $? == 0 ]]; then
     echo ""
     echo "Down migration $_MigrationID is OK !"
     echo ""
     echo "Starting migration $_MigrationID ..."
-    ENV=$ProjType ./script/phpmig up $_MigrationID 1>/dev/null 2>/tmp/rundeck_errinfo
+    ENV=$ProjType ./script/phpmig up $_MigrationID 1>/dev/null 2>/tmp/rundeck_migrate_errinfo
     if [[ $? == 0 ]]; then
         echo ""
         echo "Start migration $_MigrationID is OK !"
@@ -83,14 +80,21 @@ if [[ $? == 0 ]]; then
         echo ""
         echo "Starting migration $_MigrationID is Fail !"
         echo "------------------------------------------------------"
-        cat /tmp/rundeck_errinfo
+        cat /tmp/rundeck_migrate_errinfo
         exit 1
     fi
 else
     echo ""
     echo "Down migration $_MigrationID is Fail !"
     echo "------------------------------------------------------"
-    cat /tmp/rundeck_errinfo
+    cat /tmp/rundeck_migrate_errinfo
     exit 1
+fi
+}
+
+function AutoMigrate {
+local tempDBStatus=`TempDBStatus "$DBId"`
+if [[ $tempDBStatus == "Running" ]]; then
+    MigrateAll 2>>$LogPath/automigrate.log
 fi
 }
