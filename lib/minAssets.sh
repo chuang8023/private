@@ -13,6 +13,7 @@ if [[ $_Status == "close" ]]; then
         echo "Close the minassets is Fail !"
         exit 1
     fi
+    ChangePullOwn
 fi
 if [[ $_Status == "open" ]]; then
     echo ""
@@ -26,5 +27,6 @@ if [[ $_Status == "open" ]]; then
         echo "Open the minassets is Fail !"
         exit 1
     fi
+    ChangePullOwn
 fi
 }
