@@ -12,6 +12,7 @@ else
     echo "It looks like something wrong when run rbuild !"
 fi
 sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
+ChangePullOwn
 }
 
 function Rbuild () {
