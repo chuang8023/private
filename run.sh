@@ -99,6 +99,7 @@ case $Param1 in
     PullCode
     BackupDB
     EchoPullLog
+    UpdateVendor
     Migrate "all"
     Rbuild "$CommitID"
     RestartResque
