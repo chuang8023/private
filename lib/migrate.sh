@@ -94,7 +94,11 @@ fi
 
 function AutoMigrate {
 local tempDBStatus=`TempDBStatus "$DBId"`
+local nowHour=`date -u +%H`
 if [[ $tempDBStatus == "Running" ]]; then
-    MigrateAll 2>>$LogPath/automigrate.log
+#与 ext/manageTempDB.php 中第170行规定时间相符
+    if [[ $nowHour > 12 && $nowHour < 22 ]]; then
+        MigrateAll 2>>$LogPath/automigrate.log
+    fi
 fi
 }
