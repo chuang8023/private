@@ -98,7 +98,10 @@ local nowHour=`date -u +%H`
 if [[ $tempDBStatus == "Running" ]]; then
 #与 ext/manageTempDB.php 中第170行规定时间相符
     if (( $nowHour > 12 && $nowHour < 22 )); then
+        echo `date +%y%m%d%H%M` >> $LogPath/automigrate.log
+        echo "------------------------------------------------------"
         MigrateAll 2>>$LogPath/automigrate.log
+        echo ""
     fi
 fi
 }
