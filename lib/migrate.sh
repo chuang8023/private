@@ -98,10 +98,13 @@ local nowHour=`date -u +%H`
 if [[ $tempDBStatus == "Running" ]]; then
 #与 ext/manageTempDB.php 中第170行规定时间相符
     if [[ $nowHour > 12 && $nowHour < 22 ]]; then
-        echo `date +%y%m%d%H%M` >> $LogPath/automigrate.log
-        echo "------------------------------------------------------" >> $LogPath/automigrate.log
-        MigrateAll 2>>$LogPath/automigrate.log
-        echo "" >> $LogPath/automigrate.log
+    local PID=`ps -ef | grep "script/phpmig migrate" | grep -v "grep --color=auto" | awk '{print $2}'`
+        if [[ ! -n $PID ]]; then
+            echo `date +%y%m%d%H%M` >> $LogPath/automigrate.log
+            echo "-----------------------------------------" >> $LogPath/automigrate.log
+            MigrateAll 2>>$LogPath/automigrate.log
+            echo "" >> $LogPath/automigrate.log
+        fi
     else
         echo "Time is Not allow"
     fi
