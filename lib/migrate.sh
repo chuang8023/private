@@ -40,7 +40,7 @@ else
     echo ""
     echo "Running migrate ..."
     cd $ProjPath
-    ENV=$ProjType ./script/phpmig migrate 1>/dev/null 2>/tmp/rundeck_migrate_errinfo
+    ENV=$ProjType ./script/phpmig migrate 1>/tmp/rundeck_migrate_info 2>/tmp/rundeck_migrate_errinfo
     if [[ $? == 0 ]]; then
         local MigStat=`CheckMigrate`
         if [[ $MigStat == "" ]]; then
