@@ -19,6 +19,13 @@ DBIP="127.0.0.1"
 DBUser="root"
 DBPasswd="saas"
 
+#Mongo info
+MongoAdminUser="admin"
+MongoAdminPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
+MongoNomalUser="feature"
+MongoNomalPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
+
+
 #Web info
 #WebPort="55555"
 
@@ -160,6 +167,38 @@ if [[ $DBIsExists == "" ]]; then
 fi
 }
 
+function ManageMongo {
+MongoIsExists=`mongo admin -u$MongoAdminUser -p$MongoAdminPass --eval "db.adminCommand('listDatabases')" |grep $DatabaseName`
+if [[ $MongoIsExists == "" ]]; then
+    echo ""
+    echo "Create Mongo  $DatabaseName ..."
+    mongo<<EOF 
+use admin
+db.auth("$MongoAdminUser","$MongoAdminPass")
+use $DatabaseName
+db.createUser(  
+  {  
+    user: "$MongoNomalUser",  
+    pwd: "$MongoNomalPass",  
+    roles: [ { role: "dbOwner", db: "$DatabaseName" } ]  
+  }  
+) 
+exit
+EOF
+    echo ""
+    echo "Create Mongo $DatabaseName is OK !"
+    echo ""
+    echo "Convert data to Mongo  $DatabaseName ..."
+    cd /var/www/www.$Branch.$sBranchName.aysaas.com
+    ./bin/phing convert_mongodb</dev/null >/dev/null
+    echo ""
+    echo "Convert data to Mongo $DatabaseName is OK !"
+else 
+    echo "Mongo $DatabaseName is Exists"
+    exit 1
+ fi
+}
+
 function ReService {
 echo ""
 echo "Restart nginx ..."
@@ -208,6 +247,18 @@ echo ""
 echo "Delete from database is OK !"
 }
 
+function DelMongo {
+echo ""
+echo "Delete from mongo ..."
+mongo<<EOF
+use admin
+db.auth("$MongoAdminUser","$MongoAdminPass")
+use $DatabaseName
+db.dropUser("$MongoNomalUser")
+db.dropDatabase()
+exit
+EOF
+}
 function DelInfo {
 echo ""
 echo "Delete project info"
@@ -253,6 +304,7 @@ case $Param1 in
     PullBranch
     ModifyConf
     ManageDB
+    ManageMongo
     ReService
     CreateCrontab
     EchoFeatureInfo
@@ -266,6 +318,7 @@ case $Param1 in
     DelCode
     DelNginxConf
     DelDB
+    DelMongo
     DelInfo
     ReService
     OutPut del
