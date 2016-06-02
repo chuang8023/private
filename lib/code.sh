@@ -58,6 +58,7 @@ fi
 
 function UpdateVendor {
 cd $ProjPath
+StopWebsocket
 echo ""
 echo "Updating vendor ..."
 ./script/vendor unpackaging
@@ -65,6 +66,7 @@ if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""
     echo "Update vendor is OK !"
+StartWebsocket
 else
     echo ""
     echo "Update vendor is fail !"

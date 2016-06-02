@@ -18,6 +18,7 @@ cd `dirname $0`
 . lib/branch.sh
 . lib/git.sh
 . lib/tempDB.sh
+. lib/websocket.sh
 
 function RealPath () {
 local _Path=$1
@@ -213,4 +214,12 @@ case $Param1 in
 "autoMigrate")
     Main
     AutoMigrate
+    ;;
+"stopwebsocket")
+   Main        
+   StopWebsocket       
+    ;;
+"startwebsocket")
+   Main
+   StartWebsocket
 esac
