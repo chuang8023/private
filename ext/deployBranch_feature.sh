@@ -271,6 +271,24 @@ echo ""
 echo "Delete project info is OK !"
 }
 
+function DelRedis {
+echo ""
+echo "Delete redis ..."
+((for RedisPort = 6379;RedisPort < = 6382;RedisPort++))
+do 
+redis-cli -p $RedisPort keys "AYSaaS-$sBranchName*" | xargs redis-cli del >> /dev/null
+done
+echo "Delete project redis is OK !"
+}
+
+function DelCrontab {
+echo ""
+echo "Delete crontab ..."
+sed -i '/^.*'$sBranchName'.*$/d' /var/spool/cron/crontabs/$RunUser
+echo "Delete project crontab is OK !"
+}
+
+
 function OutPut () {
 _Param1=$1
 case $_Param1 in
@@ -320,6 +338,8 @@ case $Param1 in
     DelDB
     DelMongo
     DelInfo
+    DelRedis
+    DelCrontab
     ReService
     OutPut del
 esac
