@@ -190,7 +190,7 @@ EOF
     echo ""
     echo "Convert data to Mongo  $DatabaseName ..."
     cd /var/www/www.$Branch.$sBranchName.aysaas.com
-    ./bin/phing convert_mongodb</dev/null >/dev/null
+    ./vendor/phing/phing/bin/phing convert_mongodb</dev/null >/dev/null
     echo ""
     echo "Convert data to Mongo $DatabaseName is OK !"
 else 
