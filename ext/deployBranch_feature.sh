@@ -274,7 +274,7 @@ echo "Delete project info is OK !"
 function DelRedis {
 echo ""
 echo "Delete redis ..."
-for ((RedisPort = 6379;RedisPort < = 6382;RedisPort++))
+for ((RedisPort=6379;RedisPort<=6382;RedisPort++))
 do 
 redis-cli -p $RedisPort keys "AYSaaS-$sBranchName*" | xargs redis-cli del >> /dev/null
 done
