@@ -1,6 +1,8 @@
 #!/bin/bash
 #rundeck path
 RundeckPath=/root/scripts/rundeck
+TemplatePath=$RundeckPath/template/feature
+Date=`date +%Y_%m_%d_%m`
 
 #run user
 RunUser=anyuan
@@ -313,6 +315,14 @@ esac
 unset _Param1
 }
 
+function UpdateDB   {
+   echo "Start to update template db.."
+   $RundeckPath/run.sh update feature/updatetemplatedb
+   cp $TemplatePath/template.sql $TemplatePath/templdate_old/template.sql.bak.$Date
+   mysqldump -uroot -psaas feature_updatetemplatedb > $TemplatePath/template.sql
+   [ $? -eq 0 ] && echo "Update template db has been finished !"
+}
+
 ##############################################
 
 case $Param1 in
@@ -342,4 +352,8 @@ case $Param1 in
     DelCrontab
     ReService
     OutPut del
+   ;;
+"updb")
+    InPut "NoCheck"
+    UpdateDB
 esac
