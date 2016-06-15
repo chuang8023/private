@@ -318,7 +318,9 @@ unset _Param1
 function UpdateDB   {
    echo "Start to update template db.."
    $RundeckPath/run.sh update feature/updatetemplatedb
-   cp $TemplatePath/template.sql $TemplatePath/templdate_old/template.sql.bak.$Date
+   cd $TemplatePath
+   tar -zcpf template.sql.bak.$Date.tar.gz template.sql
+   mv template.sql.bak.$Date.tar.gz templdate_old
    mysqldump -uroot -psaas feature_updatetemplatedb > $TemplatePath/template.sql
    [ $? -eq 0 ] && echo "Update template db has been finished !"
 }
