@@ -2,6 +2,7 @@ function CatPHPLog () {
        cd $ProjPath
        Date=`date "+%Y/%m/%d"`
        PHPLogPath="log/${Date}.log"
+       [ ! -e $PHPLogPath ] && echo "$PHPLogPath file doesn't exist!" && exit 1
        tail -500 $PHPLogPath
 	}
 function CatResqueLog () {
