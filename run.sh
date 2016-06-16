@@ -222,4 +222,30 @@ case $Param1 in
 "startwebsocket")
    Main
    StartWebsocket
+   ;;
+"catphplog")
+  Main
+  CatPHPLog   
+   ;;
+"catresquelog")
+ Main
+  case $ResqueTypeInPut in
+   "default")
+   CatResqueLog default
+    ;;
+   ("information_watch")
+   CatResqueLog  information_watch
+   ;;
+   ("message_send")
+   CatResqueLog  message_send
+   ;;
+   ("rules_engine")
+   CatResqueLog  rules_engine
+   ;;
+   ("wf_monitor")
+   CatResqueLog  wf_monitor
+   ;;
+   ("opensearch_engine")
+   CatResqueLog  opensearch_engine
+  esac	
 esac
