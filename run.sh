@@ -19,6 +19,7 @@ cd `dirname $0`
 . lib/git.sh
 . lib/tempDB.sh
 . lib/websocket.sh
+. lib/log.sh
 
 function RealPath () {
 local _Path=$1
@@ -229,6 +230,7 @@ case $Param1 in
    ;;
 "catresquelog")
  Main
+  ResqueTypeInPut=$Param3
   case $ResqueTypeInPut in
    "default")
    CatResqueLog default
