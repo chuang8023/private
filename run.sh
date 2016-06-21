@@ -255,4 +255,10 @@ case $Param1 in
    ("opensearch_engine")
    CatResqueLog  opensearch_engine
   esac	
+   ;;
+   ("opendebug")
+   OpenDebug
+   ;;
+   ("closedebug")
+   CloseDebug
 esac
