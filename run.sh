@@ -258,8 +258,10 @@ case $Param1 in
   esac	
    ;;
    ("opendebug")
+   Main
    OpenDebug
    ;;
    ("closedebug")
+   Main
    CloseDebug
 esac

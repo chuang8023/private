@@ -8,6 +8,7 @@ sed -i "s/is_debug'.*/is_debug' => true,/" $ProjConfPath/app.php
         echo ""
         echo "Open the debug is Fail !"
         exit 1
+fi
  }
 
 function CloseDebug () {
@@ -20,4 +21,5 @@ sed -i "s/is_debug'.*/is_debug' => false,/" $ProjConfPath/app.php
         echo ""
         echo "Close the debug is Fail !"
         exit 1
+fi
 }
