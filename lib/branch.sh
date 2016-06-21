@@ -25,6 +25,7 @@ if [[ $_Option == "all" ]]; then
         exit 1
     fi
 else
+    git checkout .
     echo "Checkout to $_Option ..."
     git fetch origin $_Option:$_Option 1>/dev/null 2>/tmp/rundeck_branch_errinfo &&
     git checkout $_Option

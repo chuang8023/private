@@ -170,6 +170,11 @@ case $Param1 in
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
+    UpdateVendor
+    Migrate "all"
+    Rbuild "-f"
+    CleanRedis
+    RestartResque
     ;;
 "cleanUserChatToken")
     _DBHost=$Param3
