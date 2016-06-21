@@ -20,6 +20,7 @@ cd `dirname $0`
 . lib/tempDB.sh
 . lib/websocket.sh
 . lib/log.sh
+. lib/debug.sh
 
 function RealPath () {
 local _Path=$1
