@@ -268,5 +268,5 @@ case $Param1 in
    ;;
   ("cleanredis")
   Main
-  CleanRedis	
+  EmptyCache "all"
 esac

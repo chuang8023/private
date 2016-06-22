@@ -57,6 +57,7 @@ fi
 }
 
 function UpdateVendor {
+[[ $ProjName -eq "pre51safety" || $ProjName -eq "51safety" ]] && return 0
 cd $ProjPath
 StopWebsocket
 echo ""
