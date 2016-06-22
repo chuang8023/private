@@ -265,4 +265,8 @@ case $Param1 in
    ("closedebug")
    Main
    CloseDebug
+   ;;
+  ("cleanredis")
+  Main
+  CleanRedis	
 esac
