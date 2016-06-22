@@ -175,7 +175,8 @@ case $Param1 in
     UpdateVendor
     Migrate "all"
     Rbuild "-f"
-    CleanRedis
+    EmptyCache "all"
+    Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
 "cleanUserChatToken")
