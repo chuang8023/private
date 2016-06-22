@@ -21,7 +21,6 @@ cd `dirname $0`
 . lib/websocket.sh
 . lib/log.sh
 . lib/debug.sh
-. lib/redis.sh
 
 function RealPath () {
 local _Path=$1
