@@ -96,11 +96,9 @@ if [[ -n $Branch ]]; then
             EMail
         else
             Deploy
-            EMail "cmwang@a-y.com.cn"
         fi
     fi
     if [[ ! -n $IsFeature && $ServerType == "release" ]]; then
-        Update
-        EMail "cmwang@a-y.com.cn"
+#        Update
     fi
 fi
