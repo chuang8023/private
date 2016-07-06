@@ -83,6 +83,58 @@ fi
 rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
+function MergeHotfix () {
+SAASPath="$HOME/saas"
+cd $SAASPath
+Date=`date +%Y_%m_%d`
+
+function GitMerge ()
+{
+  FromBranch=$1
+  ToBranch=$2
+  echo "start to merge $FromBranch  to $ToBranch !"
+  sleep 10
+  git checkout $FromBranch
+  git pull --rebase origin $FromBranch
+  git checkout $ToBranch
+  git pull --rebase origin $ToBranch
+  git merge $FromBranch --no-ff --no-edit
+  if [ $? -eq 0 ] 
+    then
+     echo "$FromBranch merge to $ToBranch is ok !"
+     echo "$Date : merge $FromBranch to $ToBranch is ok !" >> /$HOME/merge_hotfix.log
+         if [[ $FromBranch == "master" ]] 
+           then
+            echo "$Date : $HotFixBranch : $HotFixInfo" >> /$HOME/master_merge_hotfix.log
+         fi
+     echo "start to push $ToBranch ...."
+     sleep 10
+     git push origin $ToBranch:$ToBranch
+    else
+     echo ""
+     echo "merge $FromBranch to $ToBranch is failed !"
+     echo ""
+     echo "请手动解决冲突后,再执行合并动作 !"
+     echo ""
+     echo "$Date : merge $FromBranch to $ToBranch is failed !" >> /$HOME/merge_hotfix.log
+     sleep 10
+     exit 1
+ fi
+}
+if [[ $Branch = "master" ]] then
+  
+  git checkout master 
+  git pull --rebase master
+  git log  -n 1 --name-only --grep "hotfix" > /dev/null 
+   if [ $? -eq 0 ] then
+      HotFixInfo=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix`
+      HotFixBranch=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix|awk -F ":" '{print $2}'|awk -F "->" '{print $1}'|sed 's/(//'`
+      GitMerge master release
+      GitMerge release integration
+   fi
+fi
+}
+
 if [[ -n $Branch ]]; then
     GetServerType
     IsFeature
@@ -98,7 +150,9 @@ if [[ -n $Branch ]]; then
             Deploy
         fi
     fi
-    if [[ ! -n $IsFeature && $ServerType == "release" ]]; then
+
+
+#    if [[ ! -n $IsFeature && $ServerType == "release" ]]; then
 #        Update
-    fi
+#    fi
 fi
