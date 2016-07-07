@@ -86,7 +86,7 @@ rm -rf /tmp/_HookMail_${Branch//\//_}
 function MergeHotfix () {
 SAASPath="$HOME/saas"
 cd $SAASPath
-Date=`date +%Y_%m_%d`
+Date=`date +%Y-%m-%d`
 
 function GitMerge ()
 {
@@ -105,7 +105,7 @@ function GitMerge ()
      echo "$Date : merge $FromBranch to $ToBranch is ok !" >> /$HOME/merge_hotfix.log
          if [[ $FromBranch == "master" ]] 
            then
-            echo "$Date : $HotFixBranch : $HotFixInfo" >> /$HOME/master_merge_hotfix.log
+            echo "$Date : $HotFixAuthor : $HotFixBranch : $HotFixInfo" >> /$HOME/master_merge_hotfix.log
          fi
      echo "start to push $ToBranch ...."
      sleep 10
@@ -121,16 +121,17 @@ function GitMerge ()
      exit 1
  fi
 }
-if [[ $Branch = "master" ]] then
+if [[ $Branch = "master" ]]; then
   
   git checkout master 
-  git pull --rebase master
-  git log  -n 1 --name-only --grep "hotfix" > /dev/null 
-   if [ $? -eq 0 ] then
-      HotFixInfo=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix`
+  git pull --rebase origin master
+  git log  -n 1 --name-only --grep "hotfix"|grep hotfix > /dev/null 
+   if [ $? -eq 0 ]; then
+      HotFixInfo=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix|awk '{print $5}'`
       HotFixBranch=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix|awk -F ":" '{print $2}'|awk -F "->" '{print $1}'|sed 's/(//'`
+      HotFixAuthor=`git log  -n 1 --name-only --grep "hotfix"|grep "Created"|awk -F ":" '{print $2}'|sed 's/@//'`
       GitMerge master release
-      GitMerge release integration
+      GitMerge release intergration
    fi
 fi
 }
@@ -147,12 +148,10 @@ if [[ -n $Branch ]]; then
             Update
             EMail
         else
-            Deploy
+            Deplog
         fi
     fi
 
+MergeHotfix
 
-#    if [[ ! -n $IsFeature && $ServerType == "release" ]]; then
-#        Update
-#    fi
 fi
