@@ -118,7 +118,7 @@ function GitMerge ()
      echo ""
      echo "$Date : merge $FromBranch to $ToBranch is failed !" >> /$HOME/merge_hotfix.log
      sleep 10
-     echo "$HotFixBranch merge to branchs is failed ! please check hotfix merge locally !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
+     echo "$Date : merge $FromBranch to $ToBranch is failed ! please check hotfix merge locally !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
      exit 1
  fi
 }
