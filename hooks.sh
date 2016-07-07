@@ -118,6 +118,7 @@ function GitMerge ()
      echo ""
      echo "$Date : merge $FromBranch to $ToBranch is failed !" >> /$HOME/merge_hotfix.log
      sleep 10
+     echo "$HotFixBranch merge to branchs is failed ! please check hotfix merge locally !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
      exit 1
  fi
 }
@@ -132,6 +133,7 @@ if [[ $Branch = "master" ]]; then
       HotFixAuthor=`git log  -n 1 --name-only --grep "hotfix"|grep "Created"|awk -F ":" '{print $2}'|sed 's/@//'`
       GitMerge master release
       GitMerge release intergration
+      echo "$HotFixBranch merge to branchs is ok !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
    fi
 fi
 }
