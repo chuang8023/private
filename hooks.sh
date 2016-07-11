@@ -3,7 +3,7 @@
 #传入参数有3个，第1个参数是分支名，第2个参数是E-Mail地址，第3个是是否删除分支的标志位（0为不删除，1为删除）
 Branch=$1
 EMail=$2
-IsDel=$3
+HOME="/root"
 
 ScriptPath="/root/scripts/rundeck"
 
@@ -84,7 +84,7 @@ rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
 function MergeHotfix () {
-SAASPath="/root/saas"
+SAASPath="$HOME/saas"
 cd $SAASPath
 Date=`date +%Y-%m-%d`
 
