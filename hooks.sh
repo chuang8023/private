@@ -84,7 +84,7 @@ rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
 function MergeHotfix () {
-SAASPath="$HOME/saas"
+SAASPath="/root/saas"
 cd $SAASPath
 Date=`date +%Y-%m-%d`
 
