@@ -105,7 +105,7 @@ function GitMerge ()
      echo "$Date : merge $FromBranch to $ToBranch is ok !" >> /$HOME/merge_hotfix.log
          if [[ $ToBranch == "proj/qycloud" ]] 
            then
-            echo "$Date : $HotFixAuthor : $HotFixBranch : $HotFixInfo" >> /$HOME/master_merge_hotfix.log
+            [ $HotfixRecord -eq 1 ] && echo "$Date : $HotFixAuthor : $HotFixBranch : $HotFixInfo" >> /$HOME/master_merge_hotfix.log
          fi
      echo "start to push $ToBranch ...."
      sleep 10
@@ -126,6 +126,9 @@ if [[ $Branch = "master" ]]; then
   
   git checkout master 
   git pull --rebase origin master
+  HotfixRecord=1
+  git log  -n 1 --name-only --grep "hotfix"|grep hotfix|grep release > /dev/null 
+  [ $? -eq 0 ] && HotfixRecord=0
   git log  -n 1 --name-only --grep "hotfix"|grep hotfix > /dev/null 
    if [ $? -eq 0 ]; then
       HotFixInfo=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix|awk '{print $5}'`
@@ -133,7 +136,7 @@ if [[ $Branch = "master" ]]; then
       HotFixAuthor=`git log  -n 1 --name-only --grep "hotfix"|grep "Created"|awk -F ":" '{print $2}'|sed 's/@//'`
       GitMerge master proj/qycloud
       GitMerge master release
-      GitMerge release intergration
+      GitMerge release integration
       echo "$HotFixBranch merge to branchs is ok !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
    fi
 fi
