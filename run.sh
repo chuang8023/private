@@ -211,6 +211,10 @@ case $Param1 in
     Main
     DeleteTempDB "$DBId"
     ;;
+"showTempDBUrl")
+    Main
+    ShowTempDBUrl "$DBId"
+    ;;
 "autoTempDB")
     Main
     AutoTempDB "$DBId"

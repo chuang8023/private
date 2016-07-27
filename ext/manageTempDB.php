@@ -171,6 +171,8 @@ function AutoManage($dbId) {
             DeleteDB($tempDBId);
             $tempDBId = CreateTempDB($dbId);
             echo $tempDBId . "\n";
+        } else {
+            echo $tempDBId . "\n";
         }
     } else {
         $tempDBId = CreateTempDB($dbId);
@@ -187,6 +189,11 @@ if (isset($argv['1']) && !empty($argv['1'])) {
 
 if (isset($argv['2']) && !empty($argv['2'])) {
     switch ($argv['2']) {
+        case 'showTempDB':
+            $dbInfo = GetDBInfo($dbId);
+            $tempDBId = GetTempDBId($dbInfo);
+            echo $tempDBId . "\n";
+            break;
         case 'expireTime':
             $dbInfo = GetDBInfo($dbId);
             $tempDBId = GetTempDBId($dbInfo);
