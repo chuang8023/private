@@ -12,12 +12,18 @@ function ShowTempDBUrl () {
 local _DBId=$1
 local _TempDB=$(php $(cd `dirname $0`;pwd)/ext/manageTempDB.php $_DBId showTempDB)
 if [[ $_TempDB != "" ]]; then
-    local _TempDBUrl="${_TempDB}.mysql.rds.aliyuncs.com"
+    local _DBUrl="${_TempDB}.mysql.rds.aliyuncs.com"
     local _IsSuccess=`echo $_DBUrl | grep "^sub"`    #后期可以把判断条件换成ping
     local _TempDBStat=`TempDBStatus "$_DBId"`
-    if [[ $_IsSuccess != "" && $_TempDBStat == "Running" ]]; then
-        modifyDBurl "${_DBUrl/_/-}" "nocheck"
-        echo "Temp database URL is $_DBUrl"
+    if [[ $_IsSuccess != "" ]]; then
+        if [[ $_TempDBStat == "Running" ]]; then
+            modifyDBurl "${_DBUrl/_/-}" "nocheck"
+            echo "Temp database URL is $_DBUrl"
+        else
+            echo "Temp database's status is $_TempDBStat !"
+        fi
+    else
+        echo "The temp database URL \"$_TempDBUrl\" is wrong !"
     fi
 else
     echo "Temp database URL is NULL !"
