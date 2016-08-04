@@ -1,5 +1,5 @@
 #!/bin/bash
-
+function StartPostMan () {
 #0. 更新代码
 codedir=/var/www/www.ceshi.integration.aysaas.com
 branchname=integration
@@ -41,15 +41,18 @@ fi
 #4.PostMan信息定义
 createtime=`date +%Y-%m-%d-%H-%M`
 currentmonth=`date +%Y-%m`
+postman_notice_email="472173257@qq.com"
 postman_json=/var/www/ApiTest/Json/ApiTest.json
 postman_env=/var/www/ApiTest/Environment/initialization_environment.json
-postman_report_createtime=/var/www/ApiTest/Report/$currentmonth/ApiTest-${createtime}.html
+postman_report=/var/www/ApiTest/Report/$currentmonth/ApiTest-${createtime}.html
 
 if [ ! -d /var/www/ApiTest/Report/$currentmonth ]; then
     mkdir -p /var/www/ApiTest/Report/$currentmonth
 fi
 
 newman -c $postman_json -e $postman_env -H $postman_report
+ 
+  echo "${createtime} : integration's postman test has finished,please see the report !" | heirloom-mailx -s "integration postman auto test results" -a "$postman_report"  $postman_notice_email
 
 #5.恢复数据
 
@@ -59,3 +62,4 @@ newman -c $postman_json -e $postman_env -H $postman_report
     #导入mysql
     echo '开始恢复mysql'
     mysql -h$mysql_host -u$mysql_user -p$mysql_passwd $mysql_dbname < $mysql_dir${mysql_dbname}.sql
+}

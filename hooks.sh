@@ -1,5 +1,5 @@
 #!/bin/bash
-
+. /ext/postman_test.sh 
 #传入参数有3个，第1个参数是分支名，第2个参数是E-Mail地址，第3个是是否删除分支的标志位（0为不删除，1为删除）
 Branch=$1
 EMail=$2
@@ -83,6 +83,7 @@ fi
 rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
+#hotfix 合并
 function MergeHotfix () {
 SAASPath="$HOME/saas"
 cd $SAASPath
@@ -142,6 +143,10 @@ if [[ $Branch = "master" ]]; then
 fi
 }
 
+#integration 触发post-man测试
+if [[ $Branch = "integration" ]]; then
+ StartPostMan
+fi
 if [[ -n $Branch ]]; then
     GetServerType
     IsFeature
