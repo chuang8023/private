@@ -6,6 +6,7 @@ branchname=integration
 cd $codedir
 git checkout .
 git pull --rebase origin $branchname 
+cd -
 
 #1.数据库信息定义
 
