@@ -21,8 +21,8 @@ mongo_dbname="ceshiintegration"
 
 
 #2.设定备份路径 并确保路径存在
-mysql_dir="$USER/backup/mysql/"
-mongo_dir="$USER/backup/mongodb/"
+mysql_dir="$HOME/backup/mysql/"
+mongo_dir="$HOME/backup/mongodb/"
 
 if [ ! -d $mysql_dir ]; then
     mkdir -p $mysql_dir
