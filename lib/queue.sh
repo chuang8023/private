@@ -39,6 +39,6 @@ cd - 1>/dev/null 2>&1
 function ResqueStat {
 cd $ProjPath
 echo ""
-ENV=$ProjType ./deploy/resque status
+ENV=$ProjType ./deploy/pheanstalk status
 cd - 1>/dev/null 2>&1
 }
