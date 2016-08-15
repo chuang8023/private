@@ -60,7 +60,7 @@ function UpdateVendor {
 cd $ProjPath
 Lastet_Vendor=`cat script/vendor|sed -n 2p|awk -F "=" '{print $2}'`
 Server_Vendor=`cat vendor/version`
-[[ $Lastet_Vendor = $Server_Vendor ]] && exit 1
+[[ $Lastet_Vendor = $Server_Vendor ]] && return 1
 StopWebsocket
 echo ""
 echo "Updating vendor ..."
