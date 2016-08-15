@@ -10,7 +10,7 @@ cd `dirname $0`
 . lib/modifyDBurl.sh
 . lib/code.sh
 . lib/rbuild.sh
-. lib/resque.sh
+. lib/queue.sh
 . lib/pullLog.sh
 . lib/minAssets.sh
 . lib/cache.sh
