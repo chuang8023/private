@@ -1,8 +1,14 @@
 #!/bin/bash
 . ext/postman_test.sh 
+. ext/git_merge.sh
+. ext/android_merge_hotfix.sh
+. ext/ios_merge_hotfix.sh
+. ext/saas_merge_hotfix.sh
+
 #传入参数有3个，第1个参数是分支名，第2个参数是E-Mail地址，第3个是是否删除分支的标志位（0为不删除，1为删除）
 Branch=$1
 EMail=$2
+Web_Url=$3
 HOME="/root"
 
 ScriptPath="/root/scripts/rundeck"
@@ -84,45 +90,9 @@ rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
 #hotfix 合并
-function MergeHotfix () {
+function SaaSMergeHotFix () {
 SAASPath="$HOME/saas"
 cd $SAASPath
-Date=`date +%Y-%m-%d`
-
-function GitMerge ()
-{
-  FromBranch=$1
-  ToBranch=$2
-  echo "start to merge $FromBranch  to $ToBranch !"
-  sleep 10
-  git checkout $FromBranch
-  git pull --rebase origin $FromBranch
-  git checkout $ToBranch
-  git pull --rebase origin $ToBranch
-  git merge $FromBranch --no-ff --no-edit
-  if [ $? -eq 0 ] 
-    then
-     echo "$FromBranch merge to $ToBranch is ok !"
-     echo "$Date : merge $FromBranch to $ToBranch is ok !" >> /$HOME/merge_hotfix.log
-         if [[ $ToBranch == "proj/qycloud" ]] 
-           then
-            [ $HotfixRecord -eq 1 ] && echo "$Date : $HotFixAuthor : $HotFixBranch : $HotFixInfo" >> /$HOME/master_merge_hotfix.log
-         fi
-     echo "start to push $ToBranch ...."
-     sleep 10
-     git push origin $ToBranch:$ToBranch
-    else
-     echo ""
-     echo "merge $FromBranch to $ToBranch is failed !"
-     echo ""
-     echo "请手动解决冲突后,再执行合并动作 !"
-     echo ""
-     echo "$Date : merge $FromBranch to $ToBranch is failed !" >> /$HOME/merge_hotfix.log
-     sleep 10
-     echo "$Date : merge $FromBranch to $ToBranch is failed ! please check hotfix merge locally !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
-     exit 1
- fi
-}
 if [[ $Branch = "master" ]]; then
   
   git checkout master 
@@ -159,7 +129,7 @@ if [[ -n $Branch ]]; then
         fi
     fi
 
-MergeHotfix
+SaaSMergeHotFix
 
 #integration 触发post-man测试
 
