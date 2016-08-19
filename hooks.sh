@@ -89,29 +89,12 @@ fi
 rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
-#hotfix 合并
-function SaaSMergeHotFix () {
-SAASPath="$HOME/saas"
-cd $SAASPath
-if [[ $Branch = "master" ]]; then
-  
-  git checkout master 
-  git pull --rebase origin master
-  HotfixRecord=1
-  git log  -n 1 --name-only --grep "hotfix"|grep hotfix|grep release > /dev/null 
-  [ $? -eq 0 ] && HotfixRecord=0
-  git log  -n 1 --name-only --grep "hotfix"|grep hotfix > /dev/null 
-   if [ $? -eq 0 ]; then
-      HotFixInfo=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix|awk '{print $5}'`
-      HotFixBranch=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix|awk -F ":" '{print $2}'|awk -F "->" '{print $1}'|sed 's/(//'`
-      HotFixAuthor=`git log  -n 1 --name-only --grep "hotfix"|grep "Created"|awk -F ":" '{print $2}'|sed 's/@//'`
-      GitMerge master proj/qycloud
-      GitMerge master release
-      GitMerge release integration
-      echo "$HotFixBranch merge to branchs is ok !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
-   fi
-fi
-}
+#saas hotfix 合并
+SaaSMergeHotFix
+#android hotfix 合并
+AndroidMergeHotFix
+#ios hotfix 合并
+IOSMergeHotFix
 
 if [[ -n $Branch ]]; then
     GetServerType
@@ -129,7 +112,6 @@ if [[ -n $Branch ]]; then
         fi
     fi
 
-SaaSMergeHotFix
 
 #integration 触发post-man测试
 

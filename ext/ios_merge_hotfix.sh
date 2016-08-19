@@ -1,4 +1,4 @@
-function SaaSMergeHotFix () {
+function IOSMergeHotFix () {
 IOSRepertoryPath="$HOME/ios"
 cd $IOSRepertoryPath
 

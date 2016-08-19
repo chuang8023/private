@@ -1,4 +1,4 @@
-function SaaSMergeHotFix () {
+function AndroidMergeHotFix () {
 AndroidRepertoryPath="$HOME/android"
 cd $AndroidRepertoryPath
 
