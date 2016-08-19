@@ -1,4 +1,6 @@
 #!/bin/bash
+
+cd `dirname $0`
 . ext/postman_test.sh 
 . ext/git_merge.sh
 . ext/android_merge_hotfix.sh
