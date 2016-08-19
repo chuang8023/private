@@ -12,6 +12,7 @@ if [[ $Branch = "master" && $IsIOS = 0 ]]; then
   git pull --rebase origin master
   git log  -n 1 --name-only --grep "hotfix"|grep hotfix > /dev/null 
    if [ $? -eq 0 ]; then
+      HotFixBranch=`git log  -n 1 --name-only --grep "hotfix"|grep hotfix|awk -F ":" '{print $2}'|awk -F "->" '{print $1}'|sed 's/(//'`
       GitMerge master release  ios
       GitMerge release integration ios
       echo "$HotFixBranch merge to branchs is ok !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
