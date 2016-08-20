@@ -4,7 +4,7 @@ cd $IOSRepertoryPath
 
 echo $Web_Url|grep iOS > /dev/null 2>&1
 
-IsIOS=$0
+IsIOS=$?
 
 if [[ $Branch = "master" && $IsIOS = 0 ]]; then
   

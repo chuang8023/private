@@ -4,7 +4,7 @@ cd $SaaSRepertoryPath
 
 echo $Web_Url|grep SaaS > /dev/null 2>&1
 
-IsSaaS=$0
+IsSaaS=$?
 
 if [[ $Branch = "master" && $IsSaaS = 0 ]]; then
   

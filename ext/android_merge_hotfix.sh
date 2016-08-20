@@ -4,7 +4,7 @@ cd $AndroidRepertoryPath
 
 echo $Web_Url|grep Android > /dev/null 2>&1
 
-IsAndroid=$0
+IsAndroid=$?
 
 if [[ $Branch = "master" && $IsAndroid = 0 ]]; then
   
