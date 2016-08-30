@@ -28,7 +28,7 @@ function GitMerge ()
      echo "请手动解决冲突后,再执行合并动作 !"
      echo ""
      echo "$Date : merge $FromBranch to $ToBranch is failed !" >> /$HOME/${Repertory}_merge_hotfix.log
-     echo "$Date : merge $FromBranch to $ToBranch is failed ! please check hotfix merge locally !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
+     echo "$Date : merge $FromBranch to $ToBranch is failed ! please check hotfix merge locally !" | heirloom-mailx -s "$Repertory's hotfix auto merge is failed"  $EMail
      exit 1
  fi
 }

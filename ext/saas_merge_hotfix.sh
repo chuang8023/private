@@ -21,7 +21,7 @@ if [[ $Branch = "master" && $IsSaaS = 0 ]]; then
       GitMerge master proj/qycloud saas
       GitMerge master release  saas
       GitMerge release integration saas
-      echo "$HotFixBranch merge to branchs is ok !" | heirloom-mailx -s "hotfix auto merge results"  $EMail
+      echo "SaaS's $HotFixBranch merge to branchs is ok !" | heirloom-mailx -s "SaaS's $HotFixBranch merge to branchs is ok"  $EMail
    fi
 fi
 }
