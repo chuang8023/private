@@ -1,11 +1,11 @@
 function ChkStopResque () {
-local Queue=`ENV=$ProjType ./deploy/pheanstalk status | grep "start"`
+local Queue=`ENV=$ProjType ./deploy/pheanstalk status | grep "running"`
 
 if [[ $Queue = "" ]]; then
     echo ""
     echo "Stop Queue is OK !"
     sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/pheanstalk start 1>/dev/null
-    local Queue=`ENV=$ProjType ./deploy/pheanstalk status | grep "start"`
+    local Queue=`ENV=$ProjType ./deploy/pheanstalk status | grep "running"`
 
     if [[ $Queue != "" ]]; then
         echo ""
