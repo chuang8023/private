@@ -24,9 +24,8 @@ cd $ProjPath
 ENV=$ProjType ./deploy/pheanstalk stop 1>/dev/null
 ENV=$ProjType ./deploy/pheanstalk stop 1>/dev/null
 ENV=$ProjType ./deploy/pheanstalk stop 1>/dev/null
-ChkStopResque
-if [[ $Resque1 != "" ]]; then
-    local PIDNum=(`ps -ef | grep -v "grep" | grep "pheanstalk" | grep "$ProjRealPath" | awk '{print $2}'`)
+if [[ $? = 0 ]]; then
+    local PIDNum=(`ps -ef | grep -v "grep" | grep "resque" | grep "$ProjRealPath" | awk '{print $2}'`)
     for (( i=0;i<${#PIDNum[*]};i++ ))
     do
         kill -9 ${PIDNum[i]} 2>/dev/null
