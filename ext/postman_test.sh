@@ -51,8 +51,8 @@ if [ ! -d /var/www/ApiTest/Report/$currentmonth ]; then
     mkdir -p /var/www/ApiTest/Report/$currentmonth
 fi
 
-newman -c $postman_json -e $postman_env -H $postman_report
- 
+newman run $postman_json  --environment $postman_env --reporters html --reporter-html-export $postman_report 
+
   echo "${createtime} : integration's postman test has finished,please see the report !" | heirloom-mailx -s "integration postman auto test results" -a "$postman_report"  $postman_notice_email
 
 #5.恢复数据
