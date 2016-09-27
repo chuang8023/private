@@ -1,41 +1,22 @@
 #!/bin/bash
 function StartPostMan () {
 #0. 更新代码
-codedir=/var/www/www.ceshi.integration.aysaas.com
-branchname=integration
-cd $codedir
-git checkout .
-git pull --rebase origin $branchname 
-cd -
-
+/root/scripts/rundeck/run.sh update initialization
+/root/scripts/rundeck/run.sh update integration
 #1.数据库信息定义
-
 mysql_host="127.0.0.1"
 mysql_user="saas_kawawa"
 mysql_passwd="hVxsR7VFYRKZsbNJ"
 mysql_dbname="ceshiintegration"
 
-mongo_host="127.0.0.1"
-mongo_user="root"
-mongo_passwd="root"
-mongo_dbname="ceshiintegration"
-
-
 #2.设定备份路径 并确保路径存在
 mysql_dir="$HOME/backup/mysql/"
-mongo_dir="$HOME/backup/mongodb/"
 
 if [ ! -d $mysql_dir ]; then
     mkdir -p $mysql_dir
 fi
-if [ ! -d $mongo_dir ]; then
-    mkdir -p $mongo_dir
-fi
 
 #3.备份数据
-    #导出mongo
-    echo '开始备份mongo'
-    mongodump -h$mongo_host -u$mongo_user -p$mongo_passwd -d$mongo_dbname -o $mongo_dir
     echo '开始备份mysql'
     mysqldump -h$mysql_host -u$mysql_user -p$mysql_passwd  $mysql_dbname > $mysql_dir${mysql_dbname}.sql
 
@@ -57,10 +38,12 @@ newman run $postman_json  --environment $postman_env --reporters html --reporter
 
 #5.恢复数据
 
-    #导入mongo
+    #恢复mongo
     echo '开始恢复mongo'
-    mongorestore -h$mongo_host -u$mongo_user -p$mongo_passwd -d$mongo_dbname --drop ${mongo_dir}${mongo_dbname}
-    #导入mysql
+   /root/scripts/rundeck/run.sh convert_mongo integration
+    #恢复mysql
     echo '开始恢复mysql'
     mysql -h$mysql_host -u$mysql_user -p$mysql_passwd $mysql_dbname < $mysql_dir${mysql_dbname}.sql
+   #重建redis
+   /root/scripts/rundeck/run.sh rebuild_to_redis integration all
 }

@@ -273,4 +273,8 @@ case $Param1 in
   ("cleanredis")
   Main
   EmptyCache "all"
+  ;;
+  ("convert_mongo")
+  Main	
+  Convert_mongodb
 esac
