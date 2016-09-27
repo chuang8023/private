@@ -103,6 +103,7 @@ else
 fi
 }
 function Convert_mongodb () {
+cd $ProjRealPath
 ENV=$ProjType ./bin/phing convert_mongodb 2>/dev/null << EOF
 
 n
