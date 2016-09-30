@@ -116,8 +116,8 @@ if [[ -n $Branch ]]; then
 
 
 #integration 触发post-man测试
-
      if [[ $Branch = "integration" ]]; then
-         StartPostMan
+	 echo $Web_Url|grep SaaS > /dev/null 2>&1
+         [ $? -eq 0 ] && StartPostMan
      fi
 fi
