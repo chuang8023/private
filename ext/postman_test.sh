@@ -1,8 +1,10 @@
 #!/bin/bash
 function StartPostMan () {
-#0. 更新代码
+#0. 更新代码、锁判断、加锁
 /root/scripts/rundeck/run.sh update initialization
 /root/scripts/rundeck/run.sh update integration
+[ -e /tmp/postman.sock ] && exit 1
+touch /tmp/postman.sock
 #1.数据库信息定义
 mysql_host="127.0.0.1"
 mysql_user="saas_kawawa"
@@ -46,4 +48,6 @@ newman run $postman_json  --environment $postman_env --reporters html --reporter
     mysql -h$mysql_host -u$mysql_user -p$mysql_passwd $mysql_dbname < $mysql_dir${mysql_dbname}.sql
    #重建redis
    /root/scripts/rundeck/run.sh rebuild_to_redis integration all
+#6.解锁
+rm /tmp/postman.sock
 }
