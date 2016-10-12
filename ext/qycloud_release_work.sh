@@ -8,6 +8,7 @@ TagName="master-v`date +%y%m%d`"
 git checkout master
 git tag -a $TagName -m $TagName
 git push origin $TagName:$TagName
+exit 0
 }
 #新切推送master修复分支
 function CreateMasterHotfix () {
@@ -16,7 +17,7 @@ OldMasterHotfixName=`git branch|grep hotfix/master`
 [ ! $OldMasterHotfixName == "" ] && git push origin :$OldMasterHotfixName
 git checkout -b $NewMasterHotfixName
 git push origin $NewMasterHotfixName:$NewMasterHotfixName
+exit 0
 }
-[ $ReleaseWorkFlow = "MasterPickupTag" ] && MasterPickupTag
-[ $ReleaseWorkFlow = "CreateMasterHotfix" ] && CreateMasterHotfix
-
+[ $ReleaseWorkFlow = "MasterPickupTag" ] && MasterPickupTag 
+[ $ReleaseWorkFlow = "CreateMasterHotfix" ] && CreateMasterHotfix 
