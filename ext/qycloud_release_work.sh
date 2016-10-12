@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 ReleaseWorkFlow=$1
 SaaSRepertoryPath="$HOME/saas"
 cd $SaaSRepertoryPath
