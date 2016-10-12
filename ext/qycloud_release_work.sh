@@ -12,9 +12,11 @@ exit 0
 }
 #新切推送master修复分支
 function CreateMasterHotfix () {
-NewMasterHotfixName="hotfix/master-`date +%Y%m%d`"
+NewMasterHotfixName="hotfix/master-`date +%y%m%d`"
 OldMasterHotfixName=`git branch|grep hotfix/master`
-[ ! $OldMasterHotfixName == "" ] && git push origin :$OldMasterHotfixName
+OldMasterHotfixName=`echo $OldMasterHotfixName|sed 's/  //'|sed 's/* //'`
+[ $? -eq 0 ] && git push origin :$OldMasterHotfixName && git branch -D $OldMasterHotfixName
+git checkout master
 git checkout -b $NewMasterHotfixName
 git push origin $NewMasterHotfixName:$NewMasterHotfixName
 exit 0
