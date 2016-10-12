@@ -4,7 +4,7 @@ SaaSRepertoryPath="$HOME/saas"
 cd $SaaSRepertoryPath
 #master打tag
 function MasterPickupTag () {
-TagName="master-v`date +%Y%m%d`"
+TagName="master-v`date +%y%m%d`"
 git checkout master
 git tag -a $TagName -m $TagName
 git push origin $TagName:$TagName
