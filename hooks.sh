@@ -6,6 +6,7 @@ cd `dirname $0`
 . ext/android_merge_hotfix.sh
 . ext/ios_merge_hotfix.sh
 . ext/saas_merge_hotfix.sh
+. ext/saas_release_merge_pre.sh
 
 #传入参数有3个，第1个参数是分支名，第2个参数是E-Mail地址，第3个是是否删除分支的标志位（0为不删除，1为删除）
 Branch=$1
@@ -91,8 +92,10 @@ fi
 rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
-#saas hotfix 合并
+#saas's master hotfix 合并
 SaaSMergeHotFix
+#saas's release hotfix 合并
+SaaSHotfixMergeRelease
 #android hotfix 合并
 AndroidMergeHotFix
 #ios hotfix 合并

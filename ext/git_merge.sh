@@ -5,6 +5,7 @@ function GitMerge ()
   ToBranch=$2
   Repertory=$3
   Date=`date +%Y-%m-%d-%H:%M`
+  [ -d .git/rebase-apply ] && rm -rf .git/rebase-apply
   echo "start to merge $FromBranch  to $ToBranch !"
   git checkout $FromBranch
   git pull --rebase origin $FromBranch
