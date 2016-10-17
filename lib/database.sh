@@ -27,7 +27,7 @@ if [[ $TimeStamp == "" ]]; then
     mysqldump -h"$_Host" -u"$_DBUser" -p"$_DBPasswd" $_DBName > $BackupDir${_DBName}_`date +%y%m%d%H%M%S`.sql
     local _Status=$?
 else
-    mysqldump -h"$_Host" -u"$_DBUser" -p"$_DBPasswd" $_DBName > $BackupDir${_DBName}_$TimeStamp.sql
+    mysqldump -h"$_Host" -u"$_DBUser" -p"$_DBPasswd" $_DBName > $BackupDir/${_DBName}_$TimeStamp.sql
     local _Status=$?
 fi
  
