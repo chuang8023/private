@@ -37,7 +37,10 @@ if [[ $Branch = $HotfixReleaseBranch && $IsSaaS = 0 ]]; then
       git branch|grep $HotfixReleaseBranch  > /dev/null 2>&1
       [ ! $? -eq 0 ] && git fetch origin $HotfixReleaseBranch:$HotfixReleaseBranch        
       GitMerge $HotfixReleaseBranch release saas
-      echo "SaaS's $HotfixReleaseBranch merge to Release is ok !" | heirloom-mailx -s "SaaS's $HotfixReleaseBranch merge to Release is ok"  $CeShiMail
+      git checkout $HotfixReleaseBranch
+      HotFixInfo=`git log  -n 1 --name-only|grep "Date" -A2|grep -v "Date"|sed '/^$/d'`
+      HotFixAuthor=`git log  -n 1 --name-only|grep "Author"|awk   '{print $2}'`
+      echo "SaaS's $HotfixReleaseBranch($HotFixAuthor:$HotFixInfo) merge to Release is ok !" | heirloom-mailx -s "SaaS's $HotfixReleaseBranch($HotFixAuthor:$HotFixInfo) merge to Release is ok !"  $CeShiMail
 
 	if [[ $CurrentWeek = 3 ]]; then
       GitMerge release pre/qycloud saas

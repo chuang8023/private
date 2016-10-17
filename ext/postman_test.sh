@@ -1,5 +1,11 @@
 #!/bin/bash
 function StartPostMan () {
+#只限feature合并进入integration,触发运行post-man
+SaaSRepertoryPath="$HOME/saas"
+cd $SaaSRepertoryPath
+git checkout integration
+git log -n 1 --name-only |grep  "feature" > /dev/null 2>&1
+[ ! $? -eq 0 ] && exit 1
 #0. 更新代码、锁判断、加锁
 /root/scripts/rundeck/run.sh update initialization
 /root/scripts/rundeck/run.sh update integration
