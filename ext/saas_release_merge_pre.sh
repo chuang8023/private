@@ -1,6 +1,8 @@
 function SaaSHotfixMergeRelease () {
 SaaSRepertoryPath="$HOME/saas"
 CurrentWeek=`date +%w`
+CurrentTime=`date +%y%m%d`
+ReleaseTime=`echo $Branch|awk -F "-" '{print $2}'`
 CeShiMail="1533587684@qq.com"
 
 cd $SaaSRepertoryPath
@@ -48,7 +50,7 @@ if [[ ($Branch = $HotfixReleaseMayBranch1 || $Branch = $HotfixReleaseMayBranch2)
       HotFixAuthor=`git log  -n 1 --name-only|grep "Author"|awk   '{print $2}'`
       echo "SaaS's $Branch($HotFixAuthor:$HotFixInfo) merge to Release is ok !" | heirloom-mailx -s "SaaS's $Branch($HotFixAuthor:$HotFixInfo) merge to Release is ok !"  $CeShiMail
 
-	if [[ $CurrentWeek = 3 ]]; then
+	if [[ $CurrentWeek = 3 && $ReleaseTime = $CurrentTime ]]; then
       GitMerge release pre/qycloud saas
       echo "SaaS's Release merge to pre/qycloud is ok !" | heirloom-mailx -s "SaaS's Release merge to pre/qycloud is ok"  $CeShiMail
 	fi
