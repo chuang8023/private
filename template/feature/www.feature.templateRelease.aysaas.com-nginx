@@ -1,0 +1,98 @@
+server {
+    
+    listen 55555;
+    
+    server_name www.feature.templateRelease.aysaas.com;
+
+    root /var/www/www.feature.templateRelease.aysaas.com/public;
+
+    error_log /var/log/nginx/www.feature.templateRelease.aysaas.com-error.log error;
+
+    access_log /var/log/nginx/www.feature.templateRelease.aysaas.com-access.log combined;
+
+    location /global/svgweb/ {
+        break;
+    }
+
+    location /global/jquery/extend/uploadify/ {
+        break;
+    }
+
+    location /global/pdf2swf/ {
+        break;
+    }
+
+    location /form/render/ueditor/ { 
+        break; 
+    }
+
+    location /favicon.ico {
+        break;
+        access_log off;
+        log_not_found off;
+    }
+
+    location / {
+        rewrite . /index.php;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param   ENV development;
+        include        fastcgi_params;
+    }
+}
+
+server {
+    
+    listen 55555;
+    
+    server_name static.feature.templateRelease.aysaas.com;
+
+    root /var/www/www.feature.templateRelease.aysaas.com/public;
+
+    location / {
+        access_log off;
+    }
+
+    location ~ \.php$ {
+        deny all;
+    }
+
+    location ~* \.(eot|ttf|woff)$ { 
+        add_header Access-Control-Allow-Origin *; 
+    }
+}
+
+
+server {
+    
+    listen 55555;
+    
+    server_name fileio.feature.templateRelease.aysaas.com;
+
+    root /var/www/www.feature.templateRelease.aysaas.com/public;
+
+    error_log /var/log/nginx/www.feature.templateRelease.aysaas.com-error.log error;
+
+    access_log /var/log/nginx/www.feature.templateRelease.aysaas.com-access.log combined;
+
+    client_max_body_size 64m;
+
+    location /crossdomain.xml {
+        break;
+    }
+
+    location / {
+        rewrite . /index.php;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param   ENV development;
+        include        fastcgi_params;
+    }
+}
+
