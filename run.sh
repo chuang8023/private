@@ -105,7 +105,6 @@ case $Param1 in
     UpdateVendor
     Migrate "all"
     Rbuild "$CommitID"
-    RestartResque
     ;;
 "showPullLog")
     Main

@@ -42,6 +42,7 @@ else
     cd $ProjPath
     ENV=$ProjType ./script/phpmig migrate  2>/tmp/rundeck_migrate_errinfo  
     if [[ $? == 0 ]]; then
+	RestartResque
         local MigStat=`CheckMigrate`
         if [[ $MigStat == "" ]]; then
             echo ""
