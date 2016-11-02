@@ -1,5 +1,3 @@
-	[ -e ./deploy/pheanstalk ] && QueueName="pheanstalk"
-	[ -e ./deploy/resque ] && QueueName="resque"
 function ChkStopResque () {
 local Queue=`ENV=$ProjType ./deploy/$QueueName status | grep "running"`
 

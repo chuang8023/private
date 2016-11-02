@@ -75,6 +75,8 @@ esac
 
 if [[ -d $ProjPath/config/$ProjType ]]; then
     cd $ProjPath
+    [ -e ./deploy/pheanstalk ] && QueueName="pheanstalk"
+    [ -e ./deploy/resque ] && QueueName="resque"
     BranchName=`git branch | grep "*" | awk '{print $2}'`
     cd - > /dev/null
     if [[ $BranchName == "" ]]; then

@@ -61,11 +61,11 @@ cd $ProjPath
 if [ -e vendor/version ];then
 	Lastet_Vendor=`cat script/vendor|sed -n 2p|awk -F "=" '{print $2}'`
 	Server_Vendor=`cat vendor/version`
-	[[ $Lastet_Vendor = $Server_Vendor ]] && return 1
+	[[ $Lastet_Vendor = $Server_Vendor ]] && echo "Not need to update vendor !" &&return 1
 fi
 
 IsSocket=`cat $ProjConfPath/app.php|grep socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true`
-[[ $IsSocket -eq 0 ]] && StopWebsocket 
+[[ $IsSocket == 0 ]] && StopWebsocket 
 echo ""
 echo "Updating vendor ..."
 ./script/vendor unpackaging
@@ -73,7 +73,8 @@ if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""
     echo "Update vendor is OK !"
-[[ $IsSocket -eq 0 ]] && StartWebsocket && RestartResque 
+[[ $IsSocket == 0 ]] && StartWebsocket
+RestartResque 
 else
     echo ""
     echo "Update vendor is fail !"
