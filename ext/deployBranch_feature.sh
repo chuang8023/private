@@ -17,7 +17,7 @@ DBPath=/root/scripts/rundeck/template/feature/template.sql
 
 #Database info
 SQLname="template.sql"
-DBIP="127.0.0.1"
+DBIP="localhost"
 DBUser="root"
 DBPasswd="saas"
 
