@@ -64,7 +64,7 @@ if [ -e vendor/version ];then
 	[[ $Lastet_Vendor = $Server_Vendor ]] && echo "Not need to update vendor !" &&return 1
 fi
 
-IsSocket=`cat $ProjConfPath/app.php|grep socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true`
+IsSocket=`cat $ProjConfPath/app.php|grep is_socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true`
 [[ $IsSocket == 0 ]] && StopWebsocket 
 echo ""
 echo "Updating vendor ..."
