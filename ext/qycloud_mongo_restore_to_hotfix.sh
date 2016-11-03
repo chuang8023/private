@@ -14,6 +14,7 @@ db.dropDatabase()
 exit
 EOF
 #备份恢复到hotfix
-   mongorestore --host $MongoHost:$MongoPort  --username $MongoAdminUser --password $MongoAdminPass --authenticationDatabase admin --db hotfix  --drop $BackUpDir/$CurrentDate/qycloud      
+   mongorestore --host $MongoHost:$MongoPort  --username $MongoAdminUser --password $MongoAdminPass --authenticationDatabase admin --db hotfix  --drop $BackUpDir/$CurrentDate/qycloud  > /dev/null 2>&1    
+      echo "$CurrentDate qycloud mongo restore to hotfix ok !"
       [ $? -eq 0 ] && echo "$CurrentDate qycloud mongo restore to hotfix ok !" >> /tmp/qyloud_mongo-restore-hotfix.log
  rm /tmp/mongobackuptohotfix.pid
