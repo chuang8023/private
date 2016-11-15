@@ -61,7 +61,7 @@ cd $ProjPath
 if [ -e vendor/version ];then
 	Lastet_Vendor=`cat script/vendor|sed -n 2p|awk -F "=" '{print $2}'`
 	Server_Vendor=`cat vendor/version`
-	[[ $Lastet_Vendor = $Server_Vendor ]] && echo "Not need to update vendor !" &&return 1
+	[[ $Lastet_Vendor = $Server_Vendor ]] && echo "" && echo "Not need to update vendor !" &&return 1
 fi
 
 IsSocket=`cat $ProjConfPath/app.php|grep is_socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true`
