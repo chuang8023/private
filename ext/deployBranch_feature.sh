@@ -23,7 +23,7 @@ DBPasswd="saas"
 
 #Mongo info
 MongoAdminUser="admin"
-MongoAdminPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
+MongoAdminPass="LBc8SQaA8zoJK1"
 MongoNomalUser="feature"
 MongoNomalPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
 
