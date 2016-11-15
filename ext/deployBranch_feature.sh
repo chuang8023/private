@@ -189,12 +189,15 @@ exit
 EOF
     echo ""
     echo "Create Mongo $DatabaseName is OK !"
-#    echo ""
-#    echo "Convert data to Mongo  $DatabaseName ..."
-#    cd /var/www/www.$Branch.$sBranchName.aysaas.com
-#    ./vendor/phing/phing/bin/phing convert_mongodb</dev/null >/dev/null
-#    echo ""
-#    echo "Convert data to Mongo $DatabaseName is OK !"
+    echo ""
+    echo "Convert data to Mongo  $DatabaseName ..."
+    cd /var/www/www.$Branch.$sBranchName.aysaas.com
+    ./vendor/phing/phing/bin/phing convert_mongodb << EOF 
+
+n
+EOF
+    echo ""
+    echo "Convert data to Mongo $DatabaseName is OK !"
 else 
     echo "Mongo $DatabaseName is Exists"
     exit 1
