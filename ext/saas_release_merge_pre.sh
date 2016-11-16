@@ -44,17 +44,15 @@ if [[ ($Branch = $HotfixReleaseMayBranch1 || $Branch = $HotfixReleaseMayBranch2)
     
       git branch|grep $Branch  > /dev/null 2>&1
       [ ! $? -eq 0 ] && git fetch origin $Branch:$Branch        
+	if [[ $CurrentWeek = 3 && $ReleaseTime = $CurrentTime ]]; then
       GitMerge $Branch release saas
       git checkout $Branch
       HotFixInfo=`git log  -n 1 --name-only|grep "Date" -A2|grep -v "Date"|sed '/^$/d'`
       HotFixAuthor=`git log  -n 1 --name-only|grep "Author"|awk   '{print $2}'`
       echo "SaaS's $Branch($HotFixAuthor:$HotFixInfo) merge to Release is ok !" | heirloom-mailx -s "SaaS's $Branch($HotFixAuthor:$HotFixInfo) merge to Release is ok !"  $CeShiMail
-
-	if [[ $CurrentWeek = 3 && $ReleaseTime = $CurrentTime ]]; then
       GitMerge release pre/qycloud saas
       echo "SaaS's Release merge to pre/qycloud is ok !" | heirloom-mailx -s "SaaS's Release merge to pre/qycloud is ok"  $CeShiMail
 	fi
-
 fi
 }
 

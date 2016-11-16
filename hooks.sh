@@ -95,7 +95,7 @@ rm -rf /tmp/_HookMail_${Branch//\//_}
 #saas's master hotfix 合并
 SaaSMergeHotFix
 #saas's release hotfix 合并
-#SaaSHotfixMergeRelease
+SaaSHotfixMergeRelease
 #android hotfix 合并
 AndroidMergeHotFix
 #ios hotfix 合并
