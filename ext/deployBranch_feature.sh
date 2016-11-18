@@ -1,6 +1,9 @@
 #!/bin/bash
 #rundeck path
-RundeckPath=/root/scripts/rundeck
+
+BasePath=/home/df/workspace
+
+RundeckPath=$BasePath/scripts/rundeck
 TemplatePath=$RundeckPath/template/feature
 Date=`date +%Y_%m_%d_%m`
 
@@ -11,19 +14,19 @@ RunUser=anyuan
 # 源码:$CodePath
 # Nginx:$NginxConfPath
 # 数据库:$DBPath
-CodePath=/root/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com
-NginxConfPath=/root/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com-nginx
-DBPath=/root/scripts/rundeck/template/feature/template.sql
+CodePath=$BasePath/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com
+NginxConfPath=$BasePath/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com-nginx
+DBPath=$BasePath/scripts/rundeck/template/feature/template.sql
 
 #Database info
 SQLname="template.sql"
 DBIP="127.0.0.1"
 DBUser="root"
-DBPasswd="saas"
+DBPasswd="123456"
 
 #Mongo info
-MongoAdminUser="admin"
-MongoAdminPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
+MongoAdminUser="root"
+MongoAdminPass="123456"
 MongoNomalUser="feature"
 MongoNomalPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
 
@@ -48,12 +51,14 @@ echo $str
 
 function CheckTemplate {
 if [[ ! -d $CodePath ]]; then
+
     echo ""
     echo "Template of Code is NOT exist !"
     exit 1
 fi
 if [[ ! -f $NginxConfPath ]]; then
     echo ""
+    echo $NginxConfPath
     echo "Template of Nginx is NOT exist !"
     exit 1
 fi
@@ -142,7 +147,7 @@ sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/config
 sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
 #sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 
-sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+sudo sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 #sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 echo ""
 echo "Modify config file is OK !"
