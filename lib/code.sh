@@ -57,13 +57,15 @@ fi
 }
 
 function UpdateVendor {
-echo $ProjName|grep "safety"
- if [ $? -eq 0 ]
-  then
-     return 0 
- fi
 cd $ProjPath
-StopWebsocket
+if [ -e vendor/version ];then
+	Lastet_Vendor=`cat script/vendor|sed -n 2p|awk -F "=" '{print $2}'`
+	Server_Vendor=`cat vendor/version`
+	[[ $Lastet_Vendor = $Server_Vendor ]] && echo "" && echo "Not need to update vendor !" &&return 1
+fi
+
+IsSocket=`cat $ProjConfPath/app.php|grep is_socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true`
+[[ $IsSocket == 0 ]] && StopWebsocket 
 echo ""
 echo "Updating vendor ..."
 ./script/vendor unpackaging
@@ -71,7 +73,8 @@ if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""
     echo "Update vendor is OK !"
-StartWebsocket
+[[ $IsSocket == 0 ]] && StartWebsocket
+RestartResque 
 else
     echo ""
     echo "Update vendor is fail !"

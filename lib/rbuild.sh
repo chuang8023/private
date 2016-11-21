@@ -3,7 +3,7 @@ echo ""
 echo "Running rbuild ..."
 sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 #sudo -u $runuser /usr/bin/env TERM=xterm rbuild -rf 1>/dev/null
-sudo -u root /usr/bin/env TERM=xterm /usr/bin/front -rf 1>/dev/null
+/usr/bin/env TERM=xterm /usr/bin/frontBuild -b 1>/dev/null
 if [[ $? == 0 ]]; then
     echo ""
     echo "Rbuild is OK !"

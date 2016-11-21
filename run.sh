@@ -10,7 +10,7 @@ cd `dirname $0`
 . lib/modifyDBurl.sh
 . lib/code.sh
 . lib/rbuild.sh
-. lib/resque.sh
+. lib/queue.sh
 . lib/pullLog.sh
 . lib/minAssets.sh
 . lib/cache.sh
@@ -75,6 +75,8 @@ esac
 
 if [[ -d $ProjPath/config/$ProjType ]]; then
     cd $ProjPath
+    [ -e ./deploy/pheanstalk ] && QueueName="pheanstalk"
+    [ -e ./deploy/resque ] && QueueName="resque"
     BranchName=`git branch | grep "*" | awk '{print $2}'`
     cd - > /dev/null
     if [[ $BranchName == "" ]]; then
@@ -105,7 +107,6 @@ case $Param1 in
     UpdateVendor
     Migrate "all"
     Rbuild "$CommitID"
-    RestartResque
     ;;
 "showPullLog")
     Main
@@ -273,4 +274,8 @@ case $Param1 in
   ("cleanredis")
   Main
   EmptyCache "all"
+  ;;
+  ("convert_mongo")
+  Main	
+  Convert_mongodb
 esac

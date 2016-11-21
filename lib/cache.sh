@@ -30,6 +30,10 @@ if [[ $_Ent != "" ]]; then
     echo ""
     echo "rebuilding $_Ent to redis"
     ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_to_redis 1>/dev/null << EOF
+2
+$_Ent
+EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_to_redis 1>/dev/null << EOF
 1
 $_Ent
 EOF
@@ -98,4 +102,11 @@ else
     exit 1
 fi
 }
+function Convert_mongodb () {
+cd $ProjRealPath
+ENV=$ProjType ./bin/phing convert_mongodb 2>/dev/null << EOF
 
+n
+n
+EOF
+}

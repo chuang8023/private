@@ -42,6 +42,7 @@ else
     cd $ProjPath
     ENV=$ProjType ./script/phpmig migrate  2>/tmp/rundeck_migrate_errinfo  
     if [[ $? == 0 ]]; then
+	RestartResque
         local MigStat=`CheckMigrate`
         if [[ $MigStat == "" ]]; then
             echo ""
@@ -98,7 +99,7 @@ local nowHour=`date -u +%H`
 if [[ $tempDBStatus == "Running" ]]; then
 #与 ext/manageTempDB.php 中第170行规定时间相符
     if [[ $nowHour > 12 && $nowHour < 22 ]]; then
-    local PID=`ps -ef | grep "script/phpmig migrate" | grep -v "grep --color=auto" | awk '{print $2}'`
+    local PID=`ps -ef | grep "script/phpmig migrate" | grep -v "grep" | awk '{print $2}'`
         if [[ ! -n $PID ]]; then
             echo `date +%y%m%d%H%M` >> $LogPath/automigrate.log
             echo "-----------------------------------------" >> $LogPath/automigrate.log
