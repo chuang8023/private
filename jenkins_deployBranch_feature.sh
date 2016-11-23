@@ -6,7 +6,7 @@ workspaceBasePath=`pwd`
 RundeckPath=$BasePath/scripts/rundeck
 
 #run user
-RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'`
+RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'|sed 's/ //'`
 
 Param1=$1
 Param2=$2
@@ -14,13 +14,30 @@ Param3=$3
 
 cd `dirname $0`
 . ext/deployBranch_feature.sh
+. run.sh
 
 
 
 NginxConfPath=./template/feature/www.feature.templateRelease.aysaas.com-nginx
 FeatureConfPath=./template/feature/development
 
+function ExistsCheck ()
+{
+	if [[ -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
+	echo ""
+	exit 0
+	fi
+}
 
+function UpdateCode ()
+{
+	if [[ -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
+      		Main
+   		UpdateVendor
+    		Migrate "all"
+	        Rbuild "$CommitID"
+	fi
+}
 function InPut () {
 _Param1=$1
 ReleaseName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
@@ -125,24 +142,26 @@ InPut
 
 case $Param1 in
 "jenkins_pullBranch")
-
+    UpdateCode
+    ExistsCheck    
     CopyTemplate
     #PullBranch
     VendorUnpackaging
     ;;
 "jenkins_modifyConf")
+    ExistsCheck
     ModifyConf
     ;;
 "jenkins_initDB")
+    ExistsCheck
     ManageDB
     ManageMongo
     ;;
 "jenkins_startService")
+    ExistsCheck
     ReService
     CreateCrontab
     EchoFeatureInfo
-    
-    OutPut deploy
     ;;
 "echo")
     InPut NoCheck
