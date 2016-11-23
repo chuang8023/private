@@ -141,6 +141,8 @@ case $Param1 in
     ReService
     CreateCrontab
     EchoFeatureInfo
+    
+    OutPut deploy
     ;;
 "echo")
     InPut NoCheck
