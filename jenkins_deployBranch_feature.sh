@@ -5,6 +5,9 @@ workspaceBasePath=`pwd`
 
 RundeckPath=$BasePath/scripts/rundeck
 
+#run user
+RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'`
+
 Param1=$1
 Param2=$2
 Param3=$3
@@ -15,6 +18,7 @@ cd `dirname $0`
 
 
 NginxConfPath=./template/feature/www.feature.templateRelease.aysaas.com-nginx
+FeatureConfPath=./template/feature/development
 
 
 function InPut () {
@@ -63,8 +67,8 @@ fi
 
 shell1="sudo ln -sf $workspaceBasePath /var/www/www.$Branch.$sBranchName.aysaas.com"
 `$shell1`
-
-#chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
+cp -a $FeatureConfPath /var/www/www.$Branch.$sBranchName.aysaas.com/config
+chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 sudo cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 sudo ln -sf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
 if [[ $? != 0 ]]; then
@@ -86,7 +90,9 @@ cd /var/www/www.$Branch.$sBranchName.aysaas.com
 
 ./script/vendor unpackaging
 
-mkdir log upload && sudo chmod -R 777 log upload
+[ ! -d log ] && mkdir log && chmod -R 777 log
+[ ! -d upload ] && mkdir upload && chmod -R 777 upload 
+
 sudo chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 
 cd - 1>/dev/null 2>&1
