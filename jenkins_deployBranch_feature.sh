@@ -144,7 +144,6 @@ case $Param1 in
 "jenkins_pullBranch")
     UpdateCode
     ExistsCheck    
-    echo "xx" 
     CopyTemplate
     #PullBranch
     VendorUnpackaging
