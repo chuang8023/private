@@ -1,14 +1,14 @@
 #!/bin/bash
 #rundeck path
 
-BasePath=/home/df/workspace
+BasePath=/home/anyuan/
 
 RundeckPath=$BasePath/scripts/rundeck
 TemplatePath=$RundeckPath/template/feature
 Date=`date +%Y_%m_%d_%m`
 
 #run user
-RunUser=anyuan
+RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'|sed 's/ //'`
 
 # 运行前请检查以下模板是否存在、位置是否正确:
 # 源码:$CodePath
@@ -22,7 +22,7 @@ DBPath=$BasePath/scripts/rundeck/template/feature/template.sql
 SQLname="template.sql"
 DBIP="localhost"
 DBUser="root"
-DBPasswd="123456"
+DBPasswd="saas"
 
 #Mongo info
 

@@ -5,18 +5,39 @@ workspaceBasePath=`pwd`
 
 RundeckPath=$BasePath/scripts/rundeck
 
+#run user
+RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'|sed 's/ //'`
+
 Param1=$1
 Param2=$2
 Param3=$3
 
 cd `dirname $0`
 . ext/deployBranch_feature.sh
+. run.sh
 
 
 
 NginxConfPath=./template/feature/www.feature.templateRelease.aysaas.com-nginx
+FeatureConfPath=./template/feature/development
 
+function ExistsCheck ()
+{
+	if [[ -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
+	echo ""
+	exit 0
+	fi
+}
 
+function UpdateCode ()
+{
+	if [[ -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
+      		Main
+   		UpdateVendor
+    		Migrate "all"
+	        Rbuild "$CommitID"
+	fi
+}
 function InPut () {
 _Param1=$1
 ReleaseName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
@@ -34,7 +55,7 @@ if [[ $_Param1 != "NoCheck" ]]; then
         echo ""
         echo "Test branch name $ReleaseName is OK !"
         git branch -D $ReleaseName 1>/dev/null 2>&1
-        cd - 1>/dev/null 2>&1
+	cd - 1>/dev/null 2>&1
     fi
 fi
 Branch=`echo $ReleaseName | awk -F"/" '{print $1}'`
@@ -63,8 +84,8 @@ fi
 
 shell1="sudo ln -sf $workspaceBasePath /var/www/www.$Branch.$sBranchName.aysaas.com"
 `$shell1`
-
-#chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
+cp -a $FeatureConfPath /var/www/www.$Branch.$sBranchName.aysaas.com/config
+chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 sudo cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 sudo ln -sf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
 if [[ $? != 0 ]]; then
@@ -86,7 +107,9 @@ cd /var/www/www.$Branch.$sBranchName.aysaas.com
 
 ./script/vendor unpackaging
 
-mkdir log upload && sudo chmod -R 777 log upload
+[ ! -d log ] && mkdir log && chmod -R 777 log
+[ ! -d upload ] && mkdir upload && chmod -R 777 upload 
+
 sudo chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 
 cd - 1>/dev/null 2>&1
@@ -119,19 +142,24 @@ InPut
 
 case $Param1 in
 "jenkins_pullBranch")
-
+    UpdateCode
+    ExistsCheck    
+    echo "xx" 
     CopyTemplate
     #PullBranch
     VendorUnpackaging
     ;;
 "jenkins_modifyConf")
+    ExistsCheck
     ModifyConf
     ;;
 "jenkins_initDB")
+    ExistsCheck
     ManageDB
     ManageMongo
     ;;
 "jenkins_startService")
+    ExistsCheck
     ReService
     CreateCrontab
     EchoFeatureInfo
