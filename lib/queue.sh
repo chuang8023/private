@@ -21,9 +21,9 @@ function RestartResque {
 echo ""
 echo "Restarting Queue ..."
 cd $ProjPath
-ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
-ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
-ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
+sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
+sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
+sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
 if [[ $? = 0 ]]; then
     local PIDNum=(`ps -ef | grep -v "grep" | grep "resque" | grep "$ProjRealPath" | awk '{print $2}'`)
     for (( i=0;i<${#PIDNum[*]};i++ ))

@@ -172,6 +172,8 @@ if [[ $DBIsExists == "" ]]; then
     mysql -h"$DBIP" -u"$DBUser" -p"$DBPasswd" $DatabaseName < $DBPath
     echo ""
     echo "Import database $DatabaseName is OK !"
+ else
+    echo "$DatabaseName is exists !"  
 fi
 }
 
@@ -206,7 +208,6 @@ EOF
     echo "Convert data to Mongo $DatabaseName is OK !"
 else 
     echo "Mongo $DatabaseName is Exists"
-    exit 1
  fi
 }
 

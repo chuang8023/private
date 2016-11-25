@@ -23,21 +23,30 @@ FeatureConfPath=./template/feature/development
 
 function ExistsCheck ()
 {
-	if [[ -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
+     cat /var/log/FeatureDeplayDone.log |grep "$sBranchName" >/dev/null 2>&1
+	if [[ $? -eq 0 ]]; then
 	echo ""
 	exit 0
 	fi
 }
 
 function UpdateCode ()
-{
-	if [[ -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
-      		Main
+{   
+     [ ! -e /var/log/FeatureDeplayDone.log ] && touch /var/log/FeatureDeplayDone.log
+     cat /var/log/FeatureDeplayDone.log |grep "$sBranchName" >/dev/null 2>&1
+	if [[ $? -eq 0 ]]; then
+		Main
    		UpdateVendor
     		Migrate "all"
 	        Rbuild "$CommitID"
 	fi
 }
+
+function ChangeCodeOwner ()
+{
+chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com/
+}
+
 function InPut () {
 _Param1=$1
 ReleaseName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
@@ -85,9 +94,17 @@ fi
 shell1="sudo ln -sf $workspaceBasePath /var/www/www.$Branch.$sBranchName.aysaas.com"
 `$shell1`
 cp -a $FeatureConfPath /var/www/www.$Branch.$sBranchName.aysaas.com/config
-chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
+
+[ ! -d log ] && mkdir log && chmod -R 777 log
+
+[ ! -d upload ] && mkdir upload && chmod -R 777 upload 
+
+chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com/
+
 sudo cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+
 sudo ln -sf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
+
 if [[ $? != 0 ]]; then
     echo ""
     echo "Copy template to www.$Branch.$sBranchName.aysaas.com is Fail !"
@@ -107,10 +124,6 @@ cd /var/www/www.$Branch.$sBranchName.aysaas.com
 
 ./script/vendor unpackaging
 
-[ ! -d log ] && mkdir log && chmod -R 777 log
-[ ! -d upload ] && mkdir upload && chmod -R 777 upload 
-
-sudo chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 
 cd - 1>/dev/null 2>&1
 echo ""
@@ -136,17 +149,21 @@ echo ""
 echo "Create crontab is OK !"
 }
 
+function MarkDeplayDone {
+echo "$Branch.$sBranchName" > /var/log/FeatureDeplayDone.log
+}
 ##############################################
 
 InPut
-
 case $Param1 in
 "jenkins_pullBranch")
     UpdateCode
     ExistsCheck    
+    EchoFeatureInfo
     CopyTemplate
+    Main
+    UpdateVendor
     #PullBranch
-    VendorUnpackaging
     ;;
 "jenkins_modifyConf")
     ExistsCheck
@@ -159,9 +176,12 @@ case $Param1 in
     ;;
 "jenkins_startService")
     ExistsCheck
-    ReService
+    Main
+    Migrate "all"
+    Rbuild "-f"
     CreateCrontab
-    EchoFeatureInfo
+    ReService
+    MarkDeplayDone
     ;;
 "echo")
     InPut NoCheck
