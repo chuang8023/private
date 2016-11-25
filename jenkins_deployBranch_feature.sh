@@ -182,8 +182,6 @@ case $Param1 in
     CreateCrontab
     ReService
     MarkDeplayDone
-    ;;
-"echo")
     InPut NoCheck
     OutPut deploy
     ;;
