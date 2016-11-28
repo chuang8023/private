@@ -1,9 +1,11 @@
+#!/bin/bash
+function AutoTest () {
 
-env=$1
+env=$Param3
 
-testPath=$2
+testPath=$Param4
 
-#拉取 tests  代码
+#拉取 tests代码
 
 cd /var/www/www.$Branch.$sBranchName.aysaas.com
 
@@ -29,6 +31,10 @@ outStatusPath=/var/www/www.codeautotesting.com/testingresult/$Branch_$sBranchNam
 
 cleanPath=/var/www/www.codeautotesting.com/testingresult/$Branch_$sBranchName*.html
 
+hostIP=`ip add show|grep -w 'global eth0'|awk '{print $2}'|awk -F "/" '{print $1}'`
+
+reportUrl="http://$hostIP/testingresult/$Branch_$sBranchName_test_$testPath_report_$ResultStatus.html"
+
 #  group = step1
 
 rm -rf $cleanPath
@@ -39,5 +45,5 @@ rm -rf $cleanPath
 
 mv $outPath $outStatusPath
 
-
-
+echo $reportUrl
+}

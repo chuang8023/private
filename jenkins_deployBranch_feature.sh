@@ -11,6 +11,7 @@ RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'
 Param1=$1
 Param2=$2
 Param3=$3
+Param3=$4
 
 cd `dirname $0`
 . ext/deployBranch_feature.sh
@@ -185,6 +186,9 @@ case $Param1 in
     MarkDeplayDone
     InPut NoCheck
     OutPut deploy
+"jenkins_autoTest")
+    Main
+    AutoTest
     ;;
 "delete")
     InPut "NoCheck"
