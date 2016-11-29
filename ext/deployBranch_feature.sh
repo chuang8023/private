@@ -35,6 +35,8 @@ MongoNomalPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
 TBranch="feature"
 TBranchName="templateRelease"
 TWebPort="55555"
+TMysqlPort="3306"
+TMongoPort="27017"
 
 #######################################
 
@@ -90,6 +92,8 @@ Branch=`ConversionA2a "$Branch"`
 sBranchName=`ConversionA2a "$sBranchName"`
 
 DatabaseName=${Branch}_${sBranchName}
+DockerMysqlName=Mysql_$DatabaseName
+DockerMongoName=Mongo_$DatabaseName
 unset _Param1
 }
 
@@ -139,7 +143,9 @@ echo ""
 echo "Modify config file ..."
 sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
-sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+#sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+sed -i "s/$TMysqlPort/$DockerMysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
 #sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 
 sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
@@ -168,6 +174,8 @@ if [[ $DBIsExists == "" ]]; then
     echo "Import database $DatabaseName is OK !"
 fi
 }
+
+
 
 function ManageMongo {
 MongoIsExists=`mongo admin -u$MongoAdminUser -p$MongoAdminPass --eval "db.adminCommand('listDatabases')" |grep $DatabaseName`
@@ -202,6 +210,16 @@ else
     echo "Mongo $DatabaseName is Exists"
     exit 1
  fi
+}
+
+function DockerMysql {
+docker run -p 3306 --name $DockerMysqlName -d mysql:dev.5.6.31
+DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
+}
+
+function DockerMongo {
+docker run -p 27017 --name $DockerMongoName -d mongo:dev.3.2.8
+DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}' $DockerMongoName`
 }
 
 function ReService {
@@ -264,6 +282,19 @@ db.dropDatabase()
 exit
 EOF
 }
+
+function DelDockerMysql {
+docker rm -f $DockerMysqlName
+echo ""
+echo "Delete DockerMysql is ok !"
+}
+
+function DelDockerMongo {
+docker rm -f $DockerMongoName
+echo ""
+echo "Delete DockerMongo is ok !"
+}
+
 function DelInfo {
 echo ""
 echo "Delete project info"
@@ -303,6 +334,7 @@ echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 echo "The URL is http://www.$Branch.$sBranchName.aysaas.com:$TWebPort"
 echo ""
+echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ;;
 "del")
@@ -335,9 +367,11 @@ case $Param1 in
     InPut
     CopyTemplate
     PullBranch
+    DockerMysql
+    DockerMongo
     ModifyConf
-    ManageDB
-    ManageMongo
+    #ManageDB
+    #ManageMongo
     ReService
     CreateCrontab
     EchoFeatureInfo
@@ -350,8 +384,10 @@ case $Param1 in
     InPut "NoCheck"
     DelCode
     DelNginxConf
-    DelDB
-    DelMongo
+    #DelDB
+    #DelMongo
+    DelDockerMysql
+    DelDockerMongo
     DelInfo
     DelRedis
     DelCrontab
