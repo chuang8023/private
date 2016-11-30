@@ -11,7 +11,7 @@ RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'
 Param1=$1
 Param2=$2
 Param3=$3
-Param3=$4
+Param4=$4
 
 cd `dirname $0`
 . ext/deployBranch_feature.sh
@@ -173,8 +173,8 @@ case $Param1 in
     ;;
 "jenkins_initDB")
     ExistsCheck
-    ManageDB
-    ManageMongo
+    DockerMysql
+    DockerMongo
     ;;
 "jenkins_startService")
     ExistsCheck
@@ -184,18 +184,20 @@ case $Param1 in
     CreateCrontab
     ReService
     MarkDeplayDone
-    InPut NoCheck
-    OutPut deploy
+    ;;
 "jenkins_autoTest")
     Main
     AutoTest
+"echo")
+    InPut NoCheck
+    OutPut deploy
     ;;
 "delete")
     InPut "NoCheck"
     DelCode
     DelNginxConf
-    DelDB
-    DelMongo
+    DelDockerMysql
+    DelDockerMongo
     DelInfo
     DelRedis
     DelCrontab
