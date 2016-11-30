@@ -188,6 +188,7 @@ case $Param1 in
 "jenkins_autoTest")
     Main
     AutoTest
+    ;;
 "echo")
     InPut NoCheck
     OutPut deploy
