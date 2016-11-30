@@ -20,6 +20,9 @@ SQLname="template.sql"
 DBIP="localhost"
 DBUser="root"
 DBPasswd="saas"
+MysqlDockerImage="mysql:dev.5.6.31"
+MongoDockerImage="mongo:dev.3.2.8"
+
 
 #Mongo info
 MongoAdminUser="admin"
@@ -214,13 +217,23 @@ else
 }
 
 function DockerMysql {
-docker run -p 3306 --name $DockerMysqlName -d mysql:dev.5.6.31
-DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
+	docker images $MysqlDockerImage|grep 'mysql' > /dev/null
+	if [ ! $? -eq 0 ];then
+		docker pull docker.aysaas.com/development/$MysqlDockerImage
+		docker tag  docker.aysaas.com/development/$MysqlDockerImage $MysqlDockerImage
+	fi
+	docker run -p 3306 --name $DockerMysqlName -d mysql:dev.5.6.31
+	DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
 }
 
 function DockerMongo {
-docker run -p 27017 --name $DockerMongoName -d mongo:dev.3.2.8
-DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}' $DockerMongoName`
+	docker images $MongoDockerImage|grep 'mysql' > /dev/null
+	if [ ! $? -eq 0 ];then
+		docker pull docker.aysaas.com/development/$MongoDockerImage
+		docker tag docker.aysaas.com/development/$MongoDockerImage $MongoDockerImage
+	fi
+	docker run -p 27017 --name $DockerMongoName -d mongo:dev.3.2.8
+	DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}' $DockerMongoName`
 }
 
 function ReService {
