@@ -6,17 +6,17 @@ return array(
             'name'     => 'localhost',
             'host'     => '127.0.0.1',
             'port'     => 3306,
-            'dbname'   => 'templateRelease',
-            'user'     => 'saas_kawawa',
-            'password' => 'hVxsR7VFYRKZsbNJ'
+            'dbname'   => 'master',
+            'user'     => 'master',
+            'password' => 'pZdxysqJX4bK4VrB'
         ),
 	 'mongodb' => array(
             'name'     => 'localhost',
             'host'     => 'localhost',
             'port'     => 27017,
-            'dbname'   => 'templateRelease',
-            'user'     => 'feature',
-            'password' => 'LBc8SQaA8zoJK1IWMUHDiSwN4'
+            'dbname'   => 'master',
+            'user'     => 'master',
+            'password' => 'L9jD7srDBdS7Nfob'
         ),
     ),
     'charset' => 'utf8',
