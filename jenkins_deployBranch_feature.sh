@@ -76,6 +76,8 @@ Branch=`ConversionA2a "$Branch"`
 sBranchName=`ConversionA2a "$sBranchName"`
 
 DatabaseName=${Branch}_${sBranchName}
+DockerMysqlName=Mysql_$DatabaseName
+DockerMongoName=Mongo_$DatabaseName
 unset _Param1
 }
 
