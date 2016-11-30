@@ -24,7 +24,7 @@ FeatureConfPath=./template/feature/development
 
 function ExistsCheck ()
 {
-     cat /var/log/FeatureDeplayDone.log |grep "$sBranchName" >/dev/null 2>&1
+     cat /var/log/DeplayDone.log |grep "$sBranchName" >/dev/null 2>&1
 	if [[ $? -eq 0 ]]; then
 	echo ""
 	exit 0
@@ -33,8 +33,8 @@ function ExistsCheck ()
 
 function UpdateCode ()
 {   
-     [ ! -e /var/log/FeatureDeplayDone.log ] && touch /var/log/FeatureDeplayDone.log
-     cat /var/log/FeatureDeplayDone.log |grep "$sBranchName" >/dev/null 2>&1
+     [ ! -e /var/log/DeplayDone.log ] && touch /var/log/DeplayDone.log
+     cat /var/log/DeplayDone.log |grep "$sBranchName" >/dev/null 2>&1
 	if [[ $? -eq 0 ]]; then
 		Main
    		UpdateVendor
@@ -152,7 +152,7 @@ echo "Create crontab is OK !"
 }
 
 function MarkDeplayDone {
-echo "$Branch.$sBranchName" > /var/log/FeatureDeplayDone.log
+echo "$Branch.$sBranchName" > /var/log/DeplayDone.log
 }
 ##############################################
 
