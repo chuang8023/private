@@ -230,7 +230,7 @@ function DockerMysql {
 }
 
 function DockerMongo {
-	docker images $MongoDockerImage|grep 'mysql' > /dev/null
+	docker images $MongoDockerImage|grep 'mongo' > /dev/null
 	if [ ! $? -eq 0 ];then
 		docker pull docker.aysaas.com/development/$MongoDockerImage
 		docker tag docker.aysaas.com/development/$MongoDockerImage $MongoDockerImage
