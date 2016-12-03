@@ -9,15 +9,17 @@ testPath=$Param4
 
 cd /var/www/www.$Branch.$sBranchName.aysaas.com
 
+./script/tests init
+
 ./script/tests unpackaging
 
 #
 
 #执行接口测试
 #log 地址 写入到 80端口可访问的地址，列表展现所有报表列表
-feature:
-http://192.168.0.223/testingresult/
-http://192.168.0.223/swagger/
+#feature:
+#http://192.168.0.223/testingresult/
+#http://192.168.0.223/swagger/
 # 
 [[ $env == "" ]] && env=intergration
 

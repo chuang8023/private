@@ -16,6 +16,7 @@ Param4=$4
 cd `dirname $0`
 . ext/deployBranch_feature.sh
 . run.sh
+. ext/codeception_test.sh
 
 
 
@@ -183,6 +184,7 @@ case $Param1 in
     Main
     Migrate "all"
     Rbuild "-f"
+    RestartResque
     CreateCrontab
     ReService
     MarkDeplayDone
@@ -191,7 +193,7 @@ case $Param1 in
     Main
     AutoTest
     ;;
-"echo")
+"jenkins_echoDeployInfo")
     InPut NoCheck
     OutPut deploy
     ;;
