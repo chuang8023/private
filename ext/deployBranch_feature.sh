@@ -145,6 +145,8 @@ echo "Pull branch $ReleaseName is OK !"
 function ModifyConf {
 echo ""
 echo "Modify config file ..."
+DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
+DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}' $DockerMongoName`
 sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 #sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
@@ -225,8 +227,12 @@ function DockerMysql {
 		docker pull docker.aysaas.com/development/$MysqlDockerImage
 		docker tag  docker.aysaas.com/development/$MysqlDockerImage $MysqlDockerImage
 	fi
+	docker ps -a|grep $DockerMysqlName > /dev/null 2>&1
+	if [ ! $? -eq 0 ];then
 	docker run -p 3306 --name $DockerMysqlName -d $MysqlDockerImage
-	DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
+	sleep 2
+	echo "$DockerMysqlName has been created!"
+	fi
 }
 
 function DockerMongo {
@@ -235,8 +241,12 @@ function DockerMongo {
 		docker pull docker.aysaas.com/development/$MongoDockerImage
 		docker tag docker.aysaas.com/development/$MongoDockerImage $MongoDockerImage
 	fi
+	docker ps -a|grep $DockerMongoName > /dev/null 2>&1
+	if [ ! $? -eq 0 ];then
 	docker run -p 27017 --name $DockerMongoName -d $MongoDockerImage
-	DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}' $DockerMongoName`
+	sleep 2
+	echo "$DockerMongoName has been created!"
+	fi
 }
 
 function ReService {
@@ -320,6 +330,7 @@ if [[ -n $IsExit ]]; then
     RowNum=`cat $RundeckPath/config/projinfo | grep -n "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun" | awk -F":" '{print $1}' | head -n 1`
     sed -i "${RowNum}d" $RundeckPath/config/projinfo
 fi
+    sed -i '/'$Branch'\.'$sBranchName'\b/d' /var/log/DeplayDone.log
 echo ""
 echo "Delete project info is OK !"
 }
