@@ -31,6 +31,8 @@ reportUrl="http://$hostIP/testingresult/$Branch_$sBranchName_test_$testPath_repo
 
 rm -rf $cleanPath
 
+cd /var/www/www.$Branch.$sBranchName.aysaas.com
+
 ./bin/codecept.phar run $testPath --env $env --html=$outPath
 
 [ ! $? -eq 0 ] && ResultStatus=NO  
