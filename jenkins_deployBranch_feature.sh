@@ -190,7 +190,6 @@ case $Param1 in
     MarkDeplayDone
     ;;
 "jenkins_autoTest")
-    Main
     AutoTest
     ;;
 "jenkins_echoDeployInfo")
