@@ -5,18 +5,6 @@ env=$Param3
 
 testPath=$Param4
 
-#拉取 tests代码
-
-cd /var/www/www.$Branch.$sBranchName.aysaas.com
-
-./script/tests init
-
-./script/tests unpackaging
-
-chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com/
-
-#
-
 #执行接口测试
 #log 地址 写入到 80端口可访问的地址，列表展现所有报表列表
 #feature:

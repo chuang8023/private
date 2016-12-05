@@ -39,14 +39,10 @@ function UpdateCode ()
 	if [[ $? -eq 0 ]]; then
 		Main
    		UpdateVendor
+		TestsUnpackaging
     		Migrate "all"
 	        Rbuild "$CommitID"
 	fi
-}
-
-function ChangeCodeOwner ()
-{
-chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com/
 }
 
 function InPut () {
@@ -104,7 +100,7 @@ cp -a $FeatureConfPath /var/www/www.$Branch.$sBranchName.aysaas.com/config
 
 [ ! -d upload ] && mkdir upload && chmod -R 777 upload 
 
-chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com/
+ChangePullOwn
 
 sudo cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 
@@ -121,18 +117,21 @@ fi
 }
 
 
-function VendorUnpackaging {
+function TestsUnpackaging {
 echo ""
-echo "Unpackaging vendor to www.$Branch.$sBranchName.aysaas.com ..."
+echo "Unpackaging tests to www.$Branch.$sBranchName.aysaas.com ..."
 
 cd /var/www/www.$Branch.$sBranchName.aysaas.com
 
-./script/vendor unpackaging
+./script/tests init
+./script/tests unpackaging
 
-
+ChangePullOwn
+cp tests/_envs/feature.tmp tests/_envs/feature.yml
+sed -i 's/{{host}}/http:\/\/www.'$Branch'.'$sBranchName'.aysaas.com:'$TWebPort'/' tests/_envs/feature.yml
 cd - 1>/dev/null 2>&1
 echo ""
-echo "Unpackaging vendor $ReleaseName is OK !"
+echo "Unpackaging tests $ReleaseName is OK !"
 
 }
 
@@ -168,6 +167,7 @@ case $Param1 in
     CopyTemplate
     Main
     UpdateVendor
+    TestsUnpackaging
     #PullBranch
     ;;
 "jenkins_modifyConf")
