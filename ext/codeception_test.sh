@@ -13,6 +13,8 @@ cd /var/www/www.$Branch.$sBranchName.aysaas.com
 
 ./script/tests unpackaging
 
+chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com/
+
 #
 
 #执行接口测试
