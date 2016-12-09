@@ -40,7 +40,7 @@ echo "./bin/codecept.phar run $testPath --env $env --html=$outPath"
 
 CurrentTime=`date +%Y_%m_%d_%H_%M`
 
-outStatusPath=/var/www/www.codeautotesting.com/testingresult/${Branch}_${sBranchName}_test_${testPath}_report_${ResultStatus}_${CurrentTime}.html
+outStatusPath=/var/www/www.codeautotesting.com/testingresult/${Branch}_${sBranchName}_test_${testPath}_report_${CurrentTime}_${ResultStatus}.html
 
 reportUrl="http://${hostIP}/testingresult/${Branch}_${sBranchName}_test_${testPath}_report_${CurrentTime}_${ResultStatus}.html"
 
