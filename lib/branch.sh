@@ -15,6 +15,7 @@ echo ""
 if [[ $_Option == "all" ]]; then
     echo "Drop all changes that are not saved ..."
     git checkout .
+    git  clean -f
     if [[ $? == 0 ]]; then
         echo ""
         echo "OK !"
@@ -26,6 +27,7 @@ if [[ $_Option == "all" ]]; then
     fi
 else
     git checkout .
+    git  clean -f
     echo "Checkout to $_Option ..."
     git fetch origin $_Option:$_Option 1>/dev/null 2>/tmp/rundeck_branch_errinfo &&
     git checkout $_Option
