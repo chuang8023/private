@@ -64,24 +64,24 @@ if [ -e vendor/version ];then
 	if [[ $Lastet_Vendor = $Server_Vendor ]] ;then
 
 		 echo "" && echo "Not need to update vendor !" 
-        else
-		IsSocket=`cat $ProjConfPath/app.php|grep is_socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true`
-		[[ $IsSocket == 0 ]] && StopWebsocket 
-		echo ""
-		   echo "Updating vendor ..."
-		   ./script/vendor unpackaging
-	     if [[ $? == 0 ]]; then
+	fi
+else
+	IsSocket=`cat $ProjConfPath/app.php|grep is_socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true`
+	[[ $IsSocket == 0 ]] && StopWebsocket 
+	echo ""
+	echo "Updating vendor ..."
+	./script/vendor unpackaging
+	 if [[ $? == 0 ]]; then
     		ChangePullOwn
     		echo ""
     		echo "Update vendor is OK !"
 		[[ $IsSocket == 0 ]] && StartWebsocket
 		RestartResque 
-	     else
+	 else
     		echo ""
     		echo "Update vendor is fail !"
     		exit 1
-		fi
-		cd - 1>/dev/null 2>&1
-	fi
+         fi
 fi
+cd - 1>/dev/null 2>&1
 }
