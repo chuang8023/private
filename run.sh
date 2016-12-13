@@ -21,6 +21,7 @@ cd `dirname $0`
 . lib/websocket.sh
 . lib/log.sh
 . lib/debug.sh
+. lib/professional.sh
 
 function RealPath () {
 local _Path=$1
@@ -278,4 +279,7 @@ case $Param1 in
   ("convert_mongo")
   Main	
   Convert_mongodb
+  ("professnalresque")
+  Main
+  ProfessnalResque
 esac
