@@ -13,9 +13,10 @@ function CatResqueLog () {
       if [ -e $ResqueLogPath/${ResqueType}.log ]
 	 then
          tail -f $ResqueLogPath/${ResqueType}.log
-      elif [ -e $ResqueLogPath/${ResqueType}/${Date}.log ]
+      elif [ -e $ResqueLogPath/${ResqueType} ]
 	then
-         tail -f $ResqueLogPath/${ResqueType}/${Date}.log
+         LogName=`ls  -l  $ResqueLogPath/${ResqueType}|tail -1|awk '{print $9}'`
+         tail -f $ResqueLogPath/${ResqueType}/${LogName}.log
       else
          echo "该类型队列日志文件不存在！"
       fi
