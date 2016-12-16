@@ -40,7 +40,7 @@ ProjName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
 
 if [[ $ProjName == "" ]]; then
     echo ""
-    echo "The project name cannot be empty !"
+#    echo "The project name cannot be empty !"
     exit 1
 fi
 
