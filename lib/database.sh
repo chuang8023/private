@@ -19,6 +19,7 @@ do
         ;;
     "password")
         local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+	break;
         ;;
     esac
 done < $ProjConfPath/database.php
@@ -65,7 +66,8 @@ do
         ;;
     "password")
         local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-        ;;
+        break;
+	;;
     esac
 done < $ProjConfPath/database.php
 

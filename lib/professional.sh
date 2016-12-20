@@ -1,6 +1,6 @@
 #!/bin/bash
 function ProfessnalResque {
-ProfessnalResque=$$Param3
+ProfessnalResque=$Param3
 Main
 cd $ProjPath
 case $ProfessnalResque

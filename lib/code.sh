@@ -67,7 +67,7 @@ function UpdateVendor {
                 ChangePullOwn
                 echo ""
                 echo "Update vendor is OK !"
-                [[ $IsSocket == 0 ]] && StartWebsocket
+                [[ $IsSocket == true ]] && StartWebsocket
                 RestartResque
          else
                 echo ""

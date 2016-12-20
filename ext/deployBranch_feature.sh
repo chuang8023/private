@@ -229,7 +229,7 @@ function DockerMysql {
 	fi
 	docker ps -a|grep -w $DockerMysqlName > /dev/null 2>&1
 	if [ ! $? -eq 0 ];then
-	docker run -p 3306 --name $DockerMysqlName -m 300m -d $MysqlDockerImage
+	docker run -p 3306 --name $DockerMysqlName -m 325m -d $MysqlDockerImage
 	sleep 2
 	echo "$DockerMysqlName has been created!"
 	fi

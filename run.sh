@@ -21,6 +21,7 @@ cd `dirname $0`
 . lib/websocket.sh
 . lib/log.sh
 . lib/debug.sh
+. lib/ShowProj.sh
 . lib/professional.sh
 
 function RealPath () {
@@ -39,7 +40,7 @@ ProjName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
 
 if [[ $ProjName == "" ]]; then
     echo ""
-    echo "The project name cannot be empty !"
+#    echo "The project name cannot be empty !"
     exit 1
 fi
 
@@ -61,9 +62,13 @@ fi
 
 if [[ $ProjPath == "" ]]; then
     echo ""
-    echo "Cannot find project named $ProjName !"
-    exit 1
+ #   echo "Cannot find project named $ProjName !"
+    exit 0
 fi
+
+AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+echo -e "\033[31m 项目访问地址 : \033[0m"
+echo -e "\033[31m" $AccessAddr "\033[0m"
 
 case $ProjType in
 "production") ;;
@@ -279,7 +284,12 @@ case $Param1 in
   ("convert_mongo")
   Main	
   Convert_mongodb
-  ("professnalresque")
+  ;;
+ "professnalresque")
   Main
   ProfessnalResque
+  ;;
+ "showproj")
+  ConfigPath="$(cd `dirname $0`;pwd)/config"
+  ShowProj "$ConfigPath"
 esac
