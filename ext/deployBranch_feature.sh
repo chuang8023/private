@@ -89,7 +89,9 @@ if [[ $_Param1 != "NoCheck" ]]; then
     fi
 fi
 Branch=`echo $ReleaseName | awk -F"/" '{print $1}'`
-[[ $Branch == "" ]] && Branch=test
+IsNormalBranch=`echo $ReleaseName |grep "/"`
+
+[[ $IsNormalBranch == "" ]] && Branch=test
 sBranchName=`echo $ReleaseName | awk -F"/" '{print $2}'`
 
 Branch=`ConversionA2a "$Branch"`
