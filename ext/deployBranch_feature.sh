@@ -93,6 +93,7 @@ IsNormalBranch=`echo $ReleaseName |grep "/"`
 
 [[ $IsNormalBranch == "" ]] && Branch=test
 sBranchName=`echo $ReleaseName | awk -F"/" '{print $2}'`
+[[ $sBranchName == "" ]] && sBranchName=$Branch
 
 Branch=`ConversionA2a "$Branch"`
 sBranchName=`ConversionA2a "$sBranchName"`
