@@ -26,7 +26,7 @@ do
 done < $ProjConfPath/database.php
 
 if [ "$Param1" == "toftp" ];then
-      ping 192.168.0.201|grep '0% packet loss' > /dev/null 2>&1
+      ping -c 1 192.168.0.201 |grep '0% packet loss' > /dev/null 2>&1
 
      if [ $? -eq 0 ];then
                 cat /etc/hosts|grep www.download.aysaas.com > /dev/null 2>&1
@@ -40,8 +40,8 @@ if [ "$Param1" == "toftp" ];then
    cd /tmp 
    tar -zcpf ${_DBName}_$TimeStamp.sql.tar.gz ${_DBName}_$TimeStamp.sql
    rm ${_DBName}_$TimeStamp.sql
-   ftp -v -n $FTP_HOST $FTP_PORT << END
-user $FTP_USER $FTP_PASS
+   ftp -v -n $BACKUP_FTP_HOST $BACKUP_FTP_PORT << EOF
+user $BACKUP_FTP_USER $BACKUP_FTP_PASS
 type binary
 cd mysql
 rmdir $SiteType
@@ -49,7 +49,8 @@ mkdir $SiteType
 cd  $SiteType
 put ${_DBName}_$TimeStamp.sql.tar.gz
 bye
-END
+EOF
+  rm ${_DBName}_$TimeStamp.sql.tar.gz
   cd -
   echo "${_DBName} has been backup to ftp server" 
   echo "Download  url is  http://www.download.aysaas.com:3300/databases/mysql/$SiteType/${_DBName}_$TimeStamp.sql.tar.gz"
