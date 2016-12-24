@@ -19,3 +19,8 @@ INFOType="File"
 #BackupDir="$(cd `dirname $0`;pwd)/backup"
 BackupDir="$(cd `dirname $0`;pwd)/backup"
 
+#Backup target ftpinfo
+BACKUP_FTP_USER=dataftp          #ftp用户名
+BACKUP_FTP_PASS=n4zZHTESFkt1Jly9           #ftp密码
+BACKUP_FTP_PORT=2121
+BACKup_FTP_HOST=www.download.aysaas.com             #ftp地址

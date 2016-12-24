@@ -292,4 +292,7 @@ case $Param1 in
  "showproj")
   ConfigPath="$(cd `dirname $0`;pwd)/config"
   ShowProj "$ConfigPath"
+  ;;
+ "DebugBackUpMysql")
+  BackupDB -f
 esac
