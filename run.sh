@@ -294,5 +294,5 @@ case $Param1 in
   ShowProj "$ConfigPath"
   ;;
  "DebugBackUpMysql")
-  BackupDB -f
+  RunBackup toftp
 esac
