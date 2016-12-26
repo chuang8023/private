@@ -43,10 +43,9 @@ if [ "$Param1" == "toftp" ];then
    ftp -v -n $BACKUP_FTP_HOST $BACKUP_FTP_PORT << EOF
 user $BACKUP_FTP_USER $BACKUP_FTP_PASS
 type binary
-cd mysql
-rmdir $SiteType
-mkdir $SiteType
-cd  $SiteType
+cd mysql/$SiteType
+prompt
+mdelete *
 put ${_DBName}_$TimeStamp.sql.tar.gz
 bye
 EOF
