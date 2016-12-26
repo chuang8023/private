@@ -40,7 +40,7 @@ if [ "$Param1" == "toftp" ];then
    cd /tmp 
    tar -zcpf ${_DBName}_$TimeStamp.sql.tar.gz ${_DBName}_$TimeStamp.sql
    rm ${_DBName}_$TimeStamp.sql
-   ftp -v -n $BACKUP_FTP_HOST $BACKUP_FTP_PORT << EOF
+   ftp -v -n $BACKUP_FTP_HOST $BACKUP_FTP_PORT 1>/dev/null << EOF
 user $BACKUP_FTP_USER $BACKUP_FTP_PASS
 type binary
 cd mysql/$SiteType
