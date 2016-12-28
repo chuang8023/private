@@ -142,6 +142,7 @@ case $Param1 in
 "migrate")
     _ID=$Param3
     Main
+    BackupDB "-f"
     Migrate "$_ID"
     ;;
 "closeMinAssets")
