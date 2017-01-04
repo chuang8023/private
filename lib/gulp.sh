@@ -9,10 +9,12 @@ sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 
 		[ $? -eq 0 ] && echo "请升级服务器node版本" && exit 1 
 
-	        [ ! -e public/node_modules ] && npm --registry=https://registry.npm.taobao.org  i
+	       cd  public 
+           
+               npm --registry=https://registry.npm.taobao.org  i
 
-	       gulp ge --cwd=public -b 1 >/dev/null
-
+	       gulp ge  -b 1 >/dev/null
+		
 	  else
 
 	    /usr/bin/env TERM=xterm /usr/bin/frontBuild -b 1>/dev/null
