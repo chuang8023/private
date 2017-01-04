@@ -7,11 +7,15 @@ sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 
 		 node -v|grep v0 > /dev/null 2>&1
 
-		[ $? -eq 0 ] && echo "请升级服务器node版本" && exit 1 
+		[ $? -eq 0 ] && echo "please update server's node version" && exit 1 
 
 	       cd  public 
            
-               npm --registry=https://registry.npm.taobao.org  i
+               echo "update node modules...."                 
+ 
+               npm --registry=https://registry.npm.taobao.org  i -b 1 > /dev/null
+		
+              echo "start gulp ....."
 
 	       gulp ge  -b 1 >/dev/null
 		
