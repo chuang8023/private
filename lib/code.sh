@@ -2,8 +2,11 @@ function PullCode {
 echo ""
 echo "$BranchName pulling the new code ..."
 cd $ProjPath
-git checkout .
-git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
+cp -r config/$ProjType .
+ git checkout .
+ git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
+cp -r ./$ProjType config/
+
 if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""

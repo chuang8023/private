@@ -1,4 +1,5 @@
 function RunBackup {
+Param1=$1
 echo ""
 echo "Backuping database ..."
 while read LINE
@@ -23,6 +24,37 @@ do
         ;;
     esac
 done < $ProjConfPath/database.php
+
+if [ "$Param1" == "toftp" ];then
+      ping -c 1 192.168.0.201 |grep '0% packet loss' > /dev/null 2>&1
+
+     if [ $? -eq 0 ];then
+                cat /etc/hosts|grep www.download.aysaas.com > /dev/null 2>&1
+                 if [ ! $? -eq 0 ];then
+                        sudo bash -c "echo '192.168.0.201 www.download.aysaas.com' >> /etc/hosts"
+                 fi
+     fi
+   SiteType=`echo $AccessAddr|awk -F '.' '{print $2}'`  
+   [[ $SiteType != demo && $SiteType != proj && $SiteType != test ]] && SiteType=proj
+   mysqldump -h"$_Host" -u"$_DBUser" -p"$_DBPasswd" $_DBName > /tmp/${_DBName}_$TimeStamp.sql
+   cd /tmp 
+   tar -zcpf ${_DBName}_$TimeStamp.sql.tar.gz ${_DBName}_$TimeStamp.sql
+   rm ${_DBName}_$TimeStamp.sql
+   ftp -v -n $BACKUP_FTP_HOST $BACKUP_FTP_PORT 1>/dev/null << EOF
+user $BACKUP_FTP_USER $BACKUP_FTP_PASS
+type binary
+cd mysql/$SiteType
+prompt
+mdelete *
+put ${_DBName}_$TimeStamp.sql.tar.gz
+bye
+EOF
+  rm ${_DBName}_$TimeStamp.sql.tar.gz
+  cd -
+  echo "${_DBName} has been backup to ftp server" 
+  echo "Download  url is  http://www.download.aysaas.com:3300/databases/mysql/$SiteType/${_DBName}_$TimeStamp.sql.tar.gz"
+  exit 0
+fi
 
 if [[ $TimeStamp == "" ]]; then
     mysqldump -h"$_Host" -u"$_DBUser" -p"$_DBPasswd" $_DBName > $BackupDir${_DBName}_`date +%y%m%d%H%M%S`.sql

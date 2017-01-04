@@ -9,7 +9,7 @@ cd `dirname $0`
 . lib/migrate.sh
 . lib/modifyDBurl.sh
 . lib/code.sh
-. lib/rbuild.sh
+. lib/gulp.sh
 . lib/queue.sh
 . lib/pullLog.sh
 . lib/minAssets.sh
@@ -112,7 +112,7 @@ case $Param1 in
     EchoPullLog
     UpdateVendor
     Migrate "all"
-    Rbuild "$CommitID"
+    Rgulp "$CommitID"
     ;;
 "showPullLog")
     Main
@@ -124,7 +124,7 @@ case $Param1 in
     RollbackCode "$_CommitID"
     RollbackDB "$_CommitID"
     Migrate "all"
-    Rbuild "$CommitID"
+    Rgulp "$CommitID"
     Resque
     ;;
 "resqueStat")
@@ -142,6 +142,7 @@ case $Param1 in
 "migrate")
     _ID=$Param3
     Main
+    BackupDB 
     Migrate "$_ID"
     ;;
 "closeMinAssets")
@@ -154,7 +155,7 @@ case $Param1 in
     ;;
 "rbuild")
     Main
-    Rbuild "-f"
+    Rgulp "-f"
     ;;
 "rebuild_org_tree")
     _Ent=$Param3
@@ -180,7 +181,7 @@ case $Param1 in
     ChkoutBranch "$_BranchName"
     UpdateVendor
     Migrate "all"
-    Rbuild "-f"
+    Rgulp "-f"
     EmptyCache "all"
     Cache "all" "rebuild_to_redis"
     RestartResque
@@ -292,4 +293,8 @@ case $Param1 in
  "showproj")
   ConfigPath="$(cd `dirname $0`;pwd)/config"
   ShowProj "$ConfigPath"
+  ;;
+ "DebugBackUpMysql")
+  Main
+  RunBackup toftp
 esac
