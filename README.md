@@ -10,7 +10,7 @@
 * migrate
 * closeMinAssets
 * openMinAssets
-* rbuild
+* rgulp
 * rebuild_org_tree
 * rebuild_to_redis
 * backupDB
@@ -45,7 +45,7 @@ BackupDB   **检查 migrations diff,  并mysqldump 备份**
 EchoPullLog  **纪录发布日志到LOG**
 UpdateVendor **更新vendor包，需重启 StopWebsocket **
 Migrate "all" **检查 Migrate，有时进行Migrate操作  **
-Rbuild  **检查是否压缩资源，并压缩**
+Rgulp  **检查是否压缩资源，并压缩**
 RestartResque **停止队列，重启队列**
 
 
@@ -58,7 +58,7 @@ ShowPullLog **显示最近10条项目发布纪录时间**
 RollbackCode **切换代码库到指定 Commit**
 RollbackDB **还原数据库，删除老的倒入备份的**
 Migrate **Migrate代码**
-Rbuild **检查是否压缩资源，并压缩**
+Rgulp **检查是否压缩资源，并压缩**
 Resque
 
 ### resqueStat
@@ -74,9 +74,9 @@ ShowMigrate **显示最新的30条 migrate 信息**
 
 Migrate **执行指定一条migrate, 先down 在 up**
 
-### rbuild
+### rgulp
 
- Rbuild "-f" **资源编辑压缩，开启minAssets**
+ Rgulp "-f" **资源编辑压缩，开启minAssets**
  
 ### backupDB
 

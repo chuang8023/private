@@ -153,7 +153,7 @@ case $Param1 in
     Main
     MinAssets "open"
     ;;
-"rbuild")
+rbuild|rgulp)
     Main
     Rgulp "-f"
     ;;

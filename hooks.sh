@@ -47,7 +47,7 @@ function Deploy {
 Title="部署feature结果"
 $ScriptPath/ext/deployBranch_feature.sh "deploy" $Branch > /tmp/_HookMail_${Branch//\//_} &&\
 $ScriptPath/run.sh "update" $Branch >> /tmp/_HookMail_${Branch//\//_} &&\
-$ScriptPath/run.sh "rbuild" $Branch >> /tmp/_HookMail_${Branch//\//_} &&\
+$ScriptPath/run.sh "rgulp" $Branch >> /tmp/_HookMail_${Branch//\//_} &&\
 if [[ $? == 0 ]]; then
     echo "分支${Branch}部署成功 !" > /tmp/_HookDeployURL_${Branch//\//_}
     echo "" >> /tmp/_HookDeployURL_${Branch//\//_}

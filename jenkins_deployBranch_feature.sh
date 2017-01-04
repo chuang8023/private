@@ -41,7 +41,7 @@ function UpdateCode ()
    		UpdateVendor
 		TestsUnpackaging
     		Migrate "all"
-	        Rbuild "$CommitID"
+	        Rgulp "$CommitID"
 	fi
 }
 
@@ -183,7 +183,7 @@ case $Param1 in
     ExistsCheck
     Main
     Migrate "all"
-    Rbuild "-f"
+    Rgulp "-f"
     RestartResque
     CreateCrontab
     ReService
