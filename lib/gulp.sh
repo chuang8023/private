@@ -13,11 +13,11 @@ sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
            
                echo "update node modules...."                 
  
-               npm --registry=https://registry.npm.taobao.org  i -b 1 > /dev/null
+               npm --registry=https://registry.npm.taobao.org  i  > /dev/null 2>&1
 		
               echo "start gulp ....."
 
-	       gulp ge  -b 1 >/dev/null
+	       gulp ge  >/dev/null 2>&1
 		
 	  else
 
