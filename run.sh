@@ -18,6 +18,7 @@ cd `dirname $0`
 . lib/branch.sh
 . lib/git.sh
 . lib/tempDB.sh
+. lib/cloneDB.sh
 . lib/websocket.sh
 . lib/log.sh
 . lib/debug.sh
@@ -227,6 +228,30 @@ rbuild|rgulp)
     Main
     AutoTempDB "$DBId"
     ;;
+"cloneDBStatus")
+    Main
+    CloneDBStatus "$DBId"
+    ;;
+"cloneDBExpireTime")
+    Main
+    CloneDBExpireTime "$DBId"
+    ;;
+"createCloneDB")
+    Main
+    CreateCloneDB "$DBId"
+    ;;
+"deleteCloneDB")
+    Main
+    DeleteCloneDB "$DBId"
+    ;;
+"showCloneDBUrl")
+    Main
+    ShowCloneDBUrl "$DBId"
+    ;;
+"autoCloneDB")
+    Main
+    AutoCloneDB "$DBId"
+   ;;
 "updateVendor")
     Main
     UpdateVendor
