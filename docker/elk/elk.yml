@@ -1,0 +1,12 @@
+elk:
+  image: sebp/elk
+  environment:
+    ES_CONNECT_RETRY: 10
+    ES_HEAP_SIZE: "2g"
+    ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+  volumes:
+    - /home/df/elk/logstash/conf.d/:/etc/logstash/conf.d/
+  ports:
+    - "5601:5601"
+    - "9200:9200"
+    - "5044:5044"
