@@ -9,4 +9,4 @@ MongoDbname="qycloud"
 mongodump -u$MongoUser -p=$MongoPass -h$MongoHost:$MongoPort --excludeCollection system.profile  -d$MongoDbname -o $BackUpDir/$BackUpDate > /dev/null 2>&1
 echo "$BackUpDate qycloud mongo backup ok !" 
 echo "$BackUpDate qycloud mongo backup ok !" >> /tmp/qyloud_mongo-bak.log
-find $BackUpDir/* -type d -mtime +7 -exec rm -rf {} \;
+[ -e $BackUpDir ] && find $BackUpDir/* -type d -mtime +5 -exec rm -rf {} \;
