@@ -45,7 +45,7 @@ if [[ $_IsSuccess != "" && $_CloneDBStat == "Running" ]]; then
 fi
 }
 
-function TempDBStatus () {
+function CloneDBStatus () {
 local _DBId=$1
 local _Status=$(php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId cloneDBStatus)
 if [[ $_Status != "" ]]; then
