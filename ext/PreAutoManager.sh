@@ -1,37 +1,78 @@
 #!/bin/bash
-#Mysql Auto Manager
-/root/scripts/rundeck/run.sh stopwebsocket hotfix
-/root/scripts/rundeck/run.sh deleteTempDB hotfix
-sleep 5m
-/root/scripts/rundeck/run.sh createTempDB hotfix
-for ((i=1;i<=60;i++))
-do
-  /root/scripts/rundeck/run.sh tempDBStatus hotfix|grep Running > /dev/null 2>&1
-  [ $? -eq 0 ] && break
-   sleep 1m
-done
-/root/scripts/rundeck/run.sh autoTempDB hotfix
-/root/scripts/rundeck/run.sh restartResque hotfix
-/root/scripts/rundeck/run.sh startwebsocket hotfix
-/root/scripts/rundeck/run.sh cleanUserChatToken hotfix 1
-#Mongo Auto Manager
+Op=$1
 CurrentDate=`date +%Y-%m-%d`
-ls /tmp/mongobackuptohotfix.pid > /dev/null
-[ $? -eq 0 ] && exit 1
 BackUpDir="/home/anyuankeji/databases/mongo_backup"
-MongoHotfixUser=hotfix
-MongoHotfixDB=hotfix
-MongoHotfixPass=wGAAmCjkskLq2RTD
-MongoHotfixHost="dds-bp1a1e05a90b27b42.mongodb.rds.aliyuncs.com:3717"
+MongoPreUser=pre
+MongoPreDB=pre
+MongoPrePass=wGAAmCjkskLq2RTD
+MongoPreHost="dds-bp1a1e05a90b27b42.mongodb.rds.aliyuncs.com:3717"
 MongoHost="dds-bp1a1e05a90b27b42.mongodb.rds.aliyuncs.com:3717"
 MongoAdminUser=root
 MongoAdminPass=DpMTcTltiqNbD4R4
-     touch /tmp/mongobackuptohotfix.pid
+
+function CreatePreBranch () {
+BranchPath="/var/www/pre.qycloud.com.cn"
+cd $BranchPath
+git checkout .
+git clean -f
+git fetch origin proj/qycloud
+git fetch origin release
+git checkout proj/qycloud
+git branch -D pre/qycloud
+git push origin :pre/qycloud
+git checkout -b pre/qycloud
+git merge --no-ff --no-edit release
+[ ! $? -eq 0 ] && echo "release merge to pre/qycloud conflict,please login pre server to solve it !" && exit 1 
+git push origin pre/qycloud:pre/qycloud
+git checkout proj/qycloud
+}
+
+function DropPreMongo () {
       mongo --host $MongoHost --username $MongoAdminUser --password $MongoAdminPass --authenticationDatabase admin <<EOF
-use hotfix
+use $MongoPreDB
 db.dropDatabase()
 exit
 EOF
-      mongorestore -u$MongoHotfixUser -p=$MongoHotfixPass -h$MongoHotfixHost -d$MongoHotfixDB  --drop $BackUpDir/$CurrentDate/qycloud > /dev/null 2>&1
-      [ $? -eq 0 ] && echo "$CurrentDate qycloud mongo restore to hotfix ok !" >> /tmp/qyloud_mongo-restore-hotfix.log
-      rm  /tmp/mongobackuptohotfix.pid
+}
+
+function InitPreService () {
+#Create Mysql
+/root/scripts/rundeck/run.sh createCloneDB pre
+for ((i=1;i<=60;i++))
+do
+  /root/scripts/rundeck/run.sh cloneDBStatus pre|grep Running > /dev/null 2>&1
+  [ $? -eq 0 ] && break
+   sleep 1m
+done
+/root/scripts/rundeck/run.sh autoCloneDB pre
+/root/scripts/rundeck/run.sh cleanUserChatToken pre 1
+
+#Create Mongo
+ls /tmp/mongobackuptopre.pid > /dev/null 2>&1
+[ $? -eq 0 ] && exit 1
+     touch /tmp/mongobackuptopre.pid
+DropPreMongo
+      mongorestore -u$MongoPreUser -p=$MongoPrePass -h$MongoPreHost -d$MongoPreDB  --drop $BackUpDir/$CurrentDate/qycloud > /dev/null 2>&1
+      [ $? -eq 0 ] && echo "$CurrentDate qycloud mongo restore to pre ok !" >> /tmp/qyloud_mongo-restore-pre.log
+      rm  /tmp/mongobackuptopre.pid
+
+/root/scripts/rundeck/run.sh gco pre pre/qycloud
+
+}
+
+function DropPreService () {
+DropPreMongo
+/root/scripts/rundeck/run.sh stopwebsocket pre
+/root/scripts/rundeck/run.sh deleteCloneDB pre
+}
+
+case $Op in 
+  create_pre_branch)
+  CreatePreBranch
+  ;; 
+  init_pre_service)
+ InitPreService
+  ;;
+  drop_pre_service)
+ DropPreService
+esac

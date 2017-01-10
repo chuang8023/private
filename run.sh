@@ -57,6 +57,7 @@ if [[ $INFOType == "File" ]]; then
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
             DBType=`echo $LINE | awk -F"|" '{print $4}' | awk 'gsub(/^ *| *$/,"")'`
             DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
+            CloneDBId=`echo $LINE | awk -F"|" '{print $6}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
 fi
@@ -230,11 +231,11 @@ rbuild|rgulp)
     ;;
 "cloneDBStatus")
     Main
-    CloneDBStatus "$DBId"
+    CloneDBStatus "$CloneDBId"
     ;;
 "cloneDBExpireTime")
     Main
-    CloneDBExpireTime "$DBId"
+    CloneDBExpireTime "$CloneDBId"
     ;;
 "createCloneDB")
     Main
@@ -242,11 +243,11 @@ rbuild|rgulp)
     ;;
 "deleteCloneDB")
     Main
-    DeleteCloneDB "$DBId"
+    DeleteCloneDB "$CloneDBId"
     ;;
 "showCloneDBUrl")
     Main
-    ShowCloneDBUrl "$DBId"
+    ShowCloneDBUrl "$CloneDBId"
     ;;
 "autoCloneDB")
     Main

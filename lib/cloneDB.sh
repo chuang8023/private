@@ -1,10 +1,9 @@
 function CreateCloneDB () {
 local _DBId=$1
-local _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId createCloneDB).mysql.rds.aliyuncs.com"
-local _IsSuccess=`echo $_DBUrl | grep "^sub"`   #后期可以把判断条件换成ping
+local _CloneDBId=`php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId createCloneDB`
+local _IsSuccess=`echo $_CloneDBId | grep "^rm"`   #后期可以把判断条件换成ping
 if [[ $_IsSuccess != "" ]]; then
-    echo "Create clone database successfully !"
-    echo "Clone database URL is $_DBUrl"
+	sed -i "s/$CloneDBId/$_CloneDBId/" $ConfigPath/projinfo
 fi
 }
 
@@ -13,7 +12,7 @@ local _DBId=$1
 local _CloneDB=$(php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId showCloneDB)
 if [[ $_CloneDB != "" ]]; then
     local _DBUrl="${_CloneDB}.mysql.rds.aliyuncs.com"
-    local _IsSuccess=`echo $_DBUrl | grep "^sub"`    #后期可以把判断条件换成ping
+    local _IsSuccess=`echo $_DBUrl | grep "^rm"`    #后期可以把判断条件换成ping
     local _CloneDBStat=`CloneDBStatus "$_DBId"`
     if [[ $_IsSuccess != "" ]]; then
         if [[ $_CloneDBStat == "Running" ]]; then
@@ -38,7 +37,7 @@ php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId deleteCloneDB
 function AutoCloneDB () {
 local _DBId=$1
 local _DBUrl="$(php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId).mysql.rds.aliyuncs.com"
-local _IsSuccess=`echo $_DBUrl | grep "^sub"`    #后期可以把判断条件换成ping
+local _IsSuccess=`echo $_DBUrl | grep "^rm"`    #后期可以把判断条件换成ping
 local _CloneDBStat=`CloneDBStatus "$_DBId"`
 if [[ $_IsSuccess != "" && $_CloneDBStat == "Running" ]]; then
     modifyDBurl "${_DBUrl/_/-}" "nocheck"

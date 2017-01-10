@@ -81,7 +81,7 @@ function GetDBExpireTime($dbInfo) {
 }
 
 function DeleteDB($dbId) {
-    if (!preg_match("/^rm-/i", $dbId)) {                                    //检测数据库ID是否以sub开头，如果不是拒绝执行删除操作并退出
+    if (!preg_match("/^rm-/i", $dbId)) {                                    //检测数据库ID是否以rm-开头，如果不是拒绝执行删除操作并退出
         echo "要求删除一个非临时实例,默认拒绝!";
         exit(1);
     }
