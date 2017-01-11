@@ -57,6 +57,9 @@ DropPreMongo
       rm  /tmp/mongobackuptopre.pid
 
 /root/scripts/rundeck/run.sh gco pre pre/qycloud
+/root/scripts/rundeck/run.sh startwebsocket pre
+ln -sf /etc/nginx/sites-available/pre.qycloud.com.cn /etc/nginx/sites-enabled
+nginx -s reload
 
 }
 
@@ -64,6 +67,8 @@ function DropPreService () {
 DropPreMongo
 /root/scripts/rundeck/run.sh stopwebsocket pre
 /root/scripts/rundeck/run.sh deleteCloneDB pre
+rm /etc/nginx/sites-enabled/pre.qycloud.com.cn
+nginx -s reload
 }
 
 case $Op in 

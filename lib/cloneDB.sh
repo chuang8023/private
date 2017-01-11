@@ -1,6 +1,6 @@
 function CreateCloneDB () {
 local _DBId=$1
-local _CloneDBId=`php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId createCloneDB`
+local _CloneDBId=$(php $(cd `dirname $0`;pwd)/ext/manageCloneDB.php $_DBId createCloneDB)
 local _IsSuccess=`echo $_CloneDBId | grep "^rm"`   #后期可以把判断条件换成ping
 if [[ $_IsSuccess != "" ]]; then
 	sed -i "s/$CloneDBId/$_CloneDBId/" $ConfigPath/projinfo

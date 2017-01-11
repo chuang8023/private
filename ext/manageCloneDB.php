@@ -19,7 +19,7 @@ require __DIR__ . '/aliyunAPI.php';
   * 'DBInstanceId' => 'rds26h77108r3o8c4jwj';
   * 返回参数:
   * ExpireTime  //到期时间(需要+8小时才是北京时间),$obj['Items']['DBInstanceAttribute']['0']['ExpireTime']
-  * CloneDBInstanceId    //临时实例ID(如果存在临时实例),$obj['Items']['DBInstanceAttribute']['0']['CloneDBInstanceId']
+  * DBInstanceId    //克隆实例ID(如果存在克隆实例),$obj['Items']['DBInstanceAttribute']['0']['DBInstanceId']
   * 
   * 创建临时实例
   * 请求参数:
@@ -28,7 +28,7 @@ require __DIR__ . '/aliyunAPI.php';
   * 'BackupId' => '111044758';
   * 'RestoreTime' => '2011-06-11T16:00:00Z';
   * 返回参数:
-  * CloneDBInstanceId    //临时实例ID
+  * DBInstanceId    //克隆实例ID
   * 
   * 删除实例
   * 请求参数:
@@ -63,8 +63,8 @@ function GetDBInfo($dbId) {
 }
 
 function GetCloneDBId($dbInfo) {
-    if (isset($dbInfo['Items']['DBInstanceAttribute']['0']['CloneDBInstanceId']) && !empty($dbInfo['Items']['DBInstanceAttribute']['0']['CloneDBInstanceId'])) {
-    	$cloneDBId = $dbInfo['Items']['DBInstanceAttribute']['0']['CloneDBInstanceId'];
+    if (isset($dbInfo['Items']['DBInstanceAttribute']['0']['DBInstanceId']) && !empty($dbInfo['Items']['DBInstanceAttribute']['0']['DBInstanceId'])) {
+    	$cloneDBId = $dbInfo['Items']['DBInstanceAttribute']['0']['DBInstanceId'];
     } else {
         $cloneDBId = '';
     }
@@ -166,7 +166,7 @@ function AutoManage($dbId) {
         if (!empty($cloneDBExpireTime)) {
             $surplus = strtotime($cloneDBExpireTime) - strtotime(gmdate('Y-m-d\TH:i:s\Z'));
         } else {
-            echo "Cannot get temp database expire time !\n";
+            echo "Cannot get clone database expire time !\n";
             exit(1);
         }
         if (($surplus < 12 * 60 * 60) && (gmdate('H') > 12 && gmdate('H') < 22)) {    //如果离过期时间不足12个小时，且在北京时间20点到第二天凌晨6点之间
@@ -204,7 +204,7 @@ if (isset($argv['2']) && !empty($argv['2'])) {
                 $cloneDBExpireTime = GetDBExpireTime($cloneDBInfo);
                 echo gmdate('Y-m-d H:i:s', strtotime($cloneDBExpireTime) + 8 * 60 * 60) ."\n";
             } else {
-                echo "Cannot get temp database instance ID !\n";
+                echo "Cannot get clone database instance ID !\n";
                 exit(1);
             }
             break;
@@ -213,9 +213,9 @@ if (isset($argv['2']) && !empty($argv['2'])) {
             $cloneDBId = GetCloneDBId($dbInfo);
             if (!empty($cloneDBId)) {
                 DeleteDB($cloneDBId);
-                echo "Delete temp database is OK !\n";
+                echo "Delete clone database is OK !\n";
             } else {
-                echo "Cannot get temp database ID !\n";
+                echo "Cannot get clone database ID !\n";
                 exit(1);
             }
             break;
@@ -227,11 +227,11 @@ if (isset($argv['2']) && !empty($argv['2'])) {
             $dbInfo = GetDBInfo($dbId);
             $cloneDBId = GetCloneDBId($dbInfo);
             if (!empty($cloneDBId)) {
-                $temDBInfo = GetDBInfo($cloneDBId);
-                $cloneDBStatus = CloneDBStatus($temDBInfo);
+                $cloneDBInfo = GetDBInfo($cloneDBId);
+                $cloneDBStatus = CloneDBStatus($cloneDBInfo);
                 echo $cloneDBStatus . "\n";
             } else {
-                echo "Cannot get temp database status !\n";
+                echo "Cannot get clone database status !\n";
                 exit(1);
             }
             break;
