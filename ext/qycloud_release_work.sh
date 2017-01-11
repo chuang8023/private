@@ -21,5 +21,15 @@ git checkout -b $NewMasterHotfixName
 git push origin $NewMasterHotfixName:$NewMasterHotfixName
 exit 0
 }
+#更新软件
+function UpdateSoft () {
+echo ""
+echo "update server soft source !"
+echo ""
+apt-fast update > /dev/null 2>&1
+apt-fast -y upgrade > /dev/null 2>&1
+[ $? -eq 0 ] && echo "update server soft ok !"
+}
 [ $ReleaseWorkFlow = "MasterPickupTag" ] && MasterPickupTag 
 [ $ReleaseWorkFlow = "CreateMasterHotfix" ] && CreateMasterHotfix 
+[ $ReleaseWorkFlow = "UpdateSoft" ] && UpdateSoft
