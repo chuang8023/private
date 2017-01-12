@@ -51,7 +51,7 @@ if [[ $1 == "-f" ]]; then
 else
     local minAssets=`cat $ProjConfPath/assets.php | grep "minAssets" | grep "true"`
     if [[ $minAssets != "" ]]; then
-        local NeedGulp=`git diff $_CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | egrep "\.js|\.css|\.scss"`
+        local NeedGulp=`git diff $_CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | egrep "\.js|\.css|\.scss|\.json"`
         if [[ $NeedGulp != "" ]]; then
             RunGulp
         else
