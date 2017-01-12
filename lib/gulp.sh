@@ -9,7 +9,7 @@ sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 
 		[ $? -eq 0 ] && echo "please update server's node version" && exit 1 
                
-                which gulp
+                which gulp > /dev/null 2>&1
  
                [ ! $? -eq 0 ] && echo "please install gulp environment" && exit 1
 
