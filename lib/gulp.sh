@@ -8,14 +8,22 @@ sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 		 node -v|grep v0 > /dev/null 2>&1
 
 		[ $? -eq 0 ] && echo "please update server's node version" && exit 1 
+               
+                which gulp
+ 
+               [ ! $? -eq 0 ] && echo "please install gulp environment" && exit 1
 
 	       cd  public 
            
+               echo ""
+
                echo "update node modules...."                 
  
                npm --registry=https://registry.npm.taobao.org  i  > /dev/null 2>&1
+
+	       echo ""
 		
-              echo "start gulp ....."
+               echo "start gulp ....."
 
 	       gulp ge  >/dev/null 2>&1
 		
