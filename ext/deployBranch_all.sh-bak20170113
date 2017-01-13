@@ -1,7 +1,7 @@
 #!/bin/bash
 #rundeck path
 RundeckPath=/root/scripts/rundeck
-TemplatePath=$RundeckPath/template/anyuan
+TemplatePath=$RundeckPath/template/feature
 Date=`date +%Y_%m_%d_%m`
 
 #run user
@@ -13,9 +13,9 @@ RunUser=anyuan
 # 数据库:$DBPath
 
 
-CodePath=/root/scripts/rundeck/template/anyuan/www.SysType.SysName.aysaas.com
-NginxConfPath=/root/scripts/rundeck/template/anyuan/www.SysType.SysName.aysaas.com-nginx
-DBPath=/root/scripts/rundeck/template/anyuan/template.sql
+CodePath=/root/scripts/rundeck/template/anyun/www.SysType.SysName.aysaas.com
+NginxConfPath=/root/scripts/rundeck/template/anyun/www.SysType.SysName.aysaas.com-nginx
+DBPath=/root/scripts/rundeck/template/anyun/template.sql
 
 
 Param1=$1
@@ -29,25 +29,21 @@ Param8=$8
 
 
 #System info
-ENVType=development
+ENVType="$Param1"
 BranchName="$Param2"
 ExtranetIp="$Param3"
-SysType=`echo "$Param2"|awk -F "/" '{print $1}'`
-SysName=`echo "$Param2"|awk -F "/" '{print $2}'`
+SysType=`echo "$Param1"|awk -F "/" '{print $1}'`
+SysName=`echo "$Param1"|awk -F "/" '{print $2}'`
 
-##Database info
+#Database info
 SQLname="template.sql"
 MysqlHost="$Param4"
 MysqlUser="$Param5"
 MysqlPass="$Param6"
 RedisHost="$Param7"
 
-##mysql-root info
-DBIP="localhost"
-DBUser="root"
-DBPasswd="saas"
 
-##Mongo info
+#Mongo info
 MongoAdminUser=""
 MongoAdminPass=""
 MongoHost="$Param8"
@@ -56,14 +52,11 @@ MongoPass=`date +%s | sha256sum | base64 | head -c 16 ; echo`
 
 
 #Template info
-TSysType="feature"
-TSysName="templateRelease"
-TWebPort1=""
-TWebPort2=""
-TWebPort3=""
-Port1=""
-Port2=""
-Port3=""
+TSysType="SysType"
+TSysName="SysName"
+TWebPort1="Port1"
+TWebPort2="Port2"
+TWebPort3="Port3"
 
 #######################################
 
@@ -74,34 +67,34 @@ str=`echo $1 | tr '[A-Z]' '[a-z]'`
 echo $str
 }
 
-
 function CheckTemplate {
 if [[ ! -d $CodePath ]]; then
     echo ""
-    echo "Template of Code is NOT exist !"
-    exit 1
+    mkdir -p $CodePath
+    cd $CodePath
+    git init
+    git remote add origin git@git.coding.net:AnYun/allInOne.git
+    git pull origin master
+    wget http://www.download.aysaas.com:3300/sysconfig.tar.gz
+    tar -zxpf  sysconfig.tar.gz -C $CodePath/config
+    rm -rf sysconfig.tar.gz
+    echo "Template of Code  has been Created !"
 fi
-
 if [[ ! -f $NginxConfPath ]]; then
     echo ""
-    echo "Template of Nginx is NOT exist !"
-    exit 1
+    wget -P `dirname $NginxConfPath`  http://www.download.aysaas.com:3300/www.SysType.SysName.aysaas.com-nginx
+    echo "Template of Nginx has been Created !"
 fi
-
 if [[ ! -f $DBPath ]]; then
     echo ""
-    echo "Template of Mysql is NOT exist !"
-    exit 1
+ wget -P `dirname $DBPath`  http://www.download.aysaas.com:3300/template.sql
+    echo "Template of Mysql  has been Created !"
 fi
-
 }
-
-
 
 function InPut () {
 _Param1=$1
 BranchName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
-
 if [[ $_Param1 != "NoCheck" ]]; then
     CheckTemplate
     cd $CodePath
@@ -119,14 +112,12 @@ if [[ $_Param1 != "NoCheck" ]]; then
     fi
 fi
 
-SysType=`echo "$BranchName"|awk -F "/" '{print $1}'`
-IsNormalBranch=`echo "$BranchName" | grep "/"`
-[[ $IsNormalBranch == "" ]] && SysType=test
-SysName=`echo "$BranchName"|awk -F "/" '{print $2}'`
-[[ $SysName == "" ]] && SysName=$SysType
+SysType=`echo "$Param1"|awk -F "/" '{print $1}'`
+SysName=`echo "$Param1"|awk -F "/" '{print $2}'`
 
 SysType=`ConversionA2a "$SysType"`
 SysName=`ConversionA2a "$SysName"`
+
 DatabaseName=${SysType}_${SysName}
 unset _Param1
 }
@@ -140,10 +131,9 @@ else
     rm -rf /var/www/www.$SysType.$SysName.aysaas.com
     cp -r $CodePath /var/www/www.$SysType.$SysName.aysaas.com
 fi
-
+#chown -R $RunUser:$RunUser /var/www/www.$Branch.$SysName.aysaas.com
 cp $NginxConfPath /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
 ln -sf /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com /etc/nginx/sites-enabled/
-
 if [[ $? != 0 ]]; then
     echo ""
     echo "Copy template to www.$SysType.$SysName.aysaas.com is Fail !"
@@ -152,12 +142,11 @@ else
     echo ""
     echo "Copy template to www.$SysType.$SysName.aysaas.com is OK !"
 fi
-chown -R $RunUser:$RunUser /etc/nginx/
 }
 
 function PullBranch {
 echo ""
-echo "Pull branch $BranchName ..."
+echo "Pull branch $ReleaseName ..."
 cd /var/www/www.$SysType.$SysName.aysaas.com
 git fetch origin $BranchName:$BranchName 1>/dev/null
 git checkout $BranchName 1>/dev/null
@@ -171,15 +160,14 @@ chmod -R 777 log upload
 chown -R $RunUser:$RunUser /var/www/www.$SysType.$SysName.aysaas.com
 cd - 1>/dev/null 2>&1
 echo ""
-echo "Pull branch $BranchName is OK !"
+echo "Pull branch $ReleaseName is OK !"
 }
 
 function ModifyConf {
 echo ""
 echo "Modify config file ..."
-[[ $ENVType == "production"  ]] && cp -a  $TemplatePath/base /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType
-[[ $ENVType == "development"  ]] && cp -a  $TemplatePath/base /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType
-
+[[ $ENVType == "production"  ]] && cp -a  sysconfig production
+[[ $ENVType == "development"  ]] && cp -a  sysconfig development
 sed -i "s/$TSysName/$SysName/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/app.php
 sed -i "s/$TSysType/$SysType/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/app.php
 
@@ -191,27 +179,21 @@ sed -i "s/MongoHost/$MongoHost/" /var/www/www.$SysType.$SysName.aysaas.com/confi
 sed -i "s/MongoUser/$MongoUser/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/database.php
 sed -i "s/MongoPass/$MongoPass/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/database.php
 
-
 sed -i "s/$TSysName/$SysName/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/assets.php
 
 sed -i  "s/RedisHost/$RedisHost/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/redis.php 
 
 sed -i  "s/RedisHost/$RedisHost/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/resque.php
-
-sed -i "s/TWebPort1/$Port1/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/app.php
-sed -i "s/TWebPort2/$Port2/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/app.php
-sed -i "s/TWebPort3/$Port3/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/app.php
+#sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$SysName.aysaas.com/config/development/app.php
 
 sed -i "s/$TSysName/$SysName/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
 sed -i "s/$TSysType/$SysType/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
-sed -i "s/TWebPort1/$Port1/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
-sed -i "s/TWebPort2/$Port2/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
-sed -i "s/TWebPort3/$Port3/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
+sed -i "s/$TWebPort1/$Port1/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
+sed -i "s/$TWebPort2/$Port2/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
+sed -i "s/$TWebPort3/$Port3/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
 sed -i "s/ENVType/$ENVType/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
-#[[ ! $ExtranetIp == "" ]] && sed -i "s/server_name.*/server_name $ExtranetIp;/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com && sed -i "s/[a-z]*.proj.jacaq.aysaas.com/$ExtranetIp/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/app.php
-
-#[[ ! $ExtranetIp == "" ]] && sed -i "s/server_name.*/server_name $ExtranetIp;/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
-
+    [[ ! $ExtranetIp == "" ]] && sed -i 's/server_name.*/$ExtranetIp;/' /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
+#sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 echo ""
 echo "Modify config file is OK !"
 }
@@ -228,21 +210,13 @@ Port1="5207" && Port2="5207" Port3="5207" && ENVType="development"
 10.0.0.191) 
  Port1="22000" && Port2="22000" Port3="22000" && ENVType="development"
 ;;
-192.168.0.209)
- Port1="23000" && Port2="23000" prot3="23000" && ENVType="development"
-;;
 *)
  Port1="8000" && Port2="8001" Port3="8002"
 esac
 }
 
 function ManageDB {
-
-mysql -h$DBIP -u$DBUser -p$DBPasswd -e "grant usage on *.* to $MysqlUser@"localhost" identified by '$MysqlPass';flush privileges;"
-mysql -h$DBIP -u$DBUser -p$DBPasswd -e "grant all privileges on *.* to $MysqlUser@"localhost" identified by '$MysqlPass';flush privileges;"
-#mysql -h$DBIP -u$DBUser -p$DBPasswd -e "grant all privileges on *.* to $MysqlUser@"%" identified by '$MysqlPass';flush privileges;"
-
-DBIsExists=`mysql -h"$DBIP" -u"$DBUser" -p"$DBPasswd" -e "show databases like '$DatabaseName'"`
+DBIsExists=`mysql -h"$MysqlHost" -u"$MysqlUser" -p"$MysqlPass" -e "show databases like '$DatabaseName'"`
 if [[ $? != 0 ]]; then
     echo ""
     echo "Database connect fail !"
@@ -255,10 +229,10 @@ if [[ $DBIsExists == "" ]]; then
     echo ""
     echo "Create database $DatabaseName is OK !"
     echo ""
-  #  echo "Import database $DatabaseName ..."
-  #  mysql -h"$MysqlHost" -u"$MysqlUser" -p"$MysqlPass" $DatabaseName < $DBPath
-  #  echo ""
-  #  echo "Import database $DatabaseName is OK !"
+    echo "Import database $DatabaseName ..."
+    mysql -h"$MysqlHost" -u"$MysqlUser" -p"$MysqlPass" $DatabaseName < $DBPath
+    echo ""
+    echo "Import database $DatabaseName is OK !"
 fi
 }
 
@@ -274,7 +248,7 @@ db.createUser(
   {  
     user: "$MongoUser",  
     pwd: "$MongoPass",  
-    roles: [ { role: "readWrite", db: "$DatabaseName" } ]  
+    roles: [ { role: "dbOwner", db: "$DatabaseName" } ]  
   }  
 ) 
 exit
@@ -312,16 +286,12 @@ sudo -u $RunUser /usr/bin/env TERM=xterm ./deploy/crontab
 cd - 1>/dev/null 2>&1
 echo ""
 echo "Create crontab is OK !"
-echo "******************************"
 }
 
 function EchoFeatureInfo {
 echo "$BranchName|$ENVType|/var/www/www.$SysType.$SysName.aysaas.com|base" >> $RundeckPath/config/projinfo
 cat $RundeckPath/config/projinfo | sort | uniq > $RundeckPath/config/_tmp.projinfo
 mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
-
-
-echo "项目访问地址为："cat /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/app.php | grep "www_domain" | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"
 }
 
 function DelCode {
@@ -419,7 +389,7 @@ function UpdateDB   {
    cd $TemplatePath
    tar -zcpf template.sql.bak.$Date.tar.gz template.sql
    mv template.sql.bak.$Date.tar.gz templdate_old
-   mysqldump -uroot -psaas $DatabaseName > $TemplatePath/$DatabaseName-$Date.sql
+   mysqldump -uroot -psaas feature_updatetemplatedb > $TemplatePath/template.sql
    [ $? -eq 0 ] && echo "Update template db has been finished !"
 }
 
@@ -427,7 +397,6 @@ function UpdateDB   {
 
 case $Param1 in
 "deploy")
-    GetServerInfo
     InPut
     CopyTemplate
     PullBranch
