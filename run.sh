@@ -18,6 +18,7 @@ cd `dirname $0`
 . lib/branch.sh
 . lib/git.sh
 . lib/tempDB.sh
+. lib/cloneDB.sh
 . lib/websocket.sh
 . lib/log.sh
 . lib/debug.sh
@@ -56,6 +57,7 @@ if [[ $INFOType == "File" ]]; then
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
             DBType=`echo $LINE | awk -F"|" '{print $4}' | awk 'gsub(/^ *| *$/,"")'`
             DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
+            CloneDBId=`echo $LINE | awk -F"|" '{print $6}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
 fi
@@ -227,6 +229,30 @@ rbuild|rgulp)
     Main
     AutoTempDB "$DBId"
     ;;
+"cloneDBStatus")
+    Main
+    CloneDBStatus "$CloneDBId"
+    ;;
+"cloneDBExpireTime")
+    Main
+    CloneDBExpireTime "$CloneDBId"
+    ;;
+"createCloneDB")
+    Main
+    CreateCloneDB "$DBId"
+    ;;
+"deleteCloneDB")
+    Main
+    DeleteCloneDB "$CloneDBId"
+    ;;
+"showCloneDBUrl")
+    Main
+    ShowCloneDBUrl "$CloneDBId"
+    ;;
+"autoCloneDB")
+    Main
+    AutoCloneDB "$DBId"
+   ;;
 "updateVendor")
     Main
     UpdateVendor

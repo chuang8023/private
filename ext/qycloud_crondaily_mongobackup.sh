@@ -1,5 +1,5 @@
 #!/bin/bash
-BackUpDate=`date +%Y-%m-%d-%H-%M`
+BackUpDate=`date +%Y-%m-%d`
 BackUpDir=/home/anyuankeji/databases/mongo_backup
 MongoUser="qycloud"
 MongoPass="4gFKawwtUBd93QmJ"
@@ -9,4 +9,7 @@ MongoDbname="qycloud"
 mongodump -u$MongoUser -p=$MongoPass -h$MongoHost:$MongoPort --excludeCollection system.profile  -d$MongoDbname -o $BackUpDir/$BackUpDate > /dev/null 2>&1
 echo "$BackUpDate qycloud mongo backup ok !" 
 echo "$BackUpDate qycloud mongo backup ok !" >> /tmp/qyloud_mongo-bak.log
-[ -e $BackUpDir ] && find $BackUpDir/* -type d -mtime +5 -exec rm -rf {} \;
+echo  $BackUpDir
+sleep 20
+find $BackUpDir/* -type d -mtime +5 -exec rm -rf {} \;
+
