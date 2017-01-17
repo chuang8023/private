@@ -1,4 +1,5 @@
 function RunGulp {
+GulpFiles=$1
 echo ""
 echo "Running gulp ..."
 sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
@@ -24,8 +25,14 @@ sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 	       echo ""
 		
                echo "start gulp ....."
+ 
+               echo $GulpFiles|egrep "\.js|\.json"
+	        
+               gulp js >/dev/null 2>&1
 
-	       gulp ge  >/dev/null 2>&1
+               echo $GulpFiles|egrep "\.css|\.scss"
+
+	       gulp css  >/dev/null 2>&1
 		
 	  else
 
@@ -53,7 +60,7 @@ else
     if [[ $minAssets != "" ]]; then
         local NeedGulp=`git diff $_CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | egrep "\.js|\.css|\.scss|\.json"`
         if [[ $NeedGulp != "" ]]; then
-            RunGulp
+            RunGulp $NeedGulp
         else
             echo ""
             echo "No .js or .css !"
