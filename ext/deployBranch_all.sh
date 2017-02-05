@@ -13,9 +13,9 @@ RunUser=anyuan
 # 数据库:$DBPath
 
 
-CodePath=/root/scripts/rundeck/template/anyuan/www.SysType.SysName.aysaas.com
-NginxConfPath=/root/scripts/rundeck/template/anyuan/www.SysType.SysName.aysaas.com-nginx
-DBPath=/root/scripts/rundeck/template/anyuan/template.sql
+CodePath=/root/scripts/rundeck/deploy/anyuan/www.SysType.SysName.aysaas.com
+NginxConfPath=/root/scripts/rundeck/deploy/anyuan/www.SysType.SysName.aysaas.com-nginx
+DBPath=/root/scripts/rundeck/deploy/anyuan/template.sql
 
 
 Param1=$1
