@@ -1,7 +1,7 @@
 #!/bin/bash
 #rundeck path
 RundeckPath=/root/scripts/rundeck
-TemplatePath=$RundeckPath/template/anyuan
+TemplatePath=$RundeckPath/deploy/anyuan
 Date=`date +%Y_%m_%d_%m`
 
 #run user
@@ -167,7 +167,9 @@ do
     git branch -D ${NoUsed[i]} 1>/dev/null 2>&1
 done
 ./script/vendor unpackaging
-chmod -R 777 log upload
+mkdir -p /var/www/www.$SysType.$SysName.aysaas.com/upload
+chmod -R 777 upload
+chmod -R 777 log
 chown -R $RunUser:$RunUser /var/www/www.$SysType.$SysName.aysaas.com
 cd - 1>/dev/null 2>&1
 echo ""
@@ -255,10 +257,10 @@ if [[ $DBIsExists == "" ]]; then
     echo ""
     echo "Create database $DatabaseName is OK !"
     echo ""
-  #  echo "Import database $DatabaseName ..."
-  #  mysql -h"$MysqlHost" -u"$MysqlUser" -p"$MysqlPass" $DatabaseName < $DBPath
-  #  echo ""
-  #  echo "Import database $DatabaseName is OK !"
+    #echo "Import database $DatabaseName ..."
+    #mysql -h"$MysqlHost" -u"$MysqlUser" -p"$MysqlPass" $DatabaseName < $DBPath
+    #echo ""
+    #echo "Import database $DatabaseName is OK !"
 fi
 }
 
