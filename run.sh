@@ -252,7 +252,7 @@ rbuild|rgulp)
     ;;
 "autoCloneDB")
     Main
-    AutoCloneDB "$DBId"
+    AutoCloneDB "$CloneDBId"
    ;;
 "updateVendor")
     Main
@@ -324,4 +324,4 @@ rbuild|rgulp)
  "DebugBackUpMysql")
   Main
   RunBackup toftp
-esac
+
