@@ -3,7 +3,8 @@ data/pullog
 backup/*
 !backup/.gitignore
 config/projinfo
-template/*
 !template/.gitignore
+template/feature/www.feature.templateRelease.aysaas.com
 log/*
 !log/.gitignore
+.idea/
