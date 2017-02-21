@@ -139,6 +139,7 @@ do
 done
 ./script/vendor unpackaging
 chmod -R 777 log upload
+[ -e ./deploy/supervisor ] && ./deploy/supervisor
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
 echo ""
@@ -160,6 +161,7 @@ sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaa
 sed -i "s/$TBranch/$Branch/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 #sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+
 echo ""
 echo "Modify config file is OK !"
 }
@@ -258,6 +260,11 @@ echo "Restart nginx ..."
 service nginx reload
 echo ""
 echo "Restart nginx is OK !"
+echo ""
+echo "Restart supervisor..."
+sudo service supervisor force-reload
+echo ""
+[ $? -eq 0 ] && echo "Restart supervisor is OK!"
 }
 
 function CreateCrontab {
@@ -282,6 +289,15 @@ echo "Delete code ..."
 rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
 echo ""
 echo "Delete code is OK !"
+}
+
+function DelQueue {
+echo ""
+echo "Delete queue ..."
+service supervisor stop
+sleep 20
+service supervisor start
+echo "Delete queue is OK !"
 }
 
 function DelNginxConf {
@@ -415,6 +431,7 @@ case $Param1 in
     InPut "NoCheck"
     DelCode
     DelNginxConf
+    DelQueue
     #DelDB
     #DelMongo
     DelDockerMysql
