@@ -248,7 +248,7 @@ function DockerMongo {
 	fi
 	docker ps -a|grep -w $DockerMongoName > /dev/null 2>&1
 	if [ ! $? -eq 0 ];then
-	docker run -p 27017 --name $DockerMongoName -m 100m -d $MongoDockerImage
+	docker run -p 27017 --name $DockerMongoName -m 150m -d $MongoDockerImage
 	sleep 2
 	echo "$DockerMongoName has been created!"
 	fi
