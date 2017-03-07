@@ -10,21 +10,15 @@ server {
 
     access_log /var/log/nginx/www.feature.templateRelease.aysaas.com-access.log combined;
 
-    location /global/svgweb/ {
-        break;
-    }
-
     location /global/jquery/extend/uploadify/ {
         break;
     }
 
-    location /global/pdf2swf/ {
-        break;
-    }
+     location /components/ueditor/　{
 
-    location /form/render/ueditor/ { 
-        break; 
-    }
+              break;
+
+          }
 
     location /favicon.ico {
         break;
@@ -63,6 +57,13 @@ server {
     location ~* \.(eot|ttf|woff)$ { 
         add_header Access-Control-Allow-Origin *; 
     }
+
+   location /form/render/ueditor/ {
+
+          rewrite ^/form/render/ueditor/(.*)$ /components/ueditor/$1 permanent;
+
+     }
+  
 }
 
 
