@@ -139,7 +139,6 @@ do
 done
 ./script/vendor unpackaging
 chmod -R 777 log upload
-[ -e ./deploy/supervisor ] && ./deploy/supervisor
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
 echo ""
@@ -161,7 +160,12 @@ sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaa
 sed -i "s/$TBranch/$Branch/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 #sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
-
+cd /var/www/www.$Branch.$sBranchName.aysaas.com
+if [ -e ./deploy/supervisor ] ;then 
+  ./deploy/supervisor 
+   sed  -i '/feature/d' /etc/supervisor/supervisord.conf
+  cd -
+fi
 echo ""
 echo "Modify config file is OK !"
 }
