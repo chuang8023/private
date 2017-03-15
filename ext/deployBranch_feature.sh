@@ -299,7 +299,11 @@ function DelQueue {
 echo ""
 echo "Delete queue ..."
 service supervisor stop
-sleep 20
+for ((i=1;i<=120;i++))
+do
+ps -ef|grep supervisor|grep -v grep
+[ $? -eq 0 ] && sleep 2 || break 
+done
 service supervisor start
 echo "Delete queue is OK !"
 }
