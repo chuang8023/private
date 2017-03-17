@@ -266,7 +266,14 @@ echo ""
 echo "Restart nginx is OK !"
 echo ""
 echo "Restart supervisor..."
-sudo service supervisor force-reload
+echo ""
+service supervisor stop
+for ((i=1;i<=120;i++))
+do
+ps -ef|grep supervisor|grep -v grep
+[ $? -eq 0 ] && sleep 2 || break
+done
+service supervisor start
 echo ""
 [ $? -eq 0 ] && echo "Restart supervisor is OK!"
 }
