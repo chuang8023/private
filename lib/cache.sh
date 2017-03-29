@@ -8,7 +8,7 @@ case $_Option in
 if [[ $_Ent == "" ]]; then
     echo ""
     echo "rebuilding all enterprise org tree ..."
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_org_tree 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing org:rebuild_org_tree 1>/dev/null << EOF
 1
 all
 EOF
@@ -17,7 +17,7 @@ echo "rebuild all enterprise org tree is OK !"
 else
     echo ""
     echo "rebuilding $_Ent org tree ..."
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_org_tree 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing org:rebuild_org_tree 1>/dev/null << EOF
 1
 $_Ent
 EOF
@@ -29,11 +29,11 @@ fi
 if [[ $_Ent != "" ]]; then
     echo ""
     echo "rebuilding $_Ent to redis"
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_to_redis 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing org:rebuild_to_redis 1>/dev/null << EOF
 2
 $_Ent
 EOF
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_to_redis 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing org:rebuild_to_redis 1>/dev/null << EOF
 1
 $_Ent
 EOF
@@ -90,7 +90,7 @@ local _Ent=$1
 if [[ $_Ent != "" ]]; then
     echo ""
     echo "starting clean ${_Ent}'s  redis !"
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_to_redis 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing org:rebuild_to_redis 1>/dev/null << EOF
 2
 $_Ent
 EOF
