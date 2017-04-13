@@ -6,6 +6,7 @@ function MasterPickupTag () {
 cd $SaaSRepertoryPath
 TagName="master-v`date +%y%m%d`"
 git checkout master
+git pull origin master
 git tag -a $TagName -m $TagName
 git push origin $TagName:$TagName
 exit 0
