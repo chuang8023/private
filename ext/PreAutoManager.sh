@@ -15,8 +15,8 @@ BranchPath="/var/www/pre.qycloud.com.cn"
 cd $BranchPath
 git checkout .
 git clean -f
-git fetch origin proj/qycloud
-git fetch origin release
+git pull origin proj/qycloud
+git pull origin release
 git checkout proj/qycloud
 git branch -D pre/qycloud
 git push origin :pre/qycloud
