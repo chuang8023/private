@@ -1,14 +1,14 @@
 #!/bin/bash
 cd `dirname $0`
-. ext/git_merge.sh
+. ./git_merge.sh
 #function SaaSHotfixMergeRelease () {
-#SaaSRepertoryPath="$HOME/saas"
+SaaSRepertoryPath="$HOME/saas"
 #CurrentWeek=`date +%w`
 #CurrentTime=`date +%y%m%d`
 #ReleaseTime=`echo $Branch|awk -F "-" '{print $2}'`
 #CeShiMail="1533587684@qq.com"
 #
-#cd $SaaSRepertoryPath
+cd $SaaSRepertoryPath
 #
 #case $CurrentWeek in 
 #1)
