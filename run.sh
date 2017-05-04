@@ -24,6 +24,7 @@ cd `dirname $0`
 . lib/debug.sh
 . lib/ShowProj.sh
 . lib/professional.sh
+. lib/mongo.sh
 
 function RealPath () {
 local _Path=$1
@@ -324,4 +325,12 @@ rbuild|rgulp)
  "DebugBackUpMysql")
   Main
   RunBackup toftp
+  ;;
+ ("MongoDump")
+  Main
+  mongo mongodump
+  ;;
+  ("MongoRestore")
+  Main
+  mongo mongorestore
 esac

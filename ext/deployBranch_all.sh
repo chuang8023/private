@@ -101,7 +101,13 @@ fi
 function InPut () {
 _Param1=$1
 BranchName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
-
+cat $RundeckPath/config/projinfo | grep $BranchName
+if [ $? == 0 ];then
+	echo -e  "\033[31m" "警告：部署的分支已存在，请联系SA确认避免覆盖！" "\033[0m"
+	echo -e  "\033[31m" "警告：部署的分支已存在，请联系SA确认避免覆盖！" "\033[0m"
+	
+	exit 1
+fi
 if [[ $_Param1 != "NoCheck" ]]; then
     CheckTemplate
     cd $CodePath
@@ -231,7 +237,7 @@ Port1="5207" && Port2="5207" Port3="5207" && ENVType="development"
  Port1="22000" && Port2="22000" Port3="22000" && ENVType="development"
 ;;
 192.168.0.209)
- Port1="23000" && Port2="23000" prot3="23000" && ENVType="development"
+ Port1="23000" && Port2="23000" Prot3="23000" && ENVType="development"
 ;;
 *)
  Port1="8000" && Port2="8001" Port3="8002"
@@ -265,11 +271,12 @@ fi
 }
 
 function ManageMongo {
-MongoIsExists=`mongo admin --eval "db.adminCommand('listDatabases')" |grep $DatabaseName`
+###mongo命令创建
+MongoIsExists=`mongo --host $MongoHost:27017 admin --eval "db.adminCommand('listDatabases')" |grep $DatabaseName`
 if [[ $MongoIsExists == "" ]]; then
     echo ""
     echo "Create Mongo  $DatabaseName ..."
-    mongo<<EOF 
+    mongo --host $MongoHost:27017<<EOF 
 use admin
 use $DatabaseName
 db.createUser(  
@@ -296,6 +303,8 @@ else
     echo "Mongo $DatabaseName is Exists"
     exit 1
  fi
+
+
 }
 
 function ReService {

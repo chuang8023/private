@@ -66,7 +66,7 @@ return [
 
     'open_admin_config' => true, //config模块管理员工具
 
-    'is_project' => false,
+    'is_project' => true,
 
     'is_check' => true,
 

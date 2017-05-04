@@ -51,7 +51,8 @@ bye
 EOF
   rm ${_DBName}_$TimeStamp.sql.tar.gz
   cd -
-  echo "${_DBName} has been backup to ftp server" 
+  echo "${_DBName} has been backup to ftp server"
+  echo -e "\033[31m" "根据下面提供的下载http链接，打开浏览器下载。用户名与密码请咨询SA" "\033[0m"
   echo "Download  url is  http://www.download.aysaas.com:3300/databases/mysql/$SiteType/${_DBName}_$TimeStamp.sql.tar.gz"
   exit 0
 fi
