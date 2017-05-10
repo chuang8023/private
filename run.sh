@@ -25,6 +25,7 @@ cd `dirname $0`
 . lib/ShowProj.sh
 . lib/professional.sh
 . lib/mongo.sh
+. lib/node.sh
 
 function RealPath () {
 local _Path=$1
@@ -58,7 +59,8 @@ if [[ $INFOType == "File" ]]; then
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
             DBType=`echo $LINE | awk -F"|" '{print $4}' | awk 'gsub(/^ *| *$/,"")'`
             DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
-            CloneDBId=`echo $LINE | awk -F"|" '{print $6}' | awk 'gsub(/^ *| *$/,"")'`
+            NodePath=`echo $LINE | awk -F"|" '{print $6}' | awk 'gsub(/^ *| *$/,"")'`
+            CloneDBId=`echo $LINE | awk -F"|" '{print $7}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
 fi
@@ -253,7 +255,7 @@ rbuild|rgulp)
     ;;
 "autoCloneDB")
     Main
-    AutoCloneDB "$CloneDBId"
+    AutoCloneDB "$DBId"
    ;;
 "updateVendor")
     Main
@@ -333,4 +335,22 @@ rbuild|rgulp)
   ("MongoRestore")
   Main
   mongo mongorestore
+  ;;
+"buildnode")
+  Main
+  BuildNode
+  ;;
+"restartpm2")
+  Main
+  RestartPm2
+ ;;
+"pullnode")
+  Main
+  PullNode
+ ;;
+"updatenode")
+  Main
+  PullNode
+  BuildNode
+  RestartPm2
 esac
