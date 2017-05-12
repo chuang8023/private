@@ -5,8 +5,8 @@ BackUpDir="/home/anyuankeji/databases/mongo_backup"
 MongoPreUser=pre
 MongoPreDB=pre
 MongoPrePass=wGAAmCjkskLq2RTD
-MongoPreHost="dds-bp1a1e05a90b27b42.mongodb.rds.aliyuncs.com:3717"
-MongoHost="dds-bp1a1e05a90b27b42.mongodb.rds.aliyuncs.com:3717"
+MongoPreHost="dds-bp1a1e05a90b27b41.mongodb.rds.aliyuncs.com:3717"
+MongoHost="dds-bp1a1e05a90b27b41.mongodb.rds.aliyuncs.com:3717"
 MongoAdminUser=root
 MongoAdminPass=DpMTcTltiqNbD4R4
 
