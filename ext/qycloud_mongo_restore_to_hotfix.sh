@@ -1,20 +1,30 @@
 #!/bin/bash
 CurrentDate=`date +%Y-%m-%d`
-ls /tmp/mongobackuptohotfix.pid > /dev/null
+ls /tmp/mongobackuptohotfix.pid > /dev/null 2>&1
 [ $? -eq 0 ] && exit 1
+ProjPath="/var/www/hotfix.qycloud.com.cn"
+cd $ProjPath
 BackUpDir="/home/anyuankeji/databases/mongo_backup"
-MongoHost=dds-bp1a1e05a90b27b42.mongodb.rds.aliyuncs.com
-MongoPort=3717
-MongoAdminUser=root
-MongoAdminPass=DpMTcTltiqNbD4R4
+MongoHost1=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $1}'`
+MongoHost2=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $2}'`
+MongoUser=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.user'));"`
+MongoPass=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.password'));"`
+MongoDBName=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.dbname'));"`
      touch /tmp/mongobackuptohotfix.pid
-     mongo --host $MongoHost:$MongoPort  --username $MongoAdminUser --password $MongoAdminPass --authenticationDatabase admin <<EOF
+for MongoHost in $MongoHost1 $MongoHost2
+ do
+    IsMaster=`mongo --host $MongoHost --authenticationDatabase $MongoDBName -u $MongoUser -p $MongoPass --eval "db.runCommand({"isMaster":true})"|grep "ismaster"|awk -F ":" '{print $2}'|sed  's/ //'|sed 's/,//'` 
+    if [[ $IsMaster == "true" ]];then
+     MasterMongoHost=$MongoHost
+    fi	
+ done
+     mongo --host $MasterMongoHost  --username $MongoUser --password $MongoPass --authenticationDatabase $MongoDBName <<EOF
 use hotfix
 db.dropDatabase()
 exit
 EOF
 #备份恢复到hotfix
-   mongorestore --host $MongoHost:$MongoPort  --username $MongoAdminUser --password $MongoAdminPass --authenticationDatabase admin --db hotfix  --drop $BackUpDir/$CurrentDate/qycloud  > /dev/null 2>&1    
-      echo "$CurrentDate qycloud mongo restore to hotfix ok !"
-      [ $? -eq 0 ] && echo "$CurrentDate qycloud mongo restore to hotfix ok !" >> /tmp/qyloud_mongo-restore-hotfix.log
+   mongorestore --host $MasterMongoHost  --username $MongoUser --password $MongoPass --authenticationDatabase $MongoDBName --db $MongoDBName  --drop $BackUpDir/$CurrentDate/qycloud  > /dev/null 2>&1    
+      echo "$CurrentDate qycloud mongo restore to $MongoDBName ok !"
+      [ $? -eq 0 ] && echo "$CurrentDate qycloud mongo restore to $MongoDBName ok !" >> /tmp/qyloud_mongo-restore-hotfix.log
  rm /tmp/mongobackuptohotfix.pid
