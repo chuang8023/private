@@ -267,7 +267,8 @@ echo "Restart nginx is OK !"
 echo ""
 echo "Restart supervisor..."
 echo ""
-service supervisor force-stop
+service supervisor stop
+sleep 60
 service supervisor start
 echo ""
 [ $? -eq 0 ] && echo "Restart supervisor is OK!"
@@ -300,7 +301,8 @@ echo "Delete code is OK !"
 function DelQueue {
 echo ""
 echo "Delete queue ..."
-service supervisor force-stop
+service supervisor stop
+sleep 60
 service supervisor start
 echo "Delete queue is OK !"
 }
