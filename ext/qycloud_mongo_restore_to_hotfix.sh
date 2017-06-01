@@ -5,11 +5,11 @@ ls /tmp/mongobackuptohotfix.pid > /dev/null 2>&1
 ProjPath="/var/www/hotfix.qycloud.com.cn"
 cd $ProjPath
 BackUpDir="/home/anyuankeji/databases/mongo_backup"
-MongoHost1=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $1}'`
-MongoHost2=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $2}'`
-MongoUser=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.user'));"`
-MongoPass=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.password'));"`
-MongoDBName=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.dbname'));"`
+MongoHost1=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $1}'`
+MongoHost2=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $2}'`
+MongoUser=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.user'));"`
+MongoPass=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.password'));"`
+MongoDBName=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.dbname'));"`
      touch /tmp/mongobackuptohotfix.pid
 for MongoHost in $MongoHost1 $MongoHost2
  do

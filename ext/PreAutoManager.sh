@@ -4,11 +4,11 @@ CurrentDate=`date +%Y-%m-%d`
 BackUpDir="/home/anyuankeji/databases/mongo_backup"
 ProjPath="/var/www/pre.qycloud.com.cn"
 cd $ProjPath
-MongoHost1=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $1}'`
-MongoHost2=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $2}'`
-MongoUser=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.user'));"`
-MongoPass=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.password'));"`
-MongoDBName=`php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.dbname'));"`
+MongoHost1=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $1}'`
+MongoHost2=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"|awk -F ',' '{print $2}'`
+MongoUser=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.user'));"`
+MongoPass=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.password'));"`
+MongoDBName=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.dbname'));"`
 for MongoHost in $MongoHost1 $MongoHost2
  do
     IsMaster=`mongo --host $MongoHost --authenticationDatabase $MongoDBName -u $MongoUser -p $MongoPass --eval "db.runCommand({"isMaster":true})"|grep "ismaster"|awk -F ":" '{print $2}'|sed  's/ //'|sed 's/,//'`
