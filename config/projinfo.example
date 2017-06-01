@@ -1,3 +1,4 @@
-#Project Name(alias,not branch name)|Type(production\development)|Project Path|Database type(base\aliyun)|Database id(if type is aliyun)
+#Project Name(alias,not branch name)|Type(production\development)|Project Path|Database type(base\aliyun)|Node Path|Database id(if type is aliyun)|Clone Database id (if need)
+pre|production|/var/www/pre.qycloud.com.cn|aliyun|/home/databases/xm/Node-SaaS-Pre|xxxxxxxxx|xxxxxxxxxx
 qycloud|production|/var/www/www.qycloud.com.cn|aliyun|XXXXXXX
 dev|development|/var/www/dev.qycloud.com.cn|aliyun|XXXXXXX
