@@ -1,4 +1,4 @@
-#Project Name(alias,not branch name)|Type(production\development)|Project Path|Database type(base\aliyun)|Node Path|Database id(if type is aliyun)|Clone Database id (if need)
-pre|production|/var/www/pre.qycloud.com.cn|aliyun|/home/databases/xm/Node-SaaS-Pre|xxxxxxxxx|xxxxxxxxxx
-qycloud|production|/var/www/www.qycloud.com.cn|aliyun|XXXXXXX
-dev|development|/var/www/dev.qycloud.com.cn|aliyun|XXXXXXX
+#Project Name(是别名不是分支名)|Type(production\development)|Project Path|Database type(base\aliyun)|Database id(如果不是阿里云为空即可)|Clone Database id (如果不需要为空即可)|Node Path
+pre|production|/var/www/pre.qycloud.com.cn|aliyun|xxxxxxxxx|xxxxxxxxxx|/home/databases/xm/Node-SaaS-Pre
+qycloud|production|/var/www/www.qycloud.com.cn|aliyun|XXXXXXX||NODEPATH
+dev|development|/var/www/dev.qycloud.com.cn|aliyun|XXXXXXX||NODEPATH
