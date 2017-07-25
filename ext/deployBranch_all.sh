@@ -233,11 +233,17 @@ case $InternalIp in
 10.0.0.207)
 Port1="5207" && Port2="5207" Port3="5207" && ENVType="development"
 ;;
+10.0.0.157)
+ Port1="5210" && Port2="5210" Port3="5210" && ENVType="development"
+;;
 10.0.0.191) 
  Port1="22000" && Port2="22000" Port3="22000" && ENVType="development"
 ;;
 192.168.0.209)
- Port1="23000" && Port2="23000" Prot3="23000" && ENVType="development"
+ Port1="23000" && Port2="23000" Port3="23000" && ENVType="development"
+;;
+192.168.0.122)
+ Port1="23001" && Port2="23001" Port3="23001" && ENVType="development"
 ;;
 *)
  Port1="8000" && Port2="8001" Port3="8002"

@@ -1,5 +1,12 @@
 #!/bin/bash
 
+Branch=$1
+EMail=$2
+Web_Url=$3
+HOME="/root"
+
+ScriptPath="/root/scripts/rundeck"
+
 cd `dirname $0`
 . ext/postman_test.sh 
 . ext/git_merge.sh
@@ -9,12 +16,12 @@ cd `dirname $0`
 . ext/saas_release_merge_pre.sh
 
 #传入参数有3个，第1个参数是分支名，第2个参数是E-Mail地址，第3个是是否删除分支的标志位（0为不删除，1为删除）
-Branch=$1
-EMail=$2
-Web_Url=$3
-HOME="/root"
+#Branch=$1
+#EMail=$2
+#Web_Url=$3
+#HOME="/root"
 
-ScriptPath="/root/scripts/rundeck"
+#ScriptPath="/root/scripts/rundeck"
 
 function GetServerType {
 IPAddr=`ip -oneline route get 192.168.0.1 | awk '{print $5}'`

@@ -24,12 +24,19 @@ fi
 
 function RestartResque {
 echo ""
+local _Name=""
 echo "Restarting Queue ..."
 cd $ProjPath
     if [ $QueueName = "queue" ]; then
+	   rm -rf log/queue/*
+	   _Name=`cat config/$ProjType/app.php | grep "application_name" | awk '{print $3}' | sed "s/'//g" | sed "s/,//g"`
+	   rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
+	   ENV=$ProjType ./deploy/supervisor
            ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null << EOF  
 Y
 EOF
+	   sudo -u $runuser supervisorctl stop all 1>/dev/null
+	   sudo -u $runuser supervisorctl restart all 1>/dev/null
       else
 	   sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
 	   sleep 2
