@@ -28,7 +28,12 @@ while read LINE
 do
         _ProjConfpath=$(echo $LINE | awk -F"|" '{print $3}')
         _Type=$(echo $LINE | awk -F"|" '{print $2}')
-        _Infor=`cat $_ProjConfpath/config/$_Type/app.php | grep "sys_name"| awk -F"=>" '{print $2}'|  sed "s/'//g" | sed "s/,//g"`
+	cat $_ProjConfpath/config/$_Type/app.php | grep "sys_name" >/dev/null 2>&1
+	if [ $? == "0" ];then
+	        _Infor=`cat $_ProjConfpath/config/$_Type/app.php | grep "sys_name"| awk -F"=>" '{print $2}'|  sed "s/'//g" | sed "s/,//g"`
+	else
+		_Infor=`cat $_ProjConfpath/config/$_Type/app.php | grep "title"| awk -F"=>" '{print $2}'|  sed "s/'//g" | sed "s/,//g"`
+	fi
         echo -n -e "\033[31m" "====================================================项目全称:" "\033[0m"
         echo $_Infor
         echo -n -e "\033[31m" "=================================================Branch_Name:" "\033[0m"

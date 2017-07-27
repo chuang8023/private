@@ -27,6 +27,7 @@ cd `dirname $0`
 . lib/professional.sh
 . lib/mongo.sh
 . lib/node.sh
+. lib/ShowProj.sh
 
 function RealPath () {
 local _Path=$1
