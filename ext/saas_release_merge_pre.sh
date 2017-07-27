@@ -1,6 +1,6 @@
 #!/bin/bash
 cd `dirname $0`
-. ./git_merge.sh
+. git_merge.sh
 #function SaaSHotfixMergeRelease () {
 SaaSRepertoryPath="$HOME/saas"
 #CurrentWeek=`date +%w`

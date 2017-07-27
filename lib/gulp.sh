@@ -4,40 +4,26 @@ echo ""
 echo "Running gulp ..."
 sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 #sudo -u $runuser /usr/bin/env TERM=xterm rbuild -rf 1>/dev/null
-	if [ -e public/gulpfile.js ];then
-
-		 node -v|grep v0 > /dev/null 2>&1
-
-		[ $? -eq 0 ] && echo "please update server's node version" && exit 1 
-               
-                which gulp > /dev/null 2>&1
- 
-               [ ! $? -eq 0 ] && echo "please install gulp environment" && exit 1
-
-	       cd  public 
-           
-               echo ""
-
-               echo "update node modules...."                 
- 
-               npm --registry=https://registry.npm.taobao.org  i  > /dev/null 2>&1
-
-	       echo ""
-		
-               echo "start gulp ....."
- 
-               echo $GulpFiles|egrep "\.js|\.json"
-	        
-               gulp js >/dev/null 2>&1
-
-               echo $GulpFiles|egrep "\.css|\.scss"
-
-	       gulp css  >/dev/null 2>&1
-		
-	  else
-
-	    /usr/bin/env TERM=xterm /usr/bin/frontBuild -b 1>/dev/null
+if [ -e public/gulpfile.js ];then
+	node -v|grep v0 > /dev/null 2>&1
+	[ $? -eq 0 ] && echo "update server's node version" && apt-get install nodejs 
+	which gulp > /dev/null 2>&1
+	[ $? -eq 1 ] && echo "install gulp environment" && npm --registry=https://registry.npm.taobao.org  i gulp -g
+	cd  $ProjPath/public 
+	echo "update node modules...."                 
+	npm --registry=https://registry.npm.taobao.org  i  > /dev/null 2>&1
+	cd ..
+	echo "start gulp ....."
+	gulp ge --cwd=public
+              # echo $GulpFiles|egrep "\.js|\.json"
+              # gulp js >/dev/null 2>&1
+              # echo $GulpFiles|egrep "\.css|\.scss"
+	      # gulp css  >/dev/null 2>&1
+	if [ $? -eq 1 ];then
+		chown -R anyuan:anyuan /tmp/grunt.json
+	    	/usr/bin/env TERM=xterm /usr/bin/frontBuild -b 1>/dev/null
 	fi
+fi
 if [[ $? == 0 ]];then
     echo ""
     echo "Gulp is OK !"
