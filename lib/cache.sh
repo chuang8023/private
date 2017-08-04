@@ -66,7 +66,7 @@ if [[ -n $_Option ]]; then
 	echo "truncate table sys_user_chat_token is OK !"
     else
 	echo "truncate清理token失败，改用delete清理token"
-	mysql -u${USER} -p${PASS} -h${HOST} -e "use ${DB};delete * from sys_user_chat_token;"
+	mysql -u${USER} -p${PASS} -h${HOST} -e "use ${DB};delete from sys_user_chat_token;"
 	if [ $? -eq 0 ];then
 		echo "delete table sys_user_chat_token is OK !"
 	fi	
