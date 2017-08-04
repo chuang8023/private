@@ -1,5 +1,5 @@
 function ChkStopResque () {
-local Queue=`ENV=$ProjType ./deploy/$QueueName status | grep -i "running"`
+local Queue=`ENV=$ProjType ./deploy/$QueueName status | grep -i "RUNNING"`
 
 if [[ $Queue = "" ]]; then
     echo ""
@@ -10,7 +10,7 @@ if [[ $Queue = "" ]]; then
           sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/$QueueName start 1>/dev/null
    fi
 
-    local Queue=`ENV=$ProjType ./deploy/$QueueName status | grep -i "running"`
+    local Queue=`ENV=$ProjType ./deploy/$QueueName status | grep -i "RUNNING"`
 
     if [[ $Queue != "" ]]; then
         echo ""
@@ -36,6 +36,7 @@ cd $ProjPath
 Y
 EOF
    	   if [ $? -eq 1 ];then
+		echo "重启队列失败，删除队列配置文件和队列日志，重新生成配置文件，重启supervisor"
 	   	rm -rf log/queue/*
 	  	_Name=`cat config/$ProjType/app.php | grep "application_name" | awk '{print $3}' | sed "s/'//g" | sed "s/,//g"`
 	   	rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf

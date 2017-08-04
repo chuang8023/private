@@ -204,7 +204,7 @@ rbuild|rgulp)
     UpdateVendor
     Migrate "all"
     Rgulp "-f"
-    EmptyCache "all"
+    EmptyCache "all" "rebuild_to_redis"
     Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
@@ -369,7 +369,7 @@ rbuild|rgulp)
   ;;
   ("convert_mongo")
   Main	
-  Convert_mongodb
+  Convert_mongodb "convert_mongo"
   ;;
  "professnalresque")
   Main

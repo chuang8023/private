@@ -1,14 +1,14 @@
 function Cache () {
 local _Ent=$1
 local _Option=$2
-
 cd $ProjPath
 case $_Option in
 "rebuild_org_tree")
+_Option=`ENV=$ProjType ./vendor/phing/phing/bin/phing -l | grep $_Option`
 if [[ $_Ent == "" ]]; then
     echo ""
     echo "rebuilding all enterprise org tree ..."
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_org_tree 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing $_Option 1>/dev/null << EOF
 1
 all
 EOF
@@ -17,7 +17,7 @@ echo "rebuild all enterprise org tree is OK !"
 else
     echo ""
     echo "rebuilding $_Ent org tree ..."
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_org_tree 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing $_Option 1>/dev/null << EOF
 1
 $_Ent
 EOF
@@ -26,14 +26,15 @@ echo "rebuild $_Ent org tree is OK !"
 fi
 ;;
 "rebuild_to_redis")
+_Option=`ENV=$ProjType ./vendor/phing/phing/bin/phing -l | grep $_Option`
 if [[ $_Ent != "" ]]; then
     echo ""
     echo "rebuilding $_Ent to redis"
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_to_redis 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing $_Option 1>/dev/null << EOF
 2
 $_Ent
 EOF
-    ENV=$ProjType ./vendor/phing/phing/bin/phing rebuild_to_redis 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing $_Option 1>/dev/null << EOF
 1
 $_Ent
 EOF
@@ -61,9 +62,15 @@ if [[ -n $_Option ]]; then
     local HOST=`cat $ProjConfPath/database.php | grep -w -m 1 host | awk -F "'" '{print $4}'`
     local PASS=`cat $ProjConfPath/database.php | grep -w -m 1 password | awk -F "'" '{print $4}'`
     mysql -u${USER} -p${PASS} -h${HOST} -e "use ${DB};truncate sys_user_chat_token;"
-
-    echo ""
-    echo "delete table sys_user_chat_token is OK !"
+    if [ $? -eq 0 ];then
+	echo "truncate table sys_user_chat_token is OK !"
+    else
+	echo "truncate清理token失败，改用delete清理token"
+	mysql -u${USER} -p${PASS} -h${HOST} -e "use ${DB};delete * from sys_user_chat_token;"
+	if [ $? -eq 0 ];then
+		echo "delete table sys_user_chat_token is OK !"
+	fi	
+    fi
 fi
 }
 #使用CleanRedis或EmptyCache均能清空缓存，清空缓存后，需要使用Cache函数，重建组织架构缓存
@@ -86,11 +93,14 @@ fi
  }
 
 function EmptyCache () {
+cd $ProjPath
 local _Ent=$1
+local _Option=$2
+_Option=`ENV=$ProjType ./vendor/phing/phing/bin/phing -l | grep $_Option`
 if [[ $_Ent != "" ]]; then
     echo ""
     echo "starting clean ${_Ent}'s  redis !"
-    ENV=$ProjType ./vendor/phing/phing/bin/phing org:rebuild_to_redis 1>/dev/null << EOF
+    ENV=$ProjType ./vendor/phing/phing/bin/phing $_Option 1>/dev/null << EOF
 2
 $_Ent
 EOF
@@ -103,8 +113,10 @@ else
 fi
 }
 function Convert_mongodb () {
-cd $ProjRealPath
-ENV=$ProjType ./bin/phing convert_mongodb 2>/dev/null << EOF
+cd $ProjPath
+local _Option=$1
+_Option=`ENV=$ProjType ./vendor/phing/phing/bin/phing -l | grep $_Option`
+ENV=$ProjType ./vendor/phing/phing/bin/phing $_Option 2>/dev/null << EOF
 
 n
 n
