@@ -31,18 +31,17 @@ do
        		;;
 	esac
 done < $ProjConfPath/database.php
-
 ###备份mongo
 mongodump -u$_DBUser -p=$_DBPasswd -h$_Host:$_Port -d$_DBName -o $BackupDir/${_DBName}_mongo_`date +%y%m%d%H%M%S`
 if [ $? == 0 ];then
-	echo -e "mongodump is ok! the mongodump file is in '$BackupDir' "
+	echo -e "mongodump is ok! the mongodump file is in '$BackupDir',the name is '${_DBName}_mongo_`date +%y%m%d%H%M%S`' "
 else
 	echo "mongo备份失败，请检查，或者联系SA！"
 fi
 }
 
 function MongoRestore {
-#mongorestore --username=$_DBUser --password=$_DBPasswd --host=$_Host:$_Port --db=$_DBName --drop $BackupDir/${_DBName}_mongo_`date +%y%m%d%H%M%S`/${_DBName}
+mongorestore --username=$_DBUser --password=$_DBPasswd --host=$_Host:$_Port --db=$_DBName --drop $BackupDir/${_DBName}_mongo_`date +%y%m%d%H%M%S`/${_DBName}
 if [ $? == 0 ];then
 	echo "mongo恢复成功！"
 else

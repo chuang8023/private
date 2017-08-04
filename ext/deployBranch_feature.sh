@@ -143,6 +143,7 @@ chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
 echo ""
 echo "Pull branch $ReleaseName is OK !"
+
 }
 
 function ModifyConf {
@@ -160,14 +161,29 @@ sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaa
 sed -i "s/$TBranch/$Branch/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 #sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+#cd /var/www/www.$Branch.$sBranchName.aysaas.com
+#if [ -e ./deploy/supervisor ] ;then 
+#  ./deploy/supervisor 
+#   sed  -i '/feature/d' /etc/supervisor/supervisord.conf
+#  cd -
+#fi
+#echo ""
+#echo "Modify config file is OK !"
+
+#####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
+cp /var/www/www.$Branch.$sBranchName.aysaas.com/config/base/queue.php /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
+sed -i "s/'multiProcess' => false/'multiProcess' => true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
+
+
 cd /var/www/www.$Branch.$sBranchName.aysaas.com
-if [ -e ./deploy/supervisor ] ;then 
-  ./deploy/supervisor 
+if [ -e ./deploy/supervisor ] ;then
+  ./deploy/supervisor
    sed  -i '/feature/d' /etc/supervisor/supervisord.conf
   cd -
 fi
 echo ""
 echo "Modify config file is OK !"
+
 }
 
 function ManageDB {
@@ -292,8 +308,11 @@ mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
 
 function DelCode {
 echo ""
+local _Name=""
+_Name=`cat /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php | grep "application_name" | awk '{print $3}' | sed "s/'//g" | sed "s/,//g"`
 echo "Delete code ..."
 rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
+rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
 echo ""
 echo "Delete code is OK !"
 }
