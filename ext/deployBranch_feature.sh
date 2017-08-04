@@ -308,8 +308,11 @@ mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
 
 function DelCode {
 echo ""
+local _Name=""
+_Name=`cat /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php | grep "application_name" | awk '{print $3}' | sed "s/'//g" | sed "s/,//g"`
 echo "Delete code ..."
 rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
+rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
 echo ""
 echo "Delete code is OK !"
 }
