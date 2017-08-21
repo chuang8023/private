@@ -46,7 +46,7 @@ ProjName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
 if [[ $ProjName == "" ]]; then
     echo ""
     echo "The project name cannot be empty !"
-    exit 1
+#    exit 1
 fi
 
 if [[ $INFOType == "File" ]]; then
@@ -71,7 +71,7 @@ fi
 if [[ $ProjPath == "" ]]; then
     echo ""
     echo "Cannot find project named $ProjName !"
-    exit 1
+ #   exit 1
 fi
 
 AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
@@ -84,7 +84,7 @@ case $ProjType in
 *)
     echo ""
     echo "Project type is wrong !"
-    exit 1
+#    exit 1
 esac
 
 if [[ -d $ProjPath/config/$ProjType ]]; then
@@ -97,13 +97,13 @@ if [[ -d $ProjPath/config/$ProjType ]]; then
     if [[ $BranchName == "" ]]; then
         echo ""
         echo "$ProjPath not find git !"
-        exit 1
+#        exit 1
     fi
     ProjConfPath="$ProjPath/config/$ProjType"
 else
     echo ""
     echo "Not find project or project type is wrong !"
-    exit 1
+#    exit 1
 fi
 
 ProjRealPath=`RealPath "$ProjPath"`
