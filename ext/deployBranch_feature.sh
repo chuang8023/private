@@ -301,7 +301,7 @@ echo "Create crontab is OK !"
 }
 
 function EchoFeatureInfo {
-echo "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun" >> $RundeckPath/config/projinfo
+echo "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun|||" >> $RundeckPath/config/projinfo
 cat $RundeckPath/config/projinfo | sort | uniq > $RundeckPath/config/_tmp.projinfo
 mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
 }
