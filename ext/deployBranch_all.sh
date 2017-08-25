@@ -299,7 +299,8 @@ EOF
     echo ""
     echo "Convert data to Mongo  $DatabaseName ..."
     cd /var/www/www.$SysType.$SysName.aysaas.com
-    ./vendor/phing/phing/bin/phing convert_mongodb << EOF
+    local _Option=`ENV=$ProjType ./vendor/phing/phing/bin/phing -l | grep convert_mongodb`
+    ./vendor/phing/phing/bin/phing ${_Option} << EOF
 
 n
 EOF
