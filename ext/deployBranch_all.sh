@@ -165,6 +165,8 @@ function PullBranch {
 echo ""
 echo "Pull branch $BranchName ..."
 cd /var/www/www.$SysType.$SysName.aysaas.com
+git init
+git remote add origin git@e.coding.net:Safirst/AnYunProj.git
 git fetch origin $BranchName:$BranchName 1>/dev/null
 git checkout $BranchName 1>/dev/null
 NoUsed=(`git branch | grep -v "*" | grep -v "$BranchName"`)
