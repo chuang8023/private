@@ -3,6 +3,7 @@
 Param1=$1
 Param2=$2
 Param3=$3
+Param4=$4
 
 cd `dirname $0`
 . config/rundeck.cf
@@ -26,6 +27,7 @@ cd `dirname $0`
 . lib/professional.sh
 . lib/mongo.sh
 . lib/node.sh
+. lib/ShowProj.sh
 
 function RealPath () {
 local _Path=$1
@@ -43,7 +45,7 @@ ProjName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
 
 if [[ $ProjName == "" ]]; then
     echo ""
-#    echo "The project name cannot be empty !"
+    echo "The project name cannot be empty !"
     exit 1
 fi
 
@@ -68,7 +70,7 @@ fi
 
 if [[ $ProjPath == "" ]]; then
     echo ""
- #   echo "Cannot find project named $ProjName !"
+    echo "Cannot find project named $ProjName !"
     exit 0
 fi
 
@@ -152,6 +154,12 @@ case $Param1 in
     BackupDB 
     Migrate "$_ID"
     ;;
+"choicemigrate")
+     _MID=$Param3
+     _CID=$Param4
+     Main
+     Choice_Migrate "$_MID" "$_CID"
+     ;;
 "closeMinAssets")
     Main
     MinAssets "close"
@@ -178,6 +186,13 @@ rbuild|rgulp)
     Main
     BackupDB "-f"
     ;;
+ "ftp_backupDB")
+     FTP_backupDB
+     ;;
+ "mysql_restore")
+     Main
+     Mysql_Restore $Param3
+     ;;
 "showBranch")
     Main
     ShowBranch
@@ -189,7 +204,7 @@ rbuild|rgulp)
     UpdateVendor
     Migrate "all"
     Rgulp "-f"
-    EmptyCache "all"
+    EmptyCache "all" "rebuild_to_redis"
     Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
@@ -276,7 +291,11 @@ rbuild|rgulp)
    ;;
 "catphplog")
   Main
-  CatPHPLog   
+  CatPHPLog $Param3   
+   ;;
+"cattomcatlog")
+   echo $Param2
+   CatTomcatLog $Param2
    ;;
 "catresquelog")
  Main
@@ -294,12 +313,47 @@ rbuild|rgulp)
    ("rules_engine")
    CatResqueLog  rules_engine
    ;;
+   ("rules_engine_1")
+   CatResqueLog  rules_engine_1
+   ;;
+   ("rules_engine_2")
+   CatResqueLog  rules_engine_2
+   ;;
+   ("rules_engine_3")
+   CatResqueLog  rules_engine_3
+   ;;
+   ("rules_engine_4")
+   CatResqueLog  rules_engine_4
+   ;;
+   ("rules_engine_5")
+   CatResqueLog  rules_engine_5
+   ;;
    ("wf_monitor")
    CatResqueLog  wf_monitor
    ;;
    ("opensearch_engine")
    CatResqueLog  opensearch_engine
+   ;;
+   ("wf_instance_0")
+   CatResqueLog wf_instance_0
+   ;;
+   ("wf_instance_1")
+   CatResqueLog wf_instance_1
+   ;;
+   ("wf_instance_2")
+   CatResqueLog wf_instance_2
+   ;;
+   ("wf_instance_3")
+   CatResqueLog wf_instance_3
+   ;;
+   ("wf_instance_4")
+   CatResqueLog wf_instance_4
+   ;;
   esac	
+   ;;
+  "downloadlog")
+   Main
+   DownloadLog $Param3 $Param4
    ;;
    ("opendebug")
    Main
@@ -315,7 +369,7 @@ rbuild|rgulp)
   ;;
   ("convert_mongo")
   Main	
-  Convert_mongodb
+  Convert_mongodb "convert_mongo"
   ;;
  "professnalresque")
   Main
@@ -323,7 +377,7 @@ rbuild|rgulp)
   ;;
  "showproj")
   ConfigPath="$(cd `dirname $0`;pwd)/config"
-  ShowProj "$ConfigPath"
+  ShowProj "$ConfigPath" "$ProjPath" "$ProjType"
   ;;
  "DebugBackUpMysql")
   Main
