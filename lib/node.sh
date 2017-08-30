@@ -1,4 +1,3 @@
-#!/bin/bash
 function PullNode () {
 echo ""
 echo "$BranchName pulling the new node code ..."

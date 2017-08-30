@@ -1,4 +1,3 @@
-#!/bin/bash
 function ProfessnalResque {
 ProfessnalResque=$Param3
 Main

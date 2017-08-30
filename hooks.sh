@@ -4,6 +4,8 @@ Branch=$1
 EMail=$2
 RepName=$3
 
+autoMergePre=false
+
 SaaSRepertoryPath="/root/saas"
 IOSRepertoryPath="/root/ios"
 AndroidRepName="/root/android"
@@ -110,8 +112,10 @@ case "$RepName" in
 "$WebRepName")
     #saas's master hotfix 合并
     SaaSMergeHotFix
-    #saas's release pre 合并
-    SaaSReleaseMergePre
+    if [[ $autoMergePre ]]; then
+        #saas's release pre 合并
+        SaaSReleaseMergePre
+    fi
     ;;
 "$AndroidRepName")
     #android hotfix 合并
