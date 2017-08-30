@@ -45,12 +45,12 @@ cd $ProjPath
 if [[ $1 == "-f" ]]; then
     RunGulp
 else
-    local NeedGulp=`git diff $_CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | egrep "\.js|\.css|\.scss|\.json"`
+    local NeedGulp=`git diff $_CommitID | grep "diff --git a" | awk '{print $4}' | cut -c 3- | egrep "\.js|\.css|\.scss|\.json|\.vue"`
     if [[ $NeedGulp != "" ]]; then
         RunGulp $NeedGulp
     else
         echo ""
-        echo "No .js or .css !"
+        echo "No .js or .css or .vue!"
     fi
     sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
 fi
