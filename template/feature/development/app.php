@@ -4,6 +4,8 @@ return array(
 
     'is_debug' => true,
 
+    'is_testing_api' => true,
+
     'application_name' => 'AYSaaS-templateRelease',
 
     'root_domain' => 'feature.templateRelease.aysaas.com:55555',
