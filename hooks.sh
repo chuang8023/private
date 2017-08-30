@@ -4,7 +4,7 @@ Branch=$1
 EMail=$2
 RepName=$3
 
-autoMergePre=false
+autoMergePre=true
 
 SaaSRepertoryPath="/root/saas"
 IOSRepertoryPath="/root/ios"
