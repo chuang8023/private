@@ -409,10 +409,4 @@ rbuild|rgulp)
   BuildNode
   RestartPm2
   ;;
-"automergepre")
-  if [[ $Param3 == 'true' ]];then
-    sed -i "s/^autoMergePre=.*/autoMergePre=true/" $(cd `dirname $0`;pwd)/hooks.sh
-  else
-    sed -i "s/^autoMergePre=.*/autoMergePre=false/" $(cd `dirname $0`;pwd)/hooks.sh
-  fi
 esac
