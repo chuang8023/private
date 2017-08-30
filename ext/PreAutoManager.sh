@@ -78,13 +78,24 @@ rm /etc/nginx/sites-enabled/pre.qycloud.com.cn
 nginx -s reload
 }
 
+function autoMergePre () {
+if [[ $1 == "true" ]]; then
+    sed -i "s/^autoMergePre=.*/autoMergePre=true/" ../$(cd `dirname $0`;pwd)/hooks.sh
+else
+    sed -i "s/^autoMergePre=.*/autoMergePre=false/" ../$(cd `dirname $0`;pwd)/hooks.sh
+fi
+}
+
 case $Op in 
-  create_pre_branch)
+create_pre_branch)
   CreatePreBranch
   ;; 
-  init_pre_service)
- InitPreService
+init_pre_service)
+  autoMergePre "true"
+  InitPreService
   ;;
-  drop_pre_service)
- DropPreService
+drop_pre_service)
+  autoMergePre "false"
+  DropPreService
+  ;;
 esac

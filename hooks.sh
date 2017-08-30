@@ -112,7 +112,7 @@ case "$RepName" in
 "$WebRepName")
     #saas's master hotfix 合并
     SaaSMergeHotFix
-    if [[ $autoMergePre ]]; then
+    if [[ $autoMergePre == "true" ]]; then
         #saas's release pre 合并
         SaaSReleaseMergePre
     fi
