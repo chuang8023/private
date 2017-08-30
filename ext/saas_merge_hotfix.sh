@@ -1,12 +1,12 @@
 function SaaSMergeHotFix () {
-SaaSRepertoryPath="$HOME/saas"
-cd $SaaSRepertoryPath
 
-echo $Web_Url|grep SaaS > /dev/null 2>&1
+#echo $RepName | grep "$WebRepName" > /dev/null 2>&1
+#IsSaaS=$?
 
-IsSaaS=$?
+#if [[ $Branch = "master" && $IsSaaS = 0 ]]; then
+if [[ $Branch = "master" ]]; then
 
-if [[ $Branch = "master" && $IsSaaS = 0 ]]; then
+  cd $SaaSRepertoryPath
   
   git checkout master 
   git pull --rebase origin master

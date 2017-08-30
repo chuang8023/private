@@ -1,12 +1,12 @@
 function IOSMergeHotFix () {
-IOSRepertoryPath="$HOME/ios"
-cd $IOSRepertoryPath
 
-echo $Web_Url|grep iOS > /dev/null 2>&1
+#echo $RepName | grep "$IOSRepName" > /dev/null 2>&1
+#IsIOS=$?
 
-IsIOS=$?
+#if [[ $Branch = "master" && $IsIOS = 0 ]]; then
+if [[ $Branch = "master" ]]; then
 
-if [[ $Branch = "master" && $IsIOS = 0 ]]; then
+  cd $IOSRepertoryPath
   
   git checkout master 
   git pull --rebase origin master

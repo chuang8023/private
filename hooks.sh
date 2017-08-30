@@ -2,10 +2,17 @@
 
 Branch=$1
 EMail=$2
-Web_Url=$3
-HOME="/root"
+RepName=$3
 
+SaaSRepertoryPath="/root/saas"
+IOSRepertoryPath="/root/ios"
+AndroidRepName="/root/android"
+HOME="/root"
 ScriptPath="/root/scripts/rundeck"
+
+WebRepName="`cd $SaaSRepertoryPath;git remote -v|grep "fetch"|awk '{print $2}'| awk -F":" '{print $2}'|awk -F'/' '{print $2}'|awk -F'.' '{print $1}'`"
+IOSRepName="`cd $IOSRepertoryPath;git remote -v|grep "fetch"|awk '{print $2}'| awk -F":" '{print $2}'|awk -F'/' '{print $2}'|awk -F'.' '{print $1}'`"
+AndroidRepName="`cd $AndroidRepName;git remote -v|grep "fetch"|awk '{print $2}'| awk -F":" '{print $2}'|awk -F'/' '{print $2}'|awk -F'.' '{print $1}'`"
 
 cd `dirname $0`
 . ext/postman_test.sh
@@ -14,8 +21,6 @@ cd `dirname $0`
 . ext/ios_merge_hotfix.sh
 . ext/saas_merge_hotfix.sh
 . ext/saas_release_merge_pre.sh
-
-
 
 #传入参数有3个，第1个参数是分支名，第2个参数是E-Mail地址，第3个是是否删除分支的标志位（0为不删除，1为删除）
 #Branch=$1
@@ -101,14 +106,22 @@ fi
 rm -rf /tmp/_HookMail_${Branch//\//_}
 }
 
-#saas's master hotfix 合并
-SaaSMergeHotFix
-#saas's release hotfix 合并
-SaaSHotfixMergeRelease
-#android hotfix 合并
-AndroidMergeHotFix
-#ios hotfix 合并
-IOSMergeHotFix
+case "$RepName" in
+"$WebRepName")
+    #saas's master hotfix 合并
+    SaaSMergeHotFix
+    #saas's release pre 合并
+    SaaSReleaseMergePre
+    ;;
+"$AndroidRepName")
+    #android hotfix 合并
+    AndroidMergeHotFix
+    ;;
+"$IOSRepName")
+    #ios hotfix 合并
+    IOSMergeHotFix
+    ;;
+esac
 
 if [[ -n $Branch ]]; then
     GetServerType

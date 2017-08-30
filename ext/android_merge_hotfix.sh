@@ -1,13 +1,13 @@
 function AndroidMergeHotFix () {
-AndroidRepertoryPath="$HOME/android"
-cd $AndroidRepertoryPath
 
-echo $Web_Url|grep Android > /dev/null 2>&1
+#echo $RepName | grep "$AndroidRepName" > /dev/null 2>&1
+#IsAndroid=$?
 
-IsAndroid=$?
-
-if [[ $Branch = "master" && $IsAndroid = 0 ]]; then
-  
+#if [[ $Branch = "master" && $IsAndroid = 0 ]]; then
+if [[ $Branch = "master" ]]; then
+ 
+  cd $AndroidRepertoryPath
+ 
   git checkout master 
   git pull --rebase origin master
   git log  -n 1 --name-only --grep "hotfix"|grep hotfix > /dev/null 
