@@ -28,6 +28,7 @@ cd `dirname $0`
 . lib/mongo.sh
 . lib/node.sh
 . lib/ShowProj.sh
+. lib/ShowConfig.sh
 
 function RealPath () {
 local _Path=$1
@@ -378,6 +379,10 @@ rbuild|rgulp)
  "showproj")
   ConfigPath="$(cd `dirname $0`;pwd)/config"
   ShowProj "$ConfigPath" "$ProjPath" "$ProjType"
+  ;;
+ "showconfig")
+  Main
+  ShowConfig
   ;;
  "DebugBackUpMysql")
   Main
