@@ -3,7 +3,9 @@
 
 import urllib2, cookielib, json, os, time
 
+#项目信息表所在目录
 projInfoPath = '/root/scripts/rundeck/config/projinfo'
+#不被清理的feature白名单，一行一个feature分支名
 featureWhiteList = '/root/scripts/rundeck/config/featureWhiteList'
 
 loginUrl = 'https://safirst.coding.net/api/v2/account/login'
@@ -21,7 +23,7 @@ try:
     check = data['data']['list'][0]['srcBranch']
 except:
     with open(logPath, 'a') as f:
-        f.write(time.strftime("%Y/%m/%d/%H:%M:%S", time.gmtime())+ ' - [Error] - Cannot get branch list !'+ '\n')
+        f.write(time.strftime("%Y/%m/%d/%H:%M:%S", time.gmtime())+ ' - [Error] - Cannot get branch list\n')
 else:
     try:
         featureList = []
@@ -40,8 +42,9 @@ else:
         needClean = list(set(deployFeature).difference(set(featureList)).difference(set(whiteList)))
     except:
         with open(logPath, 'a') as f:
-            f.write(time.strftime("%Y/%m/%d/%H:%M:%S", time.gmtime())+ ' - [Error] - Cannot get branch information !'+ '\n')
+            f.write(time.strftime("%Y/%m/%d/%H:%M:%S", time.gmtime())+ ' - [Error] - Cannot get branch information\n')
     else:
         for i in needClean:
             os.system('/root/scripts/rundeck/ext/deployBranch_feature.sh delete '+ i)
-
+            with open(logPath, 'a') as f:
+                f.write(time.strftime("%Y/%m/%d/%H:%M:%S", time.gmtime())+ ' - [INFO] - Delete '+ i + 'is OK\n')
