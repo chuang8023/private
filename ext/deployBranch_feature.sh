@@ -372,7 +372,7 @@ echo "Delete DockerMongo is ok !"
 function DelInfo {
 echo ""
 echo "Delete project info"
-IsExit=`cat ${RundeckPath}/config/projinfo | grep -n "$ReleaseName|"`
+IsExit=`cat ${RundeckPath}/config/projinfo | grep -n "${ReleaseName}|"`
 if [[ -n $IsExit ]]; then
     RowNum=`echo $IsExit | awk -F":" '{print $1}' | head -n 1`
     sed -i "${RowNum}d" ${RundeckPath}/config/projinfo
