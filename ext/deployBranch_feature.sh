@@ -372,12 +372,11 @@ echo "Delete DockerMongo is ok !"
 function DelInfo {
 echo ""
 echo "Delete project info"
-IsExit=`cat $RundeckPath/config/projinfo | grep -n "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun"`
+IsExit=`cat ${RundeckPath}/config/projinfo | grep -n "$ReleaseName|"`
 if [[ -n $IsExit ]]; then
-    RowNum=`cat $RundeckPath/config/projinfo | grep -n "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun" | awk -F":" '{print $1}' | head -n 1`
-    sed -i "${RowNum}d" $RundeckPath/config/projinfo
+    RowNum=`echo $IsExit | awk -F":" '{print $1}' | head -n 1`
+    sed -i "${RowNum}d" ${RundeckPath}/config/projinfo
 fi
-    sed -i '/'$Branch'\.'$sBranchName'\b/d' /var/log/DeplayDone.log
 echo ""
 echo "Delete project info is OK !"
 }
