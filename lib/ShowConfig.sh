@@ -2,7 +2,7 @@ function ShowConfig() {
 	cd $ProjPath
 	echo "项目配置信息如下所示："
 	local Mysql_host=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.host'));"|awk -F ',' '{print $1}'`
-	local Mysql_port=t`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
+	local Mysql_port=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
 	local Mysql_dbname=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.dbname'));"|awk -F ',' '{print $1}'`
 	local Mysql_user=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.user'));"|awk -F ',' '{print $1}'`
 	local Mysql_pwd=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.password'));"|awk -F ',' '{print $1}'`
@@ -23,6 +23,8 @@ function ShowConfig() {
 	local Fileio_domain=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('app.fileio_domain'));"|awk '{print $1}'`
 	local Static_domain=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('app.static_domain'));"|awk '{print $1}'`
 	local Preview_domain=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('app.preview_domain'));"|awk -F "/" '{print $1}'`
+	
+	#InternalIp=`/sbin/ifconfig eth0|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"|sed s/"地址"//`
 	echo "====================================="
 	echo "数据库Mysql配置信息："
 	if [ ${Mysql_host} == "localhost" ];then
