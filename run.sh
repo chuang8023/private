@@ -114,14 +114,20 @@ TimeStamp=`date +%y%m%d%H%M%S`
 case $Param1 in
 "update")
     _DBUrl=$Param3
+    _notMigrate=$Param4
     Main
+    if [[ $_DBUrl == "notModifyDBUrl" ]]; then
+        _DBUrl=""
+    fi
     modifyDBurl "$_DBUrl" "check"
     GetPullLog
     PullCode
     BackupDB
     EchoPullLog
     UpdateVendor
-    Migrate "all"
+    if [[ $_notMigrate != "notMigrate" ]]; then
+        Migrate "all"
+    fi
     Rgulp "$CommitID"
     ;;
 "showPullLog")
