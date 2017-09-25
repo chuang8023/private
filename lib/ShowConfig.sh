@@ -1,6 +1,7 @@
 function ShowConfig() {
 	cd $ProjPath
 	echo "项目配置信息如下所示："
+	local Application_Name=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('app.application_name'));"|awk -F ',' '{print $1}'`
 	local Mysql_host=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.host'));"|awk -F ',' '{print $1}'`
 	local Mysql_port=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
 	local Mysql_dbname=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('database.servers.default.dbname'));"|awk -F ',' '{print $1}'`
@@ -23,6 +24,8 @@ function ShowConfig() {
 	local Fileio_domain=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('app.fileio_domain'));"|awk '{print $1}'`
 	local Static_domain=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('app.static_domain'));"|awk '{print $1}'`
 	local Preview_domain=`ENV=$ProjType php -r "include 'bootstrap.php'; print( \Config('app.preview_domain'));"|awk -F "/" '{print $1}'`
+        Path=`ls -ld $ProjPath | awk '{print $9}' | awk -F"/" '{print $4}'`
+        local Tomcat_config=`cat /etc/nginx/sites-available/$Path | grep -A 5 "/eai/project/" | head -n 7 | grep "proxy_pass"`
 	
 	#InternalIp=`/sbin/ifconfig eth0|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"|sed s/"地址"//`
 	echo "====================================="
@@ -61,4 +64,13 @@ function ShowConfig() {
         echo "static_domain  =>"${Static_domain}
         echo "fileio_domain  =>"${Fileio_domain}
         echo "preview_domain =>"${Preview_domain}
+	echo "====================================="
+	if [ "${Tomcat_config}" == " " ];then
+		echo "没有配置tomcat"
+	else
+		echo "nginx反向代理为/eai/project/"
+		echo "pplication_Name为:"${Application_Name}
+		echo "tomcat的war包地址&名称为："${Tomcat_config}
+	fi
+	
 }
