@@ -28,6 +28,7 @@ cd `dirname $0`
 . lib/mongo.sh
 . lib/node.sh
 . lib/ShowProj.sh
+. lib/ShowConfig.sh
 
 function RealPath () {
 local _Path=$1
@@ -71,7 +72,7 @@ fi
 if [[ $ProjPath == "" ]]; then
     echo ""
     echo "Cannot find project named $ProjName !"
- #   exit 1
+    exit 0
 fi
 
 AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
@@ -113,14 +114,20 @@ TimeStamp=`date +%y%m%d%H%M%S`
 case $Param1 in
 "update")
     _DBUrl=$Param3
+    _notMigrate=$Param4
     Main
+    if [[ $_DBUrl == "notModifyDBUrl" ]]; then
+        _DBUrl=""
+    fi
     modifyDBurl "$_DBUrl" "check"
     GetPullLog
     PullCode
     BackupDB
     EchoPullLog
     UpdateVendor
-    Migrate "all"
+    if [[ $_notMigrate != "notMigrate" ]]; then
+        Migrate "all"
+    fi
     Rgulp "$CommitID"
     ;;
 "showPullLog")
@@ -204,7 +211,7 @@ rbuild|rgulp)
     UpdateVendor
     Migrate "all"
     Rgulp "-f"
-    EmptyCache "all"
+    EmptyCache "all" "rebuild_to_redis"
     Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
@@ -369,7 +376,7 @@ rbuild|rgulp)
   ;;
   ("convert_mongo")
   Main	
-  Convert_mongodb
+  Convert_mongodb "convert_mongo"
   ;;
  "professnalresque")
   Main
@@ -378,6 +385,10 @@ rbuild|rgulp)
  "showproj")
   ConfigPath="$(cd `dirname $0`;pwd)/config"
   ShowProj "$ConfigPath" "$ProjPath" "$ProjType"
+  ;;
+ "showconfig")
+  Main
+  ShowConfig
   ;;
  "DebugBackUpMysql")
   Main
@@ -408,4 +419,5 @@ rbuild|rgulp)
   PullNode
   BuildNode
   RestartPm2
+  ;;
 esac

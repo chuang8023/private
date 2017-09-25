@@ -79,12 +79,13 @@ nginx -s reload
 }
 
 case $Op in 
-  create_pre_branch)
+create_pre_branch)
   CreatePreBranch
   ;; 
-  init_pre_service)
- InitPreService
+init_pre_service)
+  InitPreService
   ;;
-  drop_pre_service)
- DropPreService
+drop_pre_service)
+  DropPreService
+  ;;
 esac

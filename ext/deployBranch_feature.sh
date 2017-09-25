@@ -130,6 +130,8 @@ function PullBranch {
 echo ""
 echo "Pull branch $ReleaseName ..."
 cd /var/www/www.$Branch.$sBranchName.aysaas.com
+git init
+git remote add origin git@e.coding.net:Safirst/AnYunProj.git
 git fetch origin $ReleaseName:$ReleaseName 1>/dev/null
 git checkout $ReleaseName 1>/dev/null
 NoUsed=(`git branch | grep -v "*" | grep -v "$ReleaseName"`)
@@ -154,7 +156,7 @@ DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "270
 sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 #sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
-sed -i "s/$TMysqlPort/$DockerMysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
 sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
 #sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 
@@ -301,15 +303,18 @@ echo "Create crontab is OK !"
 }
 
 function EchoFeatureInfo {
-echo "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun" >> $RundeckPath/config/projinfo
+echo "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun|||" >> $RundeckPath/config/projinfo
 cat $RundeckPath/config/projinfo | sort | uniq > $RundeckPath/config/_tmp.projinfo
 mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
 }
 
 function DelCode {
 echo ""
+local _Name=""
+_Name=`cat /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php | grep "application_name" | awk '{print $3}' | sed "s/'//g" | sed "s/,//g"`
 echo "Delete code ..."
 rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
+rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
 echo ""
 echo "Delete code is OK !"
 }
@@ -367,12 +372,11 @@ echo "Delete DockerMongo is ok !"
 function DelInfo {
 echo ""
 echo "Delete project info"
-IsExit=`cat $RundeckPath/config/projinfo | grep -n "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun"`
+IsExit=`cat ${RundeckPath}/config/projinfo | grep -n "${ReleaseName}|"`
 if [[ -n $IsExit ]]; then
-    RowNum=`cat $RundeckPath/config/projinfo | grep -n "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com|aliyun" | awk -F":" '{print $1}' | head -n 1`
-    sed -i "${RowNum}d" $RundeckPath/config/projinfo
+    RowNum=`echo $IsExit | awk -F":" '{print $1}' | head -n 1`
+    sed -i "${RowNum}d" ${RundeckPath}/config/projinfo
 fi
-    sed -i '/'$Branch'\.'$sBranchName'\b/d' /var/log/DeplayDone.log
 echo ""
 echo "Delete project info is OK !"
 }
@@ -461,7 +465,7 @@ case $Param1 in
     DelDockerMongo
     DelInfo
     DelRedis
-    DelCrontab
+#    DelCrontab
     ReService
     OutPut del
    ;;

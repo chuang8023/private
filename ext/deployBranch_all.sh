@@ -165,6 +165,8 @@ function PullBranch {
 echo ""
 echo "Pull branch $BranchName ..."
 cd /var/www/www.$SysType.$SysName.aysaas.com
+git init
+git remote add origin git@e.coding.net:Safirst/AnYunProj.git
 git fetch origin $BranchName:$BranchName 1>/dev/null
 git checkout $BranchName 1>/dev/null
 NoUsed=(`git branch | grep -v "*" | grep -v "$BranchName"`)
@@ -299,7 +301,8 @@ EOF
     echo ""
     echo "Convert data to Mongo  $DatabaseName ..."
     cd /var/www/www.$SysType.$SysName.aysaas.com
-    ./vendor/phing/phing/bin/phing convert_mongodb << EOF
+    local _Option=`ENV=$ProjType ./vendor/phing/phing/bin/phing -l | grep convert_mongodb`
+    ./vendor/phing/phing/bin/phing ${_Option} << EOF
 
 n
 EOF
