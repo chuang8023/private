@@ -1,6 +1,6 @@
 server {
     
-    listen 55555;
+    listen 5566;
     
     server_name www.feature.templateRelease.aysaas.com;
 
@@ -40,7 +40,7 @@ server {
 
 server {
     
-    listen 55555;
+    listen 5566;
     
     server_name static.feature.templateRelease.aysaas.com;
 
@@ -69,7 +69,7 @@ server {
 
 server {
     
-    listen 55555;
+    listen 5566;
     
     server_name fileio.feature.templateRelease.aysaas.com;
 
