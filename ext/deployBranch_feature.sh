@@ -148,7 +148,9 @@ echo "Pull branch $ReleaseName is OK !"
 
 }
 
-function ModifyConf {
+function ModifyConf () {
+justModifyDB=$1
+
 echo ""
 echo "Modify config file ..."
 DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
@@ -172,16 +174,17 @@ sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sB
 #echo ""
 #echo "Modify config file is OK !"
 
-#####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
-cp /var/www/www.$Branch.$sBranchName.aysaas.com/config/base/queue.php /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
-sed -i "s/'multiProcess' => false/'multiProcess' => true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
+if [[ ! -n $justModifyDB ]]; then
+    #####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
+    cp /var/www/www.$Branch.$sBranchName.aysaas.com/config/base/queue.php /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
+    sed -i "s/'multiProcess' => false/'multiProcess' => true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
 
-
-cd /var/www/www.$Branch.$sBranchName.aysaas.com
-if [ -e ./deploy/supervisor ] ;then
-  ./deploy/supervisor
-   sed  -i '/feature/d' /etc/supervisor/supervisord.conf
-  cd -
+    cd /var/www/www.$Branch.$sBranchName.aysaas.com
+    if [ -e ./deploy/supervisor ] ;then
+      ./deploy/supervisor
+       sed  -i '/feature/d' /etc/supervisor/supervisord.conf
+      cd -
+    fi
 fi
 echo ""
 echo "Modify config file is OK !"
@@ -472,4 +475,12 @@ case $Param1 in
 "updb")
     InPut "NoCheck"
     UpdateDB
+    ;;
+"flushdb")
+   InPut "NoCheck"
+   DelDockerMysql
+   DelDockerMongo
+   DockerMysql
+   DockerMongo
+   ModifyConf "justModifyDB" 
 esac
