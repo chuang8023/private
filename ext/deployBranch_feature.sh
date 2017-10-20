@@ -5,7 +5,7 @@ TemplatePath=$RundeckPath/template/feature
 Date=`date +%Y_%m_%d_%m`
 
 #run user
-RunUser=`cat /etc/php5/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'|sed 's/ //'`
+RunUser=`cat /etc/php/7.0/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $2}'|sed 's/ //'`
 
 # 运行前请检查以下模板是否存在、位置是否正确:
 # 源码:$CodePath
@@ -37,7 +37,7 @@ MongoNomalPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
 #Template info
 TBranch="feature"
 TBranchName="templateRelease"
-TWebPort="55555"
+TWebPort="5566"
 TMysqlPort="3306"
 TMongoPort="27017"
 
@@ -107,13 +107,14 @@ unset _Param1
 function CopyTemplate {
 echo ""
 echo "Copy template to www.$Branch.$sBranchName.aysaas.com ..."
-if [[ ! -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
-    cp -r $CodePath /var/www/www.$Branch.$sBranchName.aysaas.com
-else
+if [[ -d /var/www/www.$Branch.$sBranchName.aysaas.com ]]; then
     rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
-    cp -r $CodePath /var/www/www.$Branch.$sBranchName.aysaas.com
 fi
+cp -r $CodePath /var/www/www.$Branch.$sBranchName.aysaas.com
 #chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
+if [[ -d /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com ]]; then
+    rm -rf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+fi
 cp $NginxConfPath /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 ln -sf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
 if [[ $? != 0 ]]; then
@@ -130,8 +131,8 @@ function PullBranch {
 echo ""
 echo "Pull branch $ReleaseName ..."
 cd /var/www/www.$Branch.$sBranchName.aysaas.com
-git init
-git remote add origin git@e.coding.net:Safirst/AnYunProj.git
+#git init
+#git remote add origin git@e.coding.net:Safirst/AnYunProj.git
 git fetch origin $ReleaseName:$ReleaseName 1>/dev/null
 git checkout $ReleaseName 1>/dev/null
 NoUsed=(`git branch | grep -v "*" | grep -v "$ReleaseName"`)
@@ -155,26 +156,34 @@ echo ""
 echo "Modify config file ..."
 DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
 DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}' $DockerMongoName`
-sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
-sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
-#sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
-sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
-sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
-#sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 
-sed -i "s/$TBranch/$Branch/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
-sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
-#sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
-#cd /var/www/www.$Branch.$sBranchName.aysaas.com
-#if [ -e ./deploy/supervisor ] ;then 
-#  ./deploy/supervisor 
-#   sed  -i '/feature/d' /etc/supervisor/supervisord.conf
-#  cd -
-#fi
-#echo ""
-#echo "Modify config file is OK !"
+if [[ $justModifyDB == "justModifyDB" ]]; then
+    cd /var/www/www.$Branch.$sBranchName.aysaas.com
+    TMongoPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.port'));"|awk -F ',' '{print $1}'`
+    TMysqlPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
+    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+    sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+    sed -i "s/database\.servers\.default\.port.*/database\.servers\.default\.port = $DockerMysqlPort/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+else
+    sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
+    sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
+    #sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+    sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
+    #sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 
-if [[ ! -n $justModifyDB ]]; then
+    sed -i "s/$TBranch/$Branch/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+    sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+    #sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+    #cd /var/www/www.$Branch.$sBranchName.aysaas.com
+    #if [ -e ./deploy/supervisor ] ;then 
+    #  ./deploy/supervisor 
+    #   sed  -i '/feature/d' /etc/supervisor/supervisord.conf
+    #  cd -
+    #fi
+    #echo ""
+    #echo "Modify config file is OK !"
+
     #####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
     cp /var/www/www.$Branch.$sBranchName.aysaas.com/config/base/queue.php /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
     sed -i "s/'multiProcess' => false/'multiProcess' => true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
@@ -318,6 +327,7 @@ _Name=`cat /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.p
 echo "Delete code ..."
 rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
 rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
+rm -rf /var/www/org.$Branch.$sBranchName.aysaas.com
 echo ""
 echo "Delete code is OK !"
 }
@@ -335,6 +345,7 @@ function DelNginxConf {
 echo ""
 echo "Delete from nginx ..."
 rm -rf /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/www.$Branch.$sBranchName.aysaas.com
+rm -rf /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/org.$Branch.$sBranchName.aysaas.com
 echo ""
 echo "Delete from nginx is OK !"
 }
@@ -437,6 +448,80 @@ function UpdateDB   {
    [ $? -eq 0 ] && echo "Update template db has been finished !"
 }
 
+####拉取微服务
+function PullOrg  {
+        cd /var/www
+        git clone git@e.coding.net:Safirst/org.git Orgservice
+        cd Orgservice/application
+        mkdir log
+        chmod 777 -R log
+        cp /root/scripts/rundeck/template/feature/production.ini /var/www/Orgservice/conf/development.ini
+        cp -r /root/scripts/rundeck/template/feature/vendor /var/www/Orgservice/
+        cp /root/scripts/rundeck/template/feature/org.feature.moban.aysaas.com /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+        cp /var/www/www.$Branch.$sBranchName.aysaas.com/config/base/services.php /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/
+        mv /var/www/Orgservice  /var/www/org.$Branch.$sBranchName.aysaas.com
+
+        cd /var/www/www.$Branch.$sBranchName.aysaas.com
+        MysqlName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.name'));"`
+        MysqlHost=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.host'));"`
+        MysqlPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"`
+        MysqlUser=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.user'));"`
+        MysqlPass=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.password'));"`
+        MysqlDBName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.dbname'));"`
+
+        AppName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.application_name'));"`
+        FileioName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.fileio_domain'));"`
+        StaticName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.static_domain'));"`
+        QueueHost=`ENV=development php -r "include 'bootstrap.php'; print( \Config('queue.host'));"`
+        RedisHost=`ENV=development php -r "include 'bootstrap.php'; print( \Config('redis.servers.default'));"`
+        RedisAuth=`ENV=development php -r "include 'bootstrap.php'; print( \Config('redis.servers.auth'));"`
+
+        rnd=0
+        i=7000
+        while (($i <=8000))
+        do
+                ss -tln | grep $i
+                if [ $? == 1 ];then
+                        rnd=$i
+                        echo $rnd
+                        break
+                fi
+                i=$(($i+1))
+        done
+        WwwName='192.168.0.241:'$rnd
+
+	sed -i "s/database\.servers\.default\.name.*/database\.servers\.default\.name = $MysqlName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/database\.servers\.default\.host.*/database\.servers\.default\.host = $MysqlHost/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/database\.servers\.default\.port.*/database\.servers\.default\.port = $MysqlPort/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/database\.servers\.default\.dbname.*/database\.servers\.default\.dbname = $MysqlDBName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/database\.servers\.default\.user.*/database\.servers\.default\.user = $MysqlUser/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/database\.servers\.default\.password.*/database\.servers\.default\.password = $MysqlPass/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+
+	sed -i "s/app\.application_name.*/app\.application_name = $AppName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/app\.fileio_domain.*/app\.fileio_domain = $FileioName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/app\.static_domain.*/app\.static_domain = $StaticName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/queue\.host.*/queue\.host = $QueueHost/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/redis\.servers\.default.*/redis\.servers\.default = $RedisHost/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/redis\.auth.*/redis\.auth = $RedisAuth/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/app\.www_domain.*/app\.www_domain = $WwwName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
+	sed -i "s/'domain.*/'domain' => '$WwwName',/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
+	sed -i "s/'local.*/'local' => '$WwwName'/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
+
+	
+	sed -i "s/Port/$rnd/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+	sed -i "s/org\.feature\.moban/org\.$Branch\.$sBranchName/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+	
+	ln -s /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
+	nginx -s reload
+	chown -R anyuan:anyuan /var/www/org.$Branch.$sBranchName.aysaas.com
+	chown -R anyuan:anyuan /var/www/www.$Branch.$sBranchName.aysaas.com
+
+        
+
+}
+
+
+
 ##############################################
 
 case $Param1 in
@@ -447,6 +532,7 @@ case $Param1 in
     DockerMysql
     DockerMongo
     ModifyConf
+    PullOrg
     #ManageDB
     #ManageMongo
     ReService

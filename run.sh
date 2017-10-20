@@ -112,6 +112,9 @@ TimeStamp=`date +%y%m%d%H%M%S`
 }
 
 case $Param1 in
+"updateorg")
+    PullCodeOrg $Param2
+    ;;
 "update")
     _DBUrl=$Param3
     _notMigrate=$Param4

@@ -5,6 +5,9 @@ backup/*
 config/projinfo
 !template/.gitignore
 template/feature/www.feature.templateRelease.aysaas.com
+template/feature/org.feature.moban.aysaas.com
+template/feature/production.ini
+template/feature/vendor/
 log/*
 !log/.gitignore
 .idea/
