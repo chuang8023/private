@@ -1,8 +1,8 @@
 function PullCodeOrg (){
 	local _Param1=$1
-	local _Branch=`cat ${_Param1} | awk -F"/" '{print $1}'`
-	local _BranchName=`cat ${_Param1} | awk -F"/" '{print $2}'`
-	cd /var/www/org.${_Branch}.${_BranchName}
+	local _Branch=`echo ${_Param1} | awk -F"/" '{print $1}'`
+	local _BranchName=`echo ${_Param1} | awk -F"/" '{print $2}'`
+	cd /var/www/org.${_Branch}.${_BranchName}.aysaas.com
 	echo "${_BranchName} pulling the new code....."
 	git checkout .
 	git pull --rebase origin ${_Param1} 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
