@@ -504,8 +504,8 @@ function PullOrg  {
 	sed -i "s/redis\.servers\.default.*/redis\.servers\.default = $RedisHost/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
 	sed -i "s/redis\.auth.*/redis\.auth = $RedisAuth/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
 	sed -i "s/app\.www_domain.*/app\.www_domain = $WwwName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
-	sed -i "s/'domain.*/'domain' => '$WwwName',/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
-	sed -i "s/'local.*/'local' => '$WwwName'/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
+	sed -i "s/'domain.*/'domain' => 'http://$WwwName/',/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
+	sed -i "s/'local.*/'local' => 'http://$WwwName/'/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
 
 	
 	sed -i "s/Port/$rnd/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
