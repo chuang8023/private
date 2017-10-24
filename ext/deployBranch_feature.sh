@@ -332,14 +332,14 @@ echo ""
 echo "Delete code is OK !"
 }
 
-function DelQueue {
-echo ""
-echo "Delete queue ..."
-service supervisor stop
-sleep 60
-service supervisor start
-echo "Delete queue is OK !"
-}
+#function DelQueue {
+#echo ""
+#echo "Delete queue ..."
+#service supervisor stop
+#sleep 60
+#service supervisor start
+#echo "Delete queue is OK !"
+#}
 
 function DelNginxConf {
 echo ""
@@ -547,7 +547,7 @@ case $Param1 in
     InPut "NoCheck"
     DelCode
     DelNginxConf
-    DelQueue
+    #DelQueue
     #DelDB
     #DelMongo
     DelDockerMysql
