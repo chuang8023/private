@@ -7,6 +7,7 @@ import urllib2, cookielib, json, os, time
 projInfoPath = '/root/scripts/rundeck/config/projinfo'
 #不被清理的feature白名单，一行一个feature分支名
 featureWhiteList = '/root/scripts/rundeck/config/featureWhiteList'
+logPath = '/root/scripts/rundeck/log/cleanFeature'
 
 loginUrl = 'https://safirst.coding.net/api/v2/account/login'
 #mrUrl = 'https://safirst.coding.net/api/user/Safirst/project/qycloud/git/merges?status=open&creator=&merger=&reviewer=&sort=updated_at&label=&q=&page=1'
@@ -47,4 +48,5 @@ else:
         for i in needClean:
             os.system('/root/scripts/rundeck/ext/deployBranch_feature.sh delete '+ i)
             with open(logPath, 'a') as f:
-                f.write(time.strftime("%Y/%m/%d/%H:%M:%S", time.gmtime())+ ' - [INFO] - Delete '+ i + 'is OK\n')
+                f.write(time.strftime("%Y/%m/%d/%H:%M:%S", time.gmtime())+ ' - [INFO] - Delete '+ i + ' is OK\n')
+            time.sleep(60)

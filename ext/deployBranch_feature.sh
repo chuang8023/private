@@ -371,14 +371,22 @@ exit
 EOF
 }
 
+function cleanDockerNetwork () {
+dockerName=$1
+networkID=`docker network ls  | grep bridge | awk '{print $1}'`
+docker network disconnect -f $networkID $dockerName
+}
+
 function DelDockerMysql {
 docker rm -f $DockerMysqlName
+cleanDockerNetwork $DockerMysqlName
 echo ""
 echo "Delete DockerMysql is ok !"
 }
 
 function DelDockerMongo {
 docker rm -f $DockerMongoName
+cleanDockerNetwork $DockerMongoName
 echo ""
 echo "Delete DockerMongo is ok !"
 }
@@ -504,8 +512,8 @@ function PullOrg  {
 	sed -i "s/redis\.servers\.default.*/redis\.servers\.default = $RedisHost/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
 	sed -i "s/redis\.auth.*/redis\.auth = $RedisAuth/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
 	sed -i "s/app\.www_domain.*/app\.www_domain = $WwwName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
-	sed -i "s/'domain.*/'domain' => 'http://$WwwName/',/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
-	sed -i "s/'local.*/'local' => 'http://$WwwName/'/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
+	sed -i "s/'domain.*/'domain' => 'http:\/\/$WwwName\/',/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
+	sed -i "s/'local.*/'local' => 'http:\/\/$WwwName\/'/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
 
 	
 	sed -i "s/Port/$rnd/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
