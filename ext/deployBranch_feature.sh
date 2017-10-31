@@ -519,7 +519,7 @@ function PullOrg  {
 	sed -i "s/Port/$rnd/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
 	sed -i "s/org\.feature\.moban/org\.$Branch\.$sBranchName/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
 	
-	ln -s /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
+	ln -sf /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
 	nginx -s reload
 	chown -R anyuan:anyuan /var/www/org.$Branch.$sBranchName.aysaas.com
 	chown -R anyuan:anyuan /var/www/www.$Branch.$sBranchName.aysaas.com
