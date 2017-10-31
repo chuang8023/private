@@ -10,14 +10,17 @@ featureWhiteList = '/root/scripts/rundeck/config/featureWhiteList'
 logPath = '/root/scripts/rundeck/log/cleanFeature'
 
 loginUrl = 'https://safirst.coding.net/api/v2/account/login'
-#mrUrl = 'https://safirst.coding.net/api/user/Safirst/project/qycloud/git/merges?status=open&creator=&merger=&reviewer=&sort=updated_at&label=&q=&page=1'
-mrUrl = 'https://safirst.coding.net/api/user/Safirst/project/qycloud/git/merges?status=open'
+mrUrl = 'https://safirst.coding.net/api/user/Safirst/project/qycloud/git/merges?status=open&pageSize='
 data = 'account=18013905342%40163.com&password=a8b5af7ca8e727ae402f07ca9d4f63f9964f0abd&remember_me=false&j_captcha='
 try:
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.CookieJar()))
     opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.10551.6 Safari/537.36')]
     opener.open(loginUrl, data)
-    op = opener.open(mrUrl)
+    op = opener.open(mrUrl + '1')
+    getOpenCount = json.loads(op.read())
+    openCount = getOpenCount['data']['openCount']
+
+    op = opener.open(mrUrl + str(openCount))
     data = json.loads(op.read())
     opener.close()
 
