@@ -27,16 +27,11 @@ DBPasswd="saas"
 MysqlDockerImage="mysql:dev.5.6.31"
 MongoDockerImage="mongo:dev.3.2.8"
 
-
 #Mongo info
 MongoAdminUser="admin"
 MongoAdminPass="LBc8SQaA8zoJK1"
 MongoNomalUser="feature"
 MongoNomalPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
-
-
-#Web info
-#WebPort="55555"
 
 #Template info
 TBranch="feature"
@@ -179,21 +174,11 @@ else
     #sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
     sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
     sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
-    #sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 
     sed -i "s/$TWebPort/$webPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TPhpPort/$phpPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TBranch/$Branch/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
-    #sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
-    #cd /var/www/www.$Branch.$sBranchName.aysaas.com
-    #if [ -e ./deploy/supervisor ] ;then 
-    #  ./deploy/supervisor 
-    #   sed  -i '/feature/d' /etc/supervisor/supervisord.conf
-    #  cd -
-    #fi
-    #echo ""
-    #echo "Modify config file is OK !"
 
     #####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
     cp /var/www/www.$Branch.$sBranchName.aysaas.com/config/base/queue.php /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/queue.php
@@ -507,7 +492,7 @@ function PullOrg  {
                 fi
                 i=$(($i+1))
         done
-        WwwName='192.168.0.241:'$rnd
+        WwwName="${ipAddress}:${rnd}"
 
 	sed -i "s/database\.servers\.default\.name.*/database\.servers\.default\.name = $MysqlName/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
 	sed -i "s/database\.servers\.default\.host.*/database\.servers\.default\.host = $MysqlHost/" /var/www/org.$Branch.$sBranchName.aysaas.com/conf/development.ini
@@ -529,6 +514,8 @@ function PullOrg  {
 	
 	sed -i "s/Port/$rnd/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
 	sed -i "s/org\.feature\.moban/org\.$Branch\.$sBranchName/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+        sed -i "s/TIpAddress/$ipAddress/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+        sed -i "s/TPhpPort/$phpPort/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
 	
 	ln -sf /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com /etc/nginx/sites-enabled/
 	nginx -s reload
@@ -573,7 +560,10 @@ case $Param1 in
     DelDockerMongo
     DelInfo
     DelRedis
-#    DelCrontab
+
+    #use crontab to clean
+    #DelCrontab
+
     ReService
     OutPut del
    ;;
