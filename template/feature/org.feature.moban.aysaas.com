@@ -1,5 +1,5 @@
 server {
-     listen Port;
+     listen TOrgPort;
 
      server_name TIpAddress;
 

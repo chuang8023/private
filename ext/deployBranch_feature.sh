@@ -512,7 +512,7 @@ function PullOrg  {
 	sed -i "s/'local.*/'local' => 'http:\/\/$WwwName\/'/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/services.php 
 
 	
-	sed -i "s/Port/$rnd/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+	sed -i "s/TOrgPort/$rnd/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
 	sed -i "s/org\.feature\.moban/org\.$Branch\.$sBranchName/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
         sed -i "s/TIpAddress/$ipAddress/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
         sed -i "s/TPhpPort/$phpPort/" /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
