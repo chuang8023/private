@@ -27,3 +27,11 @@ BACKUP_FTP_HOST=www.download.aysaas.com             #ftp地址
 
 #This server's IP address
 ipAddress=192.168.0.241
+
+#This server's web port
+#Just used in deploy feature
+webPort=5566
+
+#This server's php port
+#Just used in deploy feature
+phpPort=9000

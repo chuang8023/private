@@ -1,4 +1,8 @@
 #!/bin/bash
+
+cd `dirname $0`
+. ../config/rundeck.cf
+
 #rundeck path
 RundeckPath=/$HOME/scripts/rundeck
 TemplatePath=$RundeckPath/template/feature
@@ -37,7 +41,12 @@ MongoNomalPass="LBc8SQaA8zoJK1IWMUHDiSwN4"
 #Template info
 TBranch="feature"
 TBranchName="templateRelease"
-TWebPort="5566"
+TWebPort="templeateWebPort"
+TPhpPort="templatePhpPort"
+
+#read from rundeck.cf
+#TWebPort="5566"
+
 TMysqlPort="3306"
 TMongoPort="27017"
 
@@ -172,6 +181,8 @@ else
     sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
     #sed -i "s/$TWebPort/$WebPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/app.php
 
+    sed -i "s/$TWebPort/$webPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+    sed -i "s/$TPhpPort/$phpPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TBranch/$Branch/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TBranchName/$sBranchName/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     #sed -i "s/$TWebPort/$WebPort/" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
@@ -428,7 +439,7 @@ case $_Param1 in
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
-echo "The URL is http://www.$Branch.$sBranchName.aysaas.com:$TWebPort"
+echo "The URL is http://www.$Branch.$sBranchName.aysaas.com:$webPort"
 echo ""
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
@@ -437,7 +448,7 @@ echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
-echo "       Delete $ReleaseName from 192.168.0.223 is OK !"
+echo "       Delete $ReleaseName from $ipAddress is OK !"
 echo "       The branch $ReleaseName is still in Coding.net"
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
