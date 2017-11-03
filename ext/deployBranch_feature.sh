@@ -66,11 +66,11 @@ if [[ ! -f $NginxConfPath ]]; then
     echo "Template of Nginx is NOT exist !"
     exit 1
 fi
-if [[ ! -f $DBPath ]]; then
-    echo ""
-    echo "Template of Mysql is NOT exist !"
-    exit 1
-fi
+#if [[ ! -f $DBPath ]]; then
+#    echo ""
+#    echo "Template of Mysql is NOT exist !"
+#    exit 1
+#fi
 }
 
 function InPut () {
