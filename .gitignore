@@ -3,6 +3,7 @@ data/pullog
 backup/*
 !backup/.gitignore
 config/projinfo
+config/rundeck.cf
 !template/.gitignore
 template/feature/www.feature.templateRelease.aysaas.com
 template/feature/org.feature.moban.aysaas.com

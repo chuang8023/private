@@ -1,0 +1,29 @@
+#the code's owner
+runuser=anyuan
+
+#Projects' info type:
+#  MySQL
+#  File
+#Default value:
+#INFOType="File"
+INFOType="File"
+
+#If INFOType="MySQL"
+#DBIp=127.0.0.1
+#DBName=rundeck
+#DBUser=
+#DBPasswd=
+
+#Backup target dirpath
+#Default value:
+#BackupDir="$(cd `dirname $0`;pwd)/backup"
+BackupDir="$(cd `dirname $0`;pwd)/backup"
+
+#Backup target ftpinfo
+BACKUP_FTP_USER=dataftp          #ftp用户名
+BACKUP_FTP_PASS=n4zZHTESFkt1Jly9           #ftp密码
+BACKUP_FTP_PORT=2121
+BACKUP_FTP_HOST=www.download.aysaas.com             #ftp地址
+
+#This server's IP address
+ipAddress=192.168.0.241
