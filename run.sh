@@ -124,7 +124,7 @@ case $Param1 in
     PullCode
     BackupDB
     EchoPullLog
-    UpdateVendor
+    #UpdateVendor
     if [[ $_notMigrate != "notMigrate" ]]; then
         Migrate "all"
     fi
