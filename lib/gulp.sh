@@ -10,8 +10,15 @@ if [ -e public/gulpfile.js ];then
 	which gulp > /dev/null 2>&1
 	[ $? -eq 1 ] && echo "install gulp environment" && npm --registry=https://registry.npm.taobao.org  i gulp -g
 	cd  $ProjPath/public 
-	echo "update node modules...."                 
-	npm --registry=https://registry.npm.taobao.org  i  > /dev/null 2>&1
+	                 
+	#NODE_DEV="development" npm --registry=https://registry.npm.taobao.org  i  > /dev/null 2>&1
+	##设置npm使用淘宝源
+        npm config set registry https://registry.npm.taobao.org
+        which cnpm > /dev/null 2>&1
+	[ $? -eq 1 ] && echo "install cnpm" && npm install -g cnpm --registry=https://registry.npm.taobao.org 
+	echo "update node modules...."
+	NODE_DEV="development" cnpm i
+	
 	cd ..
 	echo "start gulp ....."
 	gulp ge --cwd=public
@@ -33,6 +40,9 @@ if [[ $? == 0 ]];then
 else
     echo ""
     echo "It looks like something wrong when run gulp !"
+    echo "压缩运行报错，请联系运维处理！！！"
+    exit 1
+    
 fi
 sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
 ChangePullOwn

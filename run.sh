@@ -47,7 +47,7 @@ ProjName=`echo $Param2 | awk 'gsub(/^ *| *$/,"")'`
 if [[ $ProjName == "" ]]; then
     echo ""
     echo "The project name cannot be empty !"
-    exit 1
+#    exit 1
 fi
 
 if [[ $INFOType == "File" ]]; then
@@ -85,7 +85,7 @@ case $ProjType in
 *)
     echo ""
     echo "Project type is wrong !"
-    exit 1
+#    exit 1
 esac
 
 if [[ -d $ProjPath/config/$ProjType ]]; then
@@ -98,13 +98,13 @@ if [[ -d $ProjPath/config/$ProjType ]]; then
     if [[ $BranchName == "" ]]; then
         echo ""
         echo "$ProjPath not find git !"
-        exit 1
+#        exit 1
     fi
     ProjConfPath="$ProjPath/config/$ProjType"
 else
     echo ""
     echo "Not find project or project type is wrong !"
-    exit 1
+#    exit 1
 fi
 
 ProjRealPath=`RealPath "$ProjPath"`
@@ -112,6 +112,9 @@ TimeStamp=`date +%y%m%d%H%M%S`
 }
 
 case $Param1 in
+"updateorg")
+    PullCodeOrg $Param2
+    ;;
 "update")
     _DBUrl=$Param3
     _notMigrate=$Param4

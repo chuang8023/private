@@ -24,3 +24,14 @@ BACKUP_FTP_USER=dataftp          #ftp用户名
 BACKUP_FTP_PASS=n4zZHTESFkt1Jly9           #ftp密码
 BACKUP_FTP_PORT=2121
 BACKUP_FTP_HOST=www.download.aysaas.com             #ftp地址
+
+#This server's IP address
+ipAddress=192.168.0.241
+
+#This server's web port
+#Just used in deploy feature
+webPort=5566
+
+#This server's php port
+#Just used in deploy feature
+phpPort=9000

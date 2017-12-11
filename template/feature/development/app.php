@@ -8,13 +8,13 @@ return array(
 
     'application_name' => 'AYSaaS-templateRelease',
 
-    'root_domain' => 'feature.templateRelease.aysaas.com:55555',
+    'root_domain' => 'feature.templateRelease.aysaas.com:5566',
 
-    'www_domain' => 'www.feature.templateRelease.aysaas.com:55555',
+    'www_domain' => 'www.feature.templateRelease.aysaas.com:5566',
 
-    'static_domain' => 'static.feature.templateRelease.aysaas.com:55555',
+    'static_domain' => 'static.feature.templateRelease.aysaas.com:5566',
 
-    'fileio_domain' => 'fileio.feature.templateRelease.aysaas.com:55555',
+    'fileio_domain' => 'fileio.feature.templateRelease.aysaas.com:5566',
 
     'resque_sync' => false,
 

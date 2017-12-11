@@ -247,6 +247,9 @@ Port1="5207" && Port2="5207" Port3="5207" && ENVType="development"
 192.168.0.122)
  Port1="23001" && Port2="23001" Port3="23001" && ENVType="development"
 ;;
+192.168.0.241)
+ Port1="5566" && Port2="5566" Port3="5566" && ENVType="development"
+;;
 *)
  Port1="8000" && Port2="8001" Port3="8002"
 esac
