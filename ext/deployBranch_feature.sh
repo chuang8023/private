@@ -197,7 +197,8 @@ for (( i=0;i<${#NoUsed};i++ ))
 do
     git branch -D ${NoUsed[i]} 1>/dev/null 2>&1
 done
-./script/vendor unpackaging
+#./script/vendor unpackaging
+tar -zxvf /root/scripts/rundeck/template/feature/vendorpaas.tar.gz -C /var/www/www.$Branch.$sBranchName.aysaas.com/saas
 chmod -R 777 log upload
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
@@ -467,6 +468,12 @@ echo "Delete crontab ..."
 sed -i '/^.*'$sBranchName'.*$/d' /var/spool/cron/crontabs/$RunUser
 echo "Delete project crontab is OK !"
 }
+function DelDns {
+	echo "$Branch.$sBranchName" > /root/deldns.log
+	scp /root/deldns.log root@192.168.0.122:/root
+	ssh -l root 192.168.0.122 "bash -x deldns.sh"
+
+}
 
 
 function OutPut () {
@@ -512,8 +519,9 @@ function PullOrg  {
         mkdir log
         chmod 777 -R log
         cp /root/scripts/rundeck/template/feature/production.ini /var/www/Orgservice/conf/development.ini
-        cp -r /root/scripts/rundeck/template/feature/vendor /var/www/Orgservice/
-       # cp /root/scripts/rundeck/template/feature/org.feature.moban.aysaas.com /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+        #cp -r /root/scripts/rundeck/template/feature/vendor /var/www/Orgservice/
+        # cp /root/scripts/rundeck/template/feature/org.feature.moban.aysaas.com /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
+        tar -zxvf /root/scripts/rundeck/template/feature/vendororg.tar.gz -C /var/www/Orgservice/
         cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/services.php /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/
         mv /var/www/Orgservice  /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
 
@@ -576,7 +584,21 @@ function PullOrg  {
         
 
 }
-
+function SetDns() {
+	cd /var/www/www.$Branch.$sBranchName.aysaas.com/saas
+	app_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.www_domain'));"|awk -F":" '{print $1}'` 
+	fileio_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.fileio_domain'));"|awk -F":" '{print $1}'`
+	static_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.static_domain'));"|awk -F":" '{print $1}'`
+	echo "192.168.0.233 ${app_name}" > /root/dnsname223.log
+	echo "192.168.0.233 ${fileio_name}" >> /root/dnsname223.log
+	echo "192.168.0.233 ${static_name}" >> /root/dnsname223.log
+	scp /root/dnsname223.log root@192.168.0.122:~/
+	ssh -l root 192.168.0.122 "bash -x /root/setdomaintodns.sh"
+	########2017-12-30 生成yml文件
+	cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
+	./deploy/config
+	./deploy/syncConfig
+}
 
 
 ##############################################
@@ -590,6 +612,7 @@ case $Param1 in
     DockerMongo
     ModifyConf
     PullOrg
+    SetDns
     #ManageDB
     #ManageMongo
     ReService
@@ -611,6 +634,7 @@ case $Param1 in
     DelDockerMongo
     DelInfo
     DelRedis
+    DelDns
 
     #use crontab to clean
     #DelCrontab
