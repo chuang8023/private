@@ -585,21 +585,35 @@ function PullOrg  {
 
 }
 function SetDns() {
+	local _Ip=`ifconfig | grep inet | grep 192.168 |awk -F":" '{print $2}' | awk '{print $1}'`
+        local _IpPort=`ifconfig | grep inet | grep 192.168 |awk -F":" '{print $2}' | awk '{print $1}'| awk -F"." '{print $4}'`
 	cd /var/www/www.$Branch.$sBranchName.aysaas.com/saas
 	app_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.www_domain'));"|awk -F":" '{print $1}'` 
 	fileio_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.fileio_domain'));"|awk -F":" '{print $1}'`
 	static_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.static_domain'));"|awk -F":" '{print $1}'`
-	echo "192.168.0.233 ${app_name}" > /root/dnsname223.log
-	echo "192.168.0.233 ${fileio_name}" >> /root/dnsname223.log
-	echo "192.168.0.233 ${static_name}" >> /root/dnsname223.log
-	scp /root/dnsname223.log root@192.168.0.122:~/
-	ssh -l root 192.168.0.122 "bash -x /root/setdomaintodns.sh"
-	########2017-12-30 生成yml文件
-	cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
-	./deploy/config
-	./deploy/syncConfig
+	echo "${_Ip} ${app_name}" > /root/dnsname${_IpPort}.log
+	echo "${_Ip} ${fileio_name}" >> /root/dnsname${_IpPort}.log
+	echo "${_Ip} ${static_name}" >> /root/dnsname${_IpPort}.log
+	scp /root/dnsname${_IpPort}.log root@192.168.0.122:~/
+	ssh -l root 192.168.0.122 "bash -x /root/setdomaintodns.sh ${_IpPort}"
 }
 
+function TransYml() {
+if [[ -f /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/deploy/config ]]; then
+    ########2017-12-30 生成yml文件
+    cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
+    ./deploy/config
+    ./deploy/syncConfig
+else
+    ########2018-01-02 兼容master分支
+    cp /root/scripts/rundeck/template/feature/development.yml /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/
+    sed -i "s/BRANCHTYPE/$Branch/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+    sed -i "s/BRANCHNAME/$sBranchName/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+    sed -i "s/MYSQLPORT/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+    sed -i "s/MONGOPORT/$DockerMongoPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+    sed -i "s/WEBPORT/$webPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+fi
+}
 
 ##############################################
 
@@ -613,6 +627,7 @@ case $Param1 in
     ModifyConf
     PullOrg
     SetDns
+    TransYml
     #ManageDB
     #ManageMongo
     ReService
