@@ -5,15 +5,15 @@ function PullCodeOrg (){
 	cd /var/www/www.${_Branch}.${_BranchName}.aysaas.com/org
 	echo "${_BranchName} pulling the new code....."
 	git checkout .
-	git pull --rebase origin ${_Param1} 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
+	git pull --rebase origin master 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
 	if [[ $? == 0 ]]; then
 	        ChangePullOwn
 	        echo ""
-        	echo "${_Param1} pull the new code is OK !"
+        	echo "master pull the new code is OK !"
        	 	cd - 1>/dev/null 2>&1
 	else
    		 echo ""
-    	         echo "${_Param1} pull the new code is Fail !"
+    	         echo "master pull the new code is Fail !"
 	         echo "---------------------------------------------"
                  cat /tmp/rundeck_code_errinfo
 	         exit 1
