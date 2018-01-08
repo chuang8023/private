@@ -403,7 +403,7 @@ do
     git branch -D ${NoUsed[i]} 1>/dev/null 2>&1
 done
 #./script/vendor unpackaging
-tar -zxvf /root/scripts/rundeck/template/feature/vendorpaas.tar.gz -C /var/www/www.$Branch.$sBranchName.aysaas.com/saas
+tar -zxf /root/scripts/rundeck/template/feature/vendorpaas.tar.gz -C /var/www/www.$Branch.$sBranchName.aysaas.com/saas 1>/dev/null 2>&1
 chmod -R 777 log upload
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
@@ -725,7 +725,7 @@ function PullOrg  {
         cp /root/scripts/rundeck/template/feature/production.ini /var/www/Orgservice/conf/development.ini
         #cp -r /root/scripts/rundeck/template/feature/vendor /var/www/Orgservice/
         # cp /root/scripts/rundeck/template/feature/org.feature.moban.aysaas.com /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
-        tar -zxvf /root/scripts/rundeck/template/feature/vendororg.tar.gz -C /var/www/Orgservice/
+        tar -zxf /root/scripts/rundeck/template/feature/vendororg.tar.gz -C /var/www/Orgservice/ 1>/dev/null 2>&1
         cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/services.php /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/
         mv /var/www/Orgservice  /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
 
