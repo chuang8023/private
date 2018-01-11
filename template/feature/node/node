@@ -1,5 +1,5 @@
 server {
-    listen 8000;
+    listen 55555;
 
     server_name 192.168.0.223;
 

@@ -1,21 +1,26 @@
 function PullCodeOrg (){
-	echo $OrgPath
+	#local _Param1=$1
+	#local _Branch=`echo ${_Param1} | awk -F"/" '{print $1}'`
+	#local _BranchName=`echo ${_Param1} | awk -F"/" '{print $2}'`
 	cd $OrgPath 
-	echo "$OrgPath pulling the new code....."
+	local _OrgBranch=`git branch | grep "*" | awk '{print $2}'`
+	echo "pulling the new code....."
 	git checkout .
-	git pull --rebase origin master 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
+	git pull --rebase origin ${_OrgBranch} 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
 	if [[ $? == 0 ]]; then
 	        ChangePullOwn
 	        echo ""
-        	echo "master pull the new code is OK !"
+        	echo "${_OrgBranch} pull the new code is OK !"
        	 	cd - 1>/dev/null 2>&1
 	else
    		 echo ""
-    	         echo "master pull the new code is Fail !"
+    	         echo "${_OrgBranch} pull the new code is Fail !"
 	         echo "---------------------------------------------"
                  cat /tmp/rundeck_code_errinfo
 	         exit 1
 	fi
+	cd $ProjPath
+	./deploy/syncConfig
 
 }
 
@@ -27,6 +32,7 @@ cd $ProjPath
 git checkout .
 git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
+    ./deploy/config
     ChangePullOwn
     echo ""
     echo "$BranchName pull the new code is OK !"
