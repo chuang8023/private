@@ -24,9 +24,8 @@ function PullCode {
 echo ""
 echo "$BranchName pulling the new code ..."
 cd $ProjPath
- git checkout .
- git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
-
+git checkout .
+git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""
@@ -39,6 +38,10 @@ else
     cat /tmp/rundeck_code_errinfo
     exit 1
 fi
+cd $ProjPath
+./deploy/config
+./deploy/syncConfig
+cd - 1>/dev/null 2>&1
 }
 
 function ChangePullOwn {

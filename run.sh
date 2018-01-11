@@ -213,7 +213,7 @@ rbuild|rgulp)
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
-    UpdateVendor
+   # UpdateVendor
     Migrate "all"
     Rgulp "-f"
     EmptyCache "all" "rebuild_to_redis"
@@ -287,7 +287,7 @@ rbuild|rgulp)
    ;;
 "updateVendor")
     Main
-    UpdateVendor
+    #UpdateVendor
     ;;
 "autoMigrate")
     Main
