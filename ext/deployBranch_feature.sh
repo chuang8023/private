@@ -430,6 +430,8 @@ if [[ $justModifyDB == "justModifyDB" ]]; then
 else
     sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/app.php
     sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/app.php
+    sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/services.php
+    sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/services.php
     #sed -i "s/$TBranchName/$DatabaseName/" /var/www/www.$Branch.$sBranchName.aysaas.com/config/development/database.php
     sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.php
     sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.php
@@ -726,7 +728,7 @@ function PullOrg  {
         #cp -r /root/scripts/rundeck/template/feature/vendor /var/www/Orgservice/
         # cp /root/scripts/rundeck/template/feature/org.feature.moban.aysaas.com /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
         tar -zxf /root/scripts/rundeck/template/feature/vendororg.tar.gz -C /var/www/Orgservice/ 1>/dev/null 2>&1
-        cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/services.php /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/
+        #cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/services.php /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/
         mv /var/www/Orgservice  /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
 
         cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
@@ -796,6 +798,9 @@ function SetDns() {
         app_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.www_domain'));"|awk -F":" '{print $1}'`
         fileio_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.fileio_domain'));"|awk -F":" '{print $1}'`
         static_name=`ENV=development php -r "include 'bootstrap.php'; print( \Config('app.static_domain'));"|awk -F":" '{print $1}'`
+	echo $app_name
+	echo $fileio_name
+	echo $static_name
         echo "${_Ip} ${app_name}" > /root/dnsname${_IpPort}.log
         echo "${_Ip} ${fileio_name}" >> /root/dnsname${_IpPort}.log
         echo "${_Ip} ${static_name}" >> /root/dnsname${_IpPort}.log
@@ -808,6 +813,7 @@ function TransYml() {
 if [[ -f /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/deploy/config ]]; then
     ########2017-12-30 生成yml文件
     cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
+    chown -R anyuan:anyuan /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/*
     ./deploy/config
     ./deploy/syncConfig
 else
@@ -841,12 +847,12 @@ case $Param1 in
     ModifyConf
     PullOrg
     [ $Param3 ] && DeployNode
-    SetDns
     TransYml
     #ManageDB
     #ManageMongo
     ReService
     CreateCrontab
+    SetDns
     EchoFeatureInfo
     ;;
 "deploynode")
