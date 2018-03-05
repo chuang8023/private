@@ -57,7 +57,10 @@ else
     cat /tmp/rundeck_code_errinfo
     exit 1
 fi
-
+cd $ProjPath
+./deploy/config
+./deploy/syncConfig
+cd - 1>/dev/null 2>&1
 }
 
 function ChangePullOwn {

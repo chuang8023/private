@@ -4,26 +4,45 @@ echo ""
 echo "Backuping database ..."
 while read LINE
 do
-    local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #case $_Key in
+    #"host")
+    #    local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"port")
+    #    local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"dbname")
+    #    local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"user")
+    #    local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"password")
+    #    local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    break;
+    #    ;;
+    #esac
+    local _Key=`echo $LINE | awk -F":" '{print $1}'|sed 's/ //'|sed "s/'//g"`
     case $_Key in
     "host")
-        local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _Host=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "port")
-        local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _Port=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "dbname")
-        local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBName=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "user")
-        local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBUser=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "password")
-        local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBPasswd=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
 	break;
         ;;
     esac
-done < $ProjConfPath/database.php
+done < $ProjConfPath/database.yml
 
 if [ "$Param1" == "toftp" ];then
       ping -c 1 192.168.0.201 |grep '0% packet loss' > /dev/null 2>&1
@@ -83,26 +102,46 @@ echo ""
 echo "Rollbacking database ..."
 while read LINE
 do
-    local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #case $_Key in
+    #"host")
+    #    local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"port")
+    #    local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"dbname")
+    #    local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"user")
+    #    local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"password")
+    #    local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    break;
+    #    ;;
+    #esac
+    
+    local _Key=`echo $LINE | awk -F":" '{print $1}'|sed 's/ //'|sed "s/'//g"`
     case $_Key in
     "host")
-        local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _Host=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "port")
-        local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _Port=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "dbname")
-        local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBName=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "user")
-        local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBUser=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "password")
-        local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBPasswd=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         break;
-	;;
+        ;;
     esac
-done < $ProjConfPath/database.php
+done < $ProjConfPath/database.yml
 
 local TimeStamp=`cat $DataPath/pullog | grep $_CommitID | tail -n 1 | awk -F"|" '{print $2}'`
 if [[ -f ${_DBName}_$TimeStamp.sql ]]; then
@@ -192,26 +231,45 @@ if [ $? -eq 1 ];then
 fi
 while read LINE
 do
-    local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #case $_Key in
+    #"host")
+    #    local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"port")
+    #    local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #   ;;
+    #"dbname")
+    #    local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"user")
+    #    local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    ;;
+    #"password")
+    #    local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #    break;
+    #    ;;
+    #esac
+    local _Key=`echo $LINE | awk -F":" '{print $1}'|sed 's/ //'|sed "s/'//g"`
     case $_Key in
     "host")
-        local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _Host=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "port")
-        local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-       ;;
+        local _Port=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
+        ;;
     "dbname")
-        local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBName=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "user")
-        local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBUser=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         ;;
     "password")
-        local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+        local _DBPasswd=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
         break;
         ;;
     esac
-done < $ProjConfPath/database.php
+done < $ProjConfPath/database.yml
 
 ####导入数据库
 ##开始导入数据库…………………………
