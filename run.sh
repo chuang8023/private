@@ -61,11 +61,13 @@ if [[ $INFOType == "File" ]]; then
             #只能按顺序在末尾新增，千万不可更改已有的顺序，灾难！
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
             ProjPath=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'`
+            BranchType=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'| awk -F"/" '{print $4}' | awk -F"." '{print $2}'`
+            BranchDocker=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'| awk -F"/" '{print $4}' | awk -F"." '{print $3}'`
             DBType=`echo $LINE | awk -F"|" '{print $4}' | awk 'gsub(/^ *| *$/,"")'`
 	    OrgPath=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
             #DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
             #CloneDBId=`echo $LINE | awk -F"|" '{print $6}' | awk 'gsub(/^ *| *$/,"")'`
-            #NodePath=`echo $LINE | awk -F"|" '{print $7}' | awk 'gsub(/^ *| *$/,"")'`
+            NodePath=`echo $LINE | awk -F"|" '{print $7}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
 fi

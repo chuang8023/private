@@ -41,33 +41,33 @@ server {
         include        fastcgi_params;
     }
 
-#  location ~ ^/common {
-#      proxy_redirect off;
-#      proxy_set_header   Host   $host;
-#      proxy_set_header   X-Real-IP  $remote_addr;
-#      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
-#      proxy_set_header   Accept-Encoding "gzip";
-#      proxy_pass http://nodetest;
-#  }
-#
-#  # 应用中心
-#  location ~ ^/appcenter(?!\/appsystem) {
-#      proxy_redirect off;
-#      proxy_set_header   Host   $host;
-#      proxy_set_header   X-Real-IP  $remote_addr;
-#      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
-#      proxy_set_header   Accept-Encoding "gzip";
-#      proxy_pass http://nodetest;
-#  }
-#
-#  location ~ ^/organization(?!\/(contacts|manage)) {
-#      proxy_redirect off;
-#      proxy_set_header Host $host;
-#      proxy_set_header X-Real-IP $remote_addr;
-#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#      proxy_set_header Accept-Encoding "gzip";
-#      proxy_pass http://nodetest;
-#   }
+  location ~ ^/common {
+      proxy_redirect off;
+      proxy_set_header   Host   $host;
+      proxy_set_header   X-Real-IP  $remote_addr;
+      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header   Accept-Encoding "gzip";
+      proxy_pass http://nodetest;
+  }
+
+  # 应用中心
+  location ~ ^/appcenter(?!\/appsystem) {
+      proxy_redirect off;
+      proxy_set_header   Host   $host;
+      proxy_set_header   X-Real-IP  $remote_addr;
+      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header   Accept-Encoding "gzip";
+      proxy_pass http://nodetest;
+  }
+
+  location ~ ^/organization(?!\/(contacts|manage)) {
+      proxy_redirect off;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Accept-Encoding "gzip";
+      proxy_pass http://nodetest;
+   }
 
 }
 

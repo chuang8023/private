@@ -18,7 +18,7 @@ RunUser=`cat /etc/php/7.0/fpm/pool.d/www.conf|grep 'user ='|awk -F '=' '{print $
 CodePath=/root/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com
 NginxConfPath=/root/scripts/rundeck/template/feature/www.feature.templateRelease.aysaas.com-nginx
 DBPath=/root/scripts/rundeck/template/feature/template.sql
-NodeConfPath=/root/scripts/rundeck/template/feature/node/production.js
+NodeConfPath=/root/scripts/rundeck/template/feature/node/development.js
 NodeNginx=/root/scripts/rundeck/template/feature/node/node
 
 
@@ -47,7 +47,7 @@ TWebPort="templeateWebPort"
 TPhpPort="templatePhpPort"
 
 #read from rundeck.cf
-#TWebPort="5566"
+#TWebPort="55555"
 
 TMysqlPort="3306"
 TMongoPort="27017"
@@ -57,6 +57,7 @@ TMongoPort="27017"
 Param1=$1
 Param2=$2
 Param3=$3
+Param4=$4
 
 function ConversionA2a () {
 str=`echo $1 | tr '[A-Z]' '[a-z]'`
@@ -222,6 +223,8 @@ else
         [ $? -eq 1 ] && echo "install cnpm" && npm install -g cnpm --registry=https://registry.npm.taobao.org
         echo "update node modules...."
         NODE_ENV="development" cnpm i
+	npm i >/dev/null 2>&1
+        npm install canvas >/dev/null 2>&1
 	[ $? -eq 0 ] && npm run static 1>/dev/null 2>/tmp/rundeck_code_errinfo
 	echo "$NodeBN build  node code is OK !"
 	find . -user root -exec chown $runuser:$runuser {} \;
@@ -232,14 +235,14 @@ else
     fi
 
 fi
-pm2 start app.js --name node_${NodeName}
+pm2 start app.js --name node_$sBranchName
 }
  
 function RestartPm2 () {
 echo ""
 echo "Restart pm2 ..."
 cd $NodePath
-pm2 restart node_${NodeName} 1>/dev/null 2>/tmp/rundeck_code_errinfo
+pm2 restart node_$sBranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
     echo ""
     echo " restart pm2  is OK !"
@@ -285,52 +288,52 @@ return $Port
 
 
 
-
 ####### NODE部署&&配置
 ####### @author:346619752@qq.com
 ####### @date: 2017-11-16
 function DeployNode {
-
+echo "################开始Node部署#########################"
 NodeBN=`echo $Param3 | awk 'gsub(/^ *| *$/,"")'`
-echo $NodeBN
 NodeBranch=`echo $NodeBN | awk -F"/" '{print $1}'`
 NodeName=`echo $NodeBN | awk -F"/" '{print $2}'`
 if [ ! $NodeName ];then
         NodeName=$NodeBranch
 fi
-echo "node分支为："$NodeBranch
-echo "node分支名为："$NodeName
 
 ##拉取代码、配置文件
-cd /var/www/
-git clone git@e.coding.net:Safirst/Node-SaaS.git  Node-${NodeName}
-if [ -d /var/www/Node-${NodeName} ];then
+if [ -d /var/www/Node-$sBranchName ];then
 	echo "该目录已存在，请联系运维处理！！"
 	exit 1	
 fi
-NodePath=/var/www/Node-${NodeName}
-cp $NodeConfPath /var/www/Node-${NodeName}/config
+mkdir -p /var/www/Node-$sBranchName
+cd /var/www/Node-$sBranchName
+git init
+git remote add origin git@e.coding.net:Safirst/Node-SaaS.git
+git pull --rebase origin ${NodeName}
+NodePath=/var/www/Node-$sBranchName
+cp $NodeConfPath /var/www/Node-$sBranchName/config
 cp $NodeNginx /etc/nginx/sites-available
-[ $? -eq 0 ] && mv /etc/nginx/sites-available/node /etc/nginx/sites-available/node_${NodeName}
+[ $? -eq 0 ] && mv /etc/nginx/sites-available/node /etc/nginx/sites-available/node_$sBranchName
 
-######修改node-production.js
+######修改node-development.js
 NodePort=`NginxPort`
 echo "node端口:"$NodePort
-sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-${NodeName}/config/production.js
-sed -i "s/api.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$NodeName/config/production.js
-sed -i "s/static.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$NodeName/config/production.js
-sed -i "s/fileio.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$NodeName/config/production.js
+sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/api.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/static.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/fileio.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/nodestatic.aysaas.com.cn/nodestatic.$Branch.$sBranchName.aysaas.com/" /etc/nginx/sites-available/node_$sBranchName 
 
 ##修改node-nginx
-sed -i "s/Node-SaaS/Node-$NodeName/" /etc/nginx/sites-available/node_${NodeName}
-sed -i "s/node/node-$NodeName/" /etc/nginx/sites-available/node_${NodeName}
-sed -i "s/nodetest/node_${NodeName}/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
+sed -i "s/Node-SaaS/Node-$sBranchName/" /etc/nginx/sites-available/node_$sBranchName
+sed -i "s/node/node-$NodeName/" /etc/nginx/sites-available/node_$sBranchName
+sed -i "s/nodetest/node_$sBranchName/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 nginx -t
-[ $? -eq 0 ] && ln -s /etc/nginx/sites-available/node_${NodeName} /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/node_$sBranchName /etc/nginx/sites-enabled/
 nginx -s reload
 
 ##修改node-nginx.conf
-sed -i "/^http.*/a\upstream $NodeName {\n    server 127.0.0.1:$NodePort;\n}" /etc/nginx/nginx.conf
+sed -i "/^http.*/a\upstream node_$sBranchName {\n    server 127.0.0.1:$NodePort;\n}" /etc/nginx/nginx.conf
 
 PullNode
 BuildNode
@@ -339,20 +342,22 @@ RestartPm2
 
 ########删除node
 function DelNode {
-Param1=$1
-if [ -d /var/www/Node-$Param1 ];then
+if [ -d /var/www/Node-$sBranchName ];then
         echo "代码目录存在，可以删除"
-        #rm -rf $NodePath
+	rm -rf /var/www/Node-$sBranchName
 fi
 
 
-if [ -e /etc/nginx/sites-available/node_$Param1 ];then
+if [ -e /etc/nginx/sites-available/node_$sBranchName ];then
         echo "nginx配置文件存在，可以删除"
-        #rm -rf /etc/nginx/sites-available/node_${NodeName}
-        #rm -rf /etc/nginx/sites-enabled/node_${NodeName}
+        rm -rf /etc/nginx/sites-available/node_$sBranchName
+        rm -rf /etc/nginx/sites-enabled/node_$sBranchName
 fi
-
-sed -i '/upstream master/,+2d' /etc/nginx/nginx.conf
+echo "node_$sBranchName"
+sed -i '/upstream node_${sBranchName}/,+2d' /etc/nginx/nginx.conf
+if [ $? == 0 ];then
+	echo "删除nginx.conf中的"
+fi
 nginx -t
 nginx -s reload
 
@@ -424,6 +429,8 @@ if [[ $justModifyDB == "justModifyDB" ]]; then
     cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
     TMongoPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.port'));"|awk -F ',' '{print $1}'`
     TMysqlPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
+    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.php
+    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.php
     sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.php
     sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.php
     sed -i "s/database\.servers\.default\.port.*/database\.servers\.default\.port = $DockerMysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.ini
@@ -572,7 +579,7 @@ echo "Create crontab is OK !"
 }
 
 function EchoFeatureInfo {
-echo "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS|aliyun|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg||" >> $RundeckPath/config/projinfo
+echo "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS|aliyun|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg||/var/www/Node-$sBranchName" >> $RundeckPath/config/projinfo
 cat $RundeckPath/config/projinfo | sort | uniq > $RundeckPath/config/_tmp.projinfo
 mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
 }
@@ -719,17 +726,18 @@ function UpdateDB   {
 
 ####拉取微服务
 function PullOrg  {
-        cd /var/www
-        git clone git@e.coding.net:Safirst/org.git Orgservice
-        cd Orgservice/application
+	echo "##################开始部署微服务org###################"
+	OrgBranch=$1
+	mkdir -p /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
+	cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
+	git init
+	git remote add origin git@e.coding.net:Safirst/org.git 
+ 	git pull --rebase origin $OrgBranch:$OrgBranch
+        cd application
         mkdir log
         chmod 777 -R log
-        cp /root/scripts/rundeck/template/feature/production.ini /var/www/Orgservice/conf/development.ini
-        #cp -r /root/scripts/rundeck/template/feature/vendor /var/www/Orgservice/
-        # cp /root/scripts/rundeck/template/feature/org.feature.moban.aysaas.com /etc/nginx/sites-available/org.$Branch.$sBranchName.aysaas.com
-        tar -zxf /root/scripts/rundeck/template/feature/vendororg.tar.gz -C /var/www/Orgservice/ 1>/dev/null 2>&1
-        #cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/services.php /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/
-        mv /var/www/Orgservice  /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
+        cp /root/scripts/rundeck/template/feature/production.ini /var/www/www.$Branch.$sBranchName.aysaas.com/org/conf/development.ini
+        tar -zxf /root/scripts/rundeck/template/feature/vendororg.tar.gz -C /var/www/www.$Branch.$sBranchName.aysaas.com/org/ 1>/dev/null 2>&1
 
         cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
         MysqlName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.name'));"`
@@ -804,6 +812,7 @@ function SetDns() {
         echo "${_Ip} ${app_name}" > /root/dnsname${_IpPort}.log
         echo "${_Ip} ${fileio_name}" >> /root/dnsname${_IpPort}.log
         echo "${_Ip} ${static_name}" >> /root/dnsname${_IpPort}.log
+        echo "${_Ip} node${static_name}" >> /root/dnsname${_IpPort}.log
         scp /root/dnsname${_IpPort}.log root@192.168.0.122:~/
         ssh -l root 192.168.0.122 "bash -x /root/setdomaintodns.sh ${_IpPort}"
 }
@@ -831,7 +840,8 @@ fi
 #########调用jenkins
 function JenKins() {
 
-	curl -X POST http://192.168.0.251:8080/jenkins/job/CheckIntegrationEnv/buildWithParameters --user apiadmin:aykj83752661
+	#curl -X POST http://192.168.0.251:8080/jenkins/job/CheckIntegrationEnv/buildWithParameters --user apiadmin:aykj83752661
+	curl -X POST http://192.168.0.251:8080/jenkins/job/CheckIntegrationEnv/build --user apiadmin:aykj83752661
 	[ $? -eq 0 ] && echo "调用jenkins成功"
 }
 
@@ -845,8 +855,10 @@ case $Param1 in
     DockerMysql
     DockerMongo
     ModifyConf
-    PullOrg
-    [ $Param3 ] && DeployNode
+    PullOrg $Param4
+    if [ "$Param3" != "" ];then
+	DeployNode
+    fi
     TransYml
     #ManageDB
     #ManageMongo
@@ -856,11 +868,7 @@ case $Param1 in
     EchoFeatureInfo
     ;;
 "deploynode")
-    
     DeployNode
-    ;;
-"delnode")
-    DelNode $Param2
     ;;
 "echo")
     InPut NoCheck
@@ -878,6 +886,7 @@ case $Param1 in
     DelInfo
     DelRedis
     DelDns
+    DelNode
     #use crontab to clean
     #DelCrontab
     ReService
