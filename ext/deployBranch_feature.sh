@@ -315,9 +315,9 @@ git pull --rebase origin $NodeName:$NodeName
 NodePort=`NginxPort`
 echo "node端口:"$NodePort
 sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/api.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/static.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/fileio.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
 
 ##修改node-nginx
 sed -i "s/Node-SaaS/Node-$sBranchName/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
@@ -394,7 +394,6 @@ do
 done
 /home/anyuan/bin/composer.phar config -g repo.packagist composer https://packagist.phpcomposer.com >/dev/null 2>&1
 /home/anyuan/bin/composer.phar update >/dev/null 2>&1
-tar -zxf /root/scripts/rundeck/template/feature/vendorpaas.tar.gz -C /var/www/www.$Branch.$sBranchName.aysaas.com/saas 1>/dev/null 2>&1
 chmod -R 777 log upload
 chown -R $RunUser:$RunUser /var/www/www.$Branch.$sBranchName.aysaas.com
 cd - 1>/dev/null 2>&1
@@ -408,15 +407,11 @@ justModifyDB=$1
 
 echo ""
 echo "Modify config file ..."
-echo "获取docker端口"
 DockerMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}' $DockerMysqlName`
 DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}' $DockerMongoName`
 
-echo "判断修改内容"
 if [[ $justModifyDB == "justModifyDB" ]]; then
     cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
-    echo "更新paas和org的docker端口"
-
     #TMongoPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.port'));"|awk -F ',' '{print $1}'`
     #TMysqlPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
 
