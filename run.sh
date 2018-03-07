@@ -61,6 +61,7 @@ if [[ $INFOType == "File" ]]; then
             #只能按顺序在末尾新增，千万不可更改已有的顺序，灾难！
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
             ProjPath=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'`
+            NginxName=`echo $LINE | awk -F"|" '{print $3}' |awk -F"/" '{print $4}'| awk 'gsub(/^ *| *$/,"")'`
             BranchType=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'| awk -F"/" '{print $4}' | awk -F"." '{print $2}'`
             BranchDocker=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'| awk -F"/" '{print $4}' | awk -F"." '{print $3}'`
             DBType=`echo $LINE | awk -F"|" '{print $4}' | awk 'gsub(/^ *| *$/,"")'`
@@ -78,9 +79,9 @@ if [[ $ProjPath == "" ]]; then
     exit 0
 fi
 
-AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-echo -e "\033[31m 项目访问地址 : \033[0m"
-echo -e "\033[31m" $AccessAddr "\033[0m"
+#AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+#echo -e "\033[31m 项目访问地址 : \033[0m"
+#echo -e "\033[31m" $AccessAddr "\033[0m"
 
 case $ProjType in
 "production") ;;

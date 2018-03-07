@@ -1,7 +1,4 @@
 function PullCodeOrg (){
-	#local _Param1=$1
-	#local _Branch=`echo ${_Param1} | awk -F"/" '{print $1}'`
-	#local _BranchName=`echo ${_Param1} | awk -F"/" '{print $2}'`
 	cd $OrgPath 
 	local _OrgBranch=`git branch | grep "*" | awk '{print $2}'`
 	echo "pulling the org code....."
@@ -32,20 +29,16 @@ cd $ProjPath
 git checkout .
 git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
-    ./deploy/config >/dev/null 2>&1
-    if [ $? != 0 ];then
-    	####临时匹配最新master没有deploy/config,导致端口报错问题
-    	PaasMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}'  Mysql_${BranchType}_${BranchDocker}`
-    	PaasMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}'  Mongo_${BranchType}_${BranchDocker}`
-    	OldPaasMysqlPort=`cat config/development/database.yml | grep default: -A 5 | grep port: | awk '{print $2}'`
-    	OldPaasMongoPort=`cat config/development/database.yml | grep mongodb: -A 5 | grep port: | awk '{print $2}'`
-        OldOrgMysqlPort=`cat $OrgPath/conf/development.yml | grep default: -A 5 | grep port: | awk '{print $2}'`
-        OldOrgMongoPort=`cat $OrgPath/conf/development.yml | grep mongodb: -A 5 | grep port: | awk '{print $2}'`
-    	sed -i "s/$OldPaasMysqlPort/$PaasMysqlPort/g" $ProjPath/config/development/database.yml 
-    	sed -i "s/$OldPaasMongoPort/$PaasMongoPort/g" $ProjPath/config/development/database.yml 
-    	sed -i "s/$OldOrgMysqlPort/$PaasMysqlPort/g" $OrgPath/conf/development.yml 
-    	sed -i "s/$OldOrgMongoPort/$PaasMongoPort/g" $OrgPath/conf/development.yml 
-    fi
+    PaasMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}'  Mysql_${BranchType}_${BranchDocker}`
+    PaasMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}'  Mongo_${BranchType}_${BranchDocker}`
+    OldPaasMysqlPort=`cat config/development/database.yml | grep default: -A 5 | grep port: | awk '{print $2}'`
+    OldPaasMongoPort=`cat config/development/database.yml | grep mongodb: -A 5 | grep port: | awk '{print $2}'`
+    OldOrgMysqlPort=`cat $OrgPath/conf/development.yml | grep default: -A 5 | grep port: | awk '{print $2}'`
+    OldOrgMongoPort=`cat $OrgPath/conf/development.yml | grep mongodb: -A 5 | grep port: | awk '{print $2}'`
+    sed -i "s/$OldPaasMysqlPort/$PaasMysqlPort/g" $ProjPath/config/development/database.yml 
+    sed -i "s/$OldPaasMongoPort/$PaasMongoPort/g" $ProjPath/config/development/database.yml 
+    sed -i "s/$OldOrgMysqlPort/$PaasMysqlPort/g" $OrgPath/conf/development.yml 
+    sed -i "s/$OldOrgMongoPort/$PaasMongoPort/g" $OrgPath/conf/development.yml 
     ChangePullOwn
     echo ""
     echo "$BranchName pull the new code is OK !"
@@ -57,9 +50,6 @@ else
     cat /tmp/rundeck_code_errinfo
     exit 1
 fi
-cd $ProjPath
-./deploy/config
-./deploy/syncConfig
 cd - 1>/dev/null 2>&1
 }
 

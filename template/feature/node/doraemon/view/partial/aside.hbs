@@ -1,0 +1,84 @@
+{{# side}}
+    <aside class="x-aside {{theme}}">
+        <div id="x-aside-app" class="x-child" :class="[{'open': isOpen}, theme]" v-cloak>
+            {{!-- 系统管理员不显示 --}}
+            {{#unless isSysRoot}}
+                <div class="options-list" :class="[{'animation': isOne}, isOpen ? 'down' : 'up']">
+                    <a href="/user/workbench" class="bt-workbench bt-img reverse-workbench animation-workbench" title="工作台"
+                       @mouseenter="changeActive(true)" @mouseleave="changeActive(false)"
+                       :class="[activeLink.indexOf('/user/workbench') > -1 ? 'bt-theme-active' : '']">
+                        <i class="iconfont icon-gongzuotai"></i>
+                    </a>
+                    <a href="/appcenter" class="bt-appcenter bt-img reverse-appcenter animation-appcenter" title="应用中心"
+                       @mouseenter="btnleave(true)" @mouseleave="btnleave(false)"
+                       :class="[activeLink.indexOf('/appcenter') > -1 ? 'bt-theme-active' : '']">
+                        <i class="iconfont icon-yingyongzhongxin"></i>
+                    </a>
+                    <a href="/dashboard" class="bt-dashboard bt-img reverse-dashboard animation-dashboard" title="仪表盘"
+                       @mouseenter="changeActive(true)" @mouseleave="changeActive(false)"
+                       :class="[activeLink.indexOf('/dashboard') > -1 ? 'bt-theme-active' : '']">
+                        <i class="iconfont icon-yibiaopan"></i>
+                    </a>
+                </div>
+            {{/unless}}
+
+            <div class="aside-exit">
+                <a title="退出" class="exit" @click="logoutDialog">
+                    <i class="iconfont icon-guanji"></i>
+                </a>
+            </div>
+            <x-dialog :show.sync="dialogbox.show" :title="dialogbox.title" :mask="dialogbox.mask"
+                :btns="dialogbox.btns" :content="dialogbox.content" @dialog="dialogEvent">
+            </x-dialog>
+
+            <div class="appsystem-list-content" v-show="MenuShow" @mouseleave="switchMenuDiv($event,false)">
+                <div id="menu-content" class="menu-content" @mouseenter="switchMenuDiv($event,true)" >
+                    <ul>
+                        <li class="menu-list" :class=" 'fore-' + index "
+                            v-for="(menu,index) in menulist"
+                            @mouseenter="switchMenuDiv($event,true, 1, index)">
+                            <span class="menu-name"  :data-appid="menu.id" :id="menu.id">
+                             <!--<i class="fa" :class="menu.icon_name ? 'fa-'+ menu.icon_name : 'fa-globe' "></i>-->
+                                <a :href='"/appcenter/appsystem/" + menu.id'>
+                                    [[menu.name  | filterFun ]]
+                                    <i class="iconfont icon-qianjin"></i>
+                                </a>
+                        </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="second-content" class="second-content"
+                     @mouseenter="switchMenuDiv($event,true, 3)"
+                     @mouseleave="switchMenuDiv($event,false, 3)">
+                    <ul  class="second-content-wrap" :id='"category-item-" + index' :data-index=index
+                         v-for="(menu,index) in menulist">
+                         <!--@mouseenter="switchMenuDiv($event,true, 2, index)">-->
+                        <li class="second-list" v-for="secondlist in menu.children">
+                            <span v-if="!secondlist.children.length && secondlist.link"
+                                class="noticeMenu"  :data-appId="secondlist.id"  :id="secondlist.id">
+                                <a :href="secondlist.link" class="second-title">[[secondlist.name | filterFun ]]</a>
+                            </span>
+                            <span v-else="second.children.length" :title="secondlist.name">
+                                <a class="second-title">[[secondlist.name | filterFun ]]</a>
+                            </span>
+                            <ul class="third-content">
+                                <li v-for="thirdlist in secondlist.children">
+                                    <span v-if="thirdlist.name.length > 8"  :data-appId="thirdlist.id" class="noticeMenu" :id="thirdlist.id">
+                                        <a :href="thirdlist.link" class="third-title" :title="thirdlist.name">[[thirdlist.name  | filterFun ]]</a>
+                                    </span>
+                                    <span v-else="second.children.length <= 8"  :data-appId="thirdlist.id" class="noticeMenu" :id="thirdlist.id">
+                                        <a :href="thirdlist.link" class="third-title">[[thirdlist.name]]</a>
+                                    </span>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!--<button class="leftButton">&lt;</button>-->
+                    <!--<button class="rightButton">&gt;</button>-->
+                    <i class="leftButton iconfont icon-zuocejiantou"></i>
+                    <i class="rightButton iconfont icon-youcejiantou"></i>
+                </div>
+            </div>
+    </aside>
+{{/ side}}

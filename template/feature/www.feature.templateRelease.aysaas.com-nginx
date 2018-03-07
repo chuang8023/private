@@ -130,3 +130,19 @@ server {
     }
 }
 
+server {
+    listen templeateWebPort;
+
+    server_name nodestatic.feature.templateRelease.aysaas.com;
+
+    root /var/www/Node-SaaS/public/dist ;
+
+    error_log /var/log/nginx/Node-SaaS-error.log error;
+    access_log /var/log/nginx/Node-SaaS-access.log combined;
+
+    location ~* \.(eot|ttf|woff|woff2)$ {
+        add_header Access-Control-Allow-Origin *;
+    }
+
+}
+
