@@ -208,7 +208,9 @@ cd $NodePath
 #  source ~/.bashrc
 #  fi
 #fi
-NODE_ENV="development" npm run static 1>/dev/null 2>/tmp/rundeck_code_errinfo
+npm i >/dev/null 2>&1
+npm install canvas >/dev/null 2>&1
+npm run static 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
 echo ""
@@ -318,6 +320,10 @@ sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/developme
 sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
 sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
 sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/production.js
 
 ##修改node-nginx
 sed -i "s/Node-SaaS/Node-$sBranchName/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
@@ -764,10 +770,10 @@ function PullOrg  {
 function SetDns() {
         local _Ip=`ifconfig | grep inet | grep 192.168 |awk -F":" '{print $2}' | awk '{print $1}'`
         local _IpPort=`ifconfig | grep inet | grep 192.168 |awk -F":" '{print $2}' | awk '{print $1}'| awk -F"." '{print $4}'`
-        app_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "www." | awk '{print $2}' |sed "s/;//g"`
-        fileio_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "fileio." | awk '{print $2}' |sed "s/;//g"`
+        app_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "\<www." | awk '{print $2}' |sed "s/;//g"`
+        fileio_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "\<fileio." | awk '{print $2}' |sed "s/;//g"`
         static_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "\<static." | awk '{print $2}' |sed "s/;//g"`
-        nodestatic_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "nodestatic." | awk '{print $2}' |sed "s/;//g"`
+        nodestatic_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "\<nodestatic." | awk '{print $2}' |sed "s/;//g"`
 	echo $app_name
 	echo $fileio_name 
 	echo $static_name
