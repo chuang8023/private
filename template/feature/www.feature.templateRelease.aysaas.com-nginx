@@ -123,6 +123,9 @@ server {
     }
 
     location ~ \.php$ {
+           if ($request_uri ~ "^/service_org") {
+           root /var/www/www.feature.templateRelease.aysaas.com/org/public;
+        }
         fastcgi_pass   127.0.0.1:templatePhpPort;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         fastcgi_param   ENV development;
