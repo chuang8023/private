@@ -1,16 +1,17 @@
 function PullNode () {
 echo ""
-echo "$BranchName pulling the new node code ..."
+local NodeName=$1
+echo "$NodeName pulling the new node code ..."
 cd $NodePath
-git pull --rebase origin master 1>/dev/null 2>/tmp/rundeck_code_errinfo
+git pull --rebase origin $NodeName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
-    echo "$BranchName pull the new node code is OK !"
+    echo "$NodeName pull the new node code is OK !"
     cd - 1>/dev/null 2>&1
 else
     echo ""
-    echo "$BranchName pull the new node code is Fail !"
+    echo "$NodeName pull the new node code is Fail !"
     echo "---------------------------------------------"
     cat /tmp/rundeck_code_errinfo
     exit 1
@@ -19,7 +20,7 @@ fi
 
 function BuildNode () {
 echo ""
-echo "$BranchName build the  node code ..."
+echo "$NodeName build the  node code ..."
 cd $NodePath
 #if [[ $SHELL == "/bin/zsh" ]];then
 #  cat ~/.zshrc|grep NODE_ENV
@@ -35,15 +36,15 @@ cd $NodePath
 #  source ~/.bashrc
 #  fi
 #fi
-NODE_ENV="production" npm run static 1>/dev/null 2>/tmp/rundeck_code_errinfo
+npm run static 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
-    echo "$BranchName build  node code is OK !"
+    echo "$NodeName build  node code is OK !"
     cd - 1>/dev/null 2>&1
 else
     echo ""
-    echo "$BranchName build node code is Fail !"
+    echo "$NodeName build node code is Fail !"
     echo "---------------------------------------------"
     cat /tmp/rundeck_code_errinfo
     exit 1

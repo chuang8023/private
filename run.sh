@@ -223,6 +223,12 @@ rbuild|rgulp)
     Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
+"gconode")
+    Main
+    ChkoutNodeBranch "$Param3"
+    BuildNode
+    RestartPm2
+    ;;
 "cleanUserChatToken")
     _DBHost=$Param3
     Main
@@ -424,7 +430,7 @@ rbuild|rgulp)
  ;;
 "updatenode")
   Main
-  PullNode
+  PullNode $Param3
   BuildNode
   RestartPm2
   ;;

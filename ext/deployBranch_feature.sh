@@ -296,7 +296,7 @@ return $Port
 ####### @date: 2017-11-16
 function DeployNode {
 echo "################开始Node部署#########################"
-NodeBN=`echo $Param3 | awk 'gsub(/^ *| *$/,"")'`
+NodeBN=`echo $Param4 | awk 'gsub(/^ *| *$/,"")'`
 NodeBranch=`echo $NodeBN | awk -F"/" '{print $1}'`
 NodeName=`echo $NodeBN | awk -F"/" '{print $2}'`
 if [ ! $NodeName ];then
@@ -441,7 +441,7 @@ else
     sed -i "s/$TBranch/$Branch/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TBranchName/$sBranchName/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 
-    sed -i "s/application_name: */application_name: AYSaaS-$sBranchName/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/app.yml
+    sed -i "s/application_name: AYSaaS-master/application_name: AYSaaS-$sBranchName/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/app.yml
 
     #####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
     cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/queue.yml /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/queue.yml
@@ -824,8 +824,8 @@ case $Param1 in
     DockerMysql
     DockerMongo
     ModifyConf
-    PullOrg $Param4
-    if [ "$Param3" != "" ];then
+    PullOrg $Param3
+    if [ "$Param4" != "" ];then
 	DeployNode
     fi
     #TransYml
