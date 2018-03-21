@@ -1,6 +1,6 @@
 function PullNode () {
 echo ""
-local NodeName=$1
+local NodeName=`git branch | grep "*" | awk '{print $2}'`
 echo "$NodeName pulling the new node code ..."
 cd $NodePath
 git pull --rebase origin $NodeName 1>/dev/null 2>/tmp/rundeck_code_errinfo
