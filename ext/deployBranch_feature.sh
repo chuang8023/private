@@ -304,10 +304,6 @@ if [ ! $NodeName ];then
 fi
 
 ##拉取代码、配置文件
-if [ -d /var/www/Node-$sBranchName ];then
-	echo "该目录已存在，请联系运维处理！！"
-	exit 1	
-fi
 cp -r  $NodeCodePath /var/www/Node-$sBranchName
 NodePath=/var/www/Node-$sBranchName
 cd $NodePath
@@ -760,7 +756,7 @@ function PullOrg  {
 	sed -i "s/MysqlUser/$MysqlUser/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
 	sed -i "s/MysqlPasswd/$MysqlPass/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
 
-       	sed -i "s/application_name: */application_name: AYSaaS-$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+       	sed -i "s/application_name: .*/application_name: AYSaaS-$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
 	sed -i "s/QueueHost/$QueueHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
 	sed -i "s/RedisHost/$RedisHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
 	sed -i "s/RedisAuth/$RedisAuth/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
