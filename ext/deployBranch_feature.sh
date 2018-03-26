@@ -312,13 +312,13 @@ git pull --rebase origin $NodeName:$NodeName
 ######修改node-development.js
 NodePort=`NginxPort`
 sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/development.js
 sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/production.js
-sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/production.js
-sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/production.js
-sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
 
 ##修改node-nginx
 sed -i "s/Node-SaaS/Node-$sBranchName/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
