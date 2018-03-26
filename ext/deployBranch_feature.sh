@@ -311,15 +311,14 @@ git pull --rebase origin $NodeName:$NodeName
 
 ######修改node-development.js
 NodePort=`NginxPort`
-echo "node端口:"$NodePort
 sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/development.js
 sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/production.js
-sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/production.js
-sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/production.js
-sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:5566',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:55555',/" /var/www/Node-$sBranchName/config/production.js
 
 ##修改node-nginx
 sed -i "s/Node-SaaS/Node-$sBranchName/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
@@ -331,7 +330,7 @@ nginx -s reload
 ##修改node-nginx.conf
 sed -i "/^http.*/a\upstream node_$sBranchName {\n    server 127.0.0.1:$NodePort;\n}" /etc/nginx/nginx.conf
 
-PullNode
+#PullNode
 BuildNode
 RestartPm2
 }
@@ -345,7 +344,7 @@ fi
 
 sed -i "/upstream node_$sBranchName /,+2d" /etc/nginx/nginx.conf
 if [ $? == 0 ];then
-	echo "删除nginx.conf中的"
+	echo "删除nginx.conf配置成功！"
 fi
 nginx -t
 nginx -s reload
@@ -441,7 +440,7 @@ else
 
     #####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
     cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/queue.yml /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/queue.yml
-    sed -i "s/multiProcess: false/multiProcess: true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/queue.yml
+    #sed -i "s/multiProcess: false/multiProcess: true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/queue.yml
 
     cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
     if [ -e ./deploy/supervisor ] ;then
@@ -770,10 +769,6 @@ function SetDns() {
         fileio_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "\<fileio." | awk '{print $2}' |sed "s/;//g"`
         static_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "\<static." | awk '{print $2}' |sed "s/;//g"`
         nodestatic_name=`cat /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com |grep server_name | grep "\<nodestatic." | awk '{print $2}' |sed "s/;//g"`
-	echo $app_name
-	echo $fileio_name 
-	echo $static_name
-	echo $nodestatic_name
         echo "${_Ip} ${app_name}" > /root/dnsname${_IpPort}.log
         echo "${_Ip} ${fileio_name}" >> /root/dnsname${_IpPort}.log
         echo "${_Ip} ${static_name}" >> /root/dnsname${_IpPort}.log
