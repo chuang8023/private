@@ -32,7 +32,6 @@ cd $ProjPath
 git checkout .
 git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
-    ./deploy/config
     ChangePullOwn
     echo ""
     echo "$BranchName pull the new code is OK !"
@@ -45,8 +44,7 @@ else
     exit 1
 fi
 cd $ProjPath
-./deploy/config
-./deploy/syncConfig
+#ENV=production ./deploy/syncConfig
 cd - 1>/dev/null 2>&1
 }
 
@@ -121,4 +119,14 @@ else
      ExecUpdateVendor
 fi
 cd - 1>/dev/null 2>&1
+}
+
+
+function BackVendor {
+	cd  $ProjPath	
+	local _Date=`date +%Y-%m-%d`
+	echo "当前目录为：$PWD"
+	echo "开始备份vendor....."	
+	cp -r vendor /home/anyuankeji/vendor_${_Date}
+        [ $? -eq 0 ] && echo "备份vendor包成功！！"
 }
