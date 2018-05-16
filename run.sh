@@ -65,7 +65,7 @@ if [[ $INFOType == "File" ]]; then
 	    OrgPath=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
             #DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
             #CloneDBId=`echo $LINE | awk -F"|" '{print $6}' | awk 'gsub(/^ *| *$/,"")'`
-            #NodePath=`echo $LINE | awk -F"|" '{print $7}' | awk 'gsub(/^ *| *$/,"")'`
+            NodePath=`echo $LINE | awk -F"|" '{print $7}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
 fi
@@ -75,10 +75,12 @@ if [[ $ProjPath == "" ]]; then
     echo "Cannot find project named $ProjName !"
     exit 0
 fi
+cd $NodePath
+NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
 
-AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-echo -e "\033[31m 项目访问地址 : \033[0m"
-echo -e "\033[31m" $AccessAddr "\033[0m"
+#AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+#echo -e "\033[31m 项目访问地址 : \033[0m"
+#echo -e "\033[31m" $AccessAddr "\033[0m"
 
 case $ProjType in
 "production") ;;
@@ -418,11 +420,29 @@ rbuild|rgulp)
 "pullnode")
   Main
   PullNode
+  ;;
+"pullnodenew")
+  Main
+  PullNodeNew
  ;;
+"restartnodenew")
+  Main
+  RestartNodeNew
+ ;; 
+"buildnodenew")
+  Main
+  BuildNodeNew
+  ;;
 "updatenode")
   Main
   PullNode
   BuildNode
   RestartPm2
+  ;;
+"updatenodenew")
+  Main
+  PullNodeNew
+  BuildNodeNew
+  RestartNodeNew
   ;;
 esac
