@@ -100,7 +100,7 @@ function RestartNodeNew () {
 	echo "开始重启node服务"
 	cd $NodePath
 	npm run stop
-	[ $? -eq 0 ] && echo "node已停止" && SERVER_PATH=https://${server_domain} npm start
+	[ $? -eq 0 ] && echo "node已停止" && npm start
         [ $? -eq 0 ] && echo "node 已重启"
 }
 
