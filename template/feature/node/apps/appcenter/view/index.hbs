@@ -1,0 +1,57 @@
+<div id="appcenter" class="appcenter x-content">
+    <div id="apps-center" class="apps-center">
+        <header class="appcenter-header clearfix">
+            <span class="name left">应用中心</span>
+            <span class="icon right">
+                <i class="iconfont icon-yingyong" aria-hidden="true"></i>
+                应用市场
+            </span>
+        </header>
+        <ul id="app-list" class="app-list clearfix">
+            <app v-for="(app, index) in apps" :key="app.id" :index="index" :app="app" v-on:add="add"></app>
+            <li v-if="admin" class="app app-add" id="app-add" @click="add" v-cloak>
+                <span>新创建系统</span>
+
+            </li>
+        </ul>
+    </div>
+    <x-dialog :show.sync="dialog.show" :title="dialog.title" :mask="dialog.mask"
+              :btns="dialog.btns" ref="app-dialog" v-on:dialog="dialogEvent" v-cloak>
+        <section class="infos">
+            <div class="title">
+                <span>名称</span><em>不超过8个字</em>
+            </div>
+            <div class="name-input">
+                <input type="text" v-model.trim="name" maxlength="8">
+            </div>
+        </section>
+        <section class="infos icons">
+            <div class="title">
+                <span>图标</span>
+                <a class="icon-link" href="/menu/fontcode" target="_blank">图标库</a>
+            </div>
+            <div class="input-icon">
+                <input class="icon-name" type="text" v-model.trim="def">
+                <div class="chosed">
+                    <i class="fa" :class="['fa-' + def]"></i>
+                </div>
+            </div>
+
+            <ul class="sys-icons clearfix">
+                <li v-for="icon in icons">
+                    <i class="fa" :class="['fa-' + icon]" @click="setIcon(icon)"></i>
+                </li>
+            </ul>
+        </section>
+        <section class="infos">
+            <div class="title">说明</div>
+            <div class="desc-input">
+                <textarea v-model.trim="desc" maxlength="200" @input="descInput" v-model="desc" resize=inherit></textarea>
+                <span class="num-text">[[remnant]]/200</span>
+            </div>
+        </section>
+    </x-dialog>
+    <x-box :show.sync="box.show" :title="box.title" :mask="box.mask"
+               :btns="box.btns" :content="box.content" v-on:dialog="boxEvent">
+   </x-box>
+</div>
