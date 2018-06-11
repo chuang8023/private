@@ -73,10 +73,11 @@ fi
 if [[ $ProjPath == "" ]]; then
     echo ""
     echo "Cannot find project named $ProjName !"
-    exit 0
+    #exit 0
 fi
 cd $NodePath
 NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
+Node_CommitID=`git log | grep commit -m1 | awk '{print $2}'|sed "s/ //g"`
 
 #AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
 #echo -e "\033[31m 项目访问地址 : \033[0m"
@@ -439,10 +440,17 @@ rbuild|rgulp)
   BuildNode
   RestartPm2
   ;;
+"gconode")
+  Main
+  ChkoutNodeBranch $Param3
+  PullNodeNew
+  BuildNodeNew "-f"
+  RestartNodeNew
+  ;;
 "updatenodenew")
   Main
-  PullNodeNew
-  BuildNodeNew
+  PullNodeNew 
+  BuildNodeNew $Node_CommitID
   RestartNodeNew
   ;;
 esac

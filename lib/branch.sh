@@ -45,3 +45,54 @@ else
 fi
 cd - 1>/dev/null 2>&1
 }
+
+
+
+#####show 新node分支
+function ShowNodeBranch {
+echo ""
+echo "The current branch :"
+echo "-------------------------"
+echo $NodeBranchName 
+}
+
+####新node切换分支
+function ChkoutNodeBranch () {
+local _OptionNode=$1
+ShowNodeBranch
+NodeGitStatus
+cd $NodePath
+echo ""
+if [[ $_OptionNode == "all" ]]; then
+    echo "Drop all changes that are not saved ..."
+    git checkout .
+    git  clean -f
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "OK !"
+        GitStatus
+    else
+        echo ""
+        echo "Fail !"
+        exit 1
+    fi
+else
+    git checkout .
+    git  clean -f
+    echo "Checkout to $_OptionNode ..."
+    git fetch origin $_OptionNode:$_OptionNode 1>/dev/null 2>/tmp/rundeck_branch_errinfo &&
+    git checkout $_OptionNode
+    if [[ $? == 0 ]]; then
+        ChangePullOwn
+        echo ""
+        echo "Checkout to $_OptionNode is OK !"
+    else
+        echo ""
+        echo "Checkout to $_OptionNode is Fail !"
+        echo "--------------------------------------"
+        cat /tmp/rundeck_branch_errinfo
+        exit 1
+    fi
+fi
+cd - 1>/dev/null 2>&1
+}
