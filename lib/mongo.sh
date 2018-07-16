@@ -5,32 +5,57 @@ echo "begin to mongodump......."
 ####获取database.php中的参数配置
 while read LINE
 do
-    local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+    #####加个键值Tig，用来获取mongo参数
+    #if [ "$_Key" == "mongodb" ];then
+    #    Tig=1
+    #fi
+    #case $_Key in
+    #	"host")
+    #   		local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #   		;;
+    #	"port")
+    #   		local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #   		;;
+    #	"dbname")
+    #            local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #   		;;
+    #	"user")
+    #   		local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #   		;;
+    #	"password")
+    #   		local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+    #   		if [ $Tig == 1 ];then
+    #    		break;
+    #    	fi
+    #   		;;
+    #    esac
+    local _Key=`echo $LINE | awk -F":" '{print $1}'|sed 's/ //'|sed "s/'//g"`
 ####加个键值Tig，用来获取mongo参数
     if [ "$_Key" == "mongodb" ];then
 	Tig=1
     fi
     case $_Key in
     	"host")
-       		local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+       		local _Host=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
        		;;
     	"port")
-       		local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+       		local _Port=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
        		;;
     	"dbname")
- 	        local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+ 	        local _DBName=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
        		;;
     	"user")
-       		local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+       		local _DBUser=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
        		;;
     	"password")
-       		local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+       		local _DBPasswd=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
        		if [ $Tig == 1 ];then
 			break;
 		fi
        		;;
 	esac
-done < $ProjConfPath/database.php
+done < $ProjConfPath/database.yml
 ###备份mongo
 mongodump -u$_DBUser -p=$_DBPasswd -h$_Host:$_Port -d$_DBName -o $BackupDir/${_DBName}_mongo_`date +%y%m%d%H%M%S`
 if [ $? == 0 ];then

@@ -1,0 +1,43 @@
+/* 美洽聊天：其中强制更改ID选择器的样式，代码审核不支持ID */
+
+#MEIQIA-BTN-HOLDER {
+    bottom: 100px !important;
+    right: 0 !important;
+}
+
+#MEIQIA-BTN {
+    border: 0 !important;
+    width: 32px !important;
+    padding: 0 !important;
+    height: 32px !important;
+    overflow: hidden;
+    line-height: 20px;
+    background: rgb(67, 157, 226) !important;
+
+    &:hover {
+        #MEIQIA-BTN-TEXT {
+            padding: 5px 4px 0 8px !important;
+        }
+    }
+}
+
+#MEIQIA-BTN-ICON {
+    margin: 7px 6px 5px !important;
+    background: url("./img/mei-qia-img.svg") center 0 no-repeat !important;
+}
+
+#MEIQIA-BTN-TEXT {
+    writing-mode: lr-tb;
+    overflow: hidden !important;
+    font-size: 14px !important;
+    width: 20px !important;
+    height: 0 !important;
+    padding: 0 4px 0 8px !important;
+    margin: 0 !important;
+    text-align: center !important;
+    float: none !important;
+    line-height: 20px !important;
+    position: absolute;
+    top: 32px;
+    background: rgb(98, 184, 250) !important;
+}
