@@ -80,6 +80,7 @@ if [[ $ProjPath == "" ]]; then
 fi
 cd $NodePath
 NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
+NodeCommitID=`git log | head -n 1 | awk '{print $2}'`
 
 #AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
 #echo -e "\033[31m 项目访问地址 : \033[0m"
@@ -451,7 +452,7 @@ rbuild|rgulp)
 "updatenodenew")
   Main
   PullNodeNew
-  BuildNodeNew
+  BuildNodeNew $NodeCommitID
   RestartNodeNew
   ;;
 esac

@@ -148,6 +148,7 @@ else
                 #git diff $_OldNodeCommitID | grep "diff --git a" | awk -F"/" '{print $4}' | grep -m 1 "$i"  > /dev/null 2>&1
                 tag=`git diff $_OldNodeCommitID | grep "diff --git a" | awk -F"/" '{print $4}' | grep -m 1 "$i"`
                 #[ $? -eq 0 ] && npm run build-static $i 1>/dev/null 2>/tmp/node_build.log
+		echo $tag
 		if [ "$i" == "$tag" ];then
 			echo "开始打包 $i"
                 	npm run build-static $i >>/tmp/node_build.log
