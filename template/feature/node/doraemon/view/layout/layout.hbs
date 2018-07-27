@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1;"> 
+        <meta charset="UTF-8">
+        <meta name="description" content="">
+        <meta name="keywords" content="安全,应急">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="dns-prefetch" href="https://www.qycloud.com.cn">
+        <link rel="dns-prefetch" href="https://static.qycloud.com.cn">
+        <link rel="dns-prefetch" href="https://fileio.qycloud.com.cn">
+        <title>{{title}}</title>
+        {{#each css}}
+            <link rel="stylesheet" href="{{.}}">
+        {{/each}}
+    </head>
+    <body>
+        {{> header}}
+        {{> aside}}
+        {{{body}}}
+        {{#each js}}
+            <script src="{{.}}"></script>
+        {{/each}}
+    </body>
+</html>

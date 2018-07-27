@@ -40,6 +40,35 @@ server {
         fastcgi_param   ENV development;
         include        fastcgi_params;
     }
+
+  location ~ ^/common {
+      proxy_redirect off;
+      proxy_set_header   Host   $host;
+      proxy_set_header   X-Real-IP  $remote_addr;
+      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header   Accept-Encoding "gzip";
+      proxy_pass http://nodetest;
+  }
+
+  # 应用中心
+  location ~ ^/appcenter(?!\/appsystem) {
+      proxy_redirect off;
+      proxy_set_header   Host   $host;
+      proxy_set_header   X-Real-IP  $remote_addr;
+      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header   Accept-Encoding "gzip";
+      proxy_pass http://nodetest;
+  }
+
+  location ~ ^/organization(?!\/(contacts|manage)) {
+      proxy_redirect off;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Accept-Encoding "gzip";
+      proxy_pass http://nodetest;
+   }
+
 }
 
 server {
@@ -94,10 +123,29 @@ server {
     }
 
     location ~ \.php$ {
+           if ($request_uri ~ "^/service_org") {
+           root /var/www/www.feature.templateRelease.aysaas.com/org/public;
+        }
         fastcgi_pass   127.0.0.1:templatePhpPort;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         fastcgi_param   ENV development;
         include        fastcgi_params;
     }
+}
+
+server {
+    listen templeateWebPort;
+
+    server_name nodestatic.feature.templateRelease.aysaas.com;
+
+    root /var/www/Node-SaaS/public/dist ;
+
+    error_log /var/log/nginx/Node-SaaS-error.log error;
+    access_log /var/log/nginx/Node-SaaS-access.log combined;
+
+    location ~* \.(eot|ttf|woff|woff2)$ {
+        add_header Access-Control-Allow-Origin *;
+    }
+
 }
 

@@ -1,0 +1,382 @@
+/**
+ * 皮肤样式
+ */
+$skins: black, purple, blue, year;
+
+@each $skin in $skins {
+    /* default year */
+    $dark: none;
+    $light: #265992;
+    $hover: rgba(255, 255, 255, 0.2);
+    $box: #fff; /* search box color */
+    $inform: #2272af;
+    $input :rgba(255, 255, 255, 0.2);
+    $button :#3b88df;
+    $headertop: rgba(255, 255, 255, 0.2);
+    $workbench: #dae9f2;
+    $btnhover: rgba(255, 255, 255, 0.2);
+    $menu-bg--color: #fff;
+    $menu-frist--color: #333;
+    $menu-dd--color: #666;
+    $menu-dd--hovercolor: rgba(0, 0, 0, 0);
+    $menu-dd--hrcolor: #d8dde4;
+    $menu-dd--btncolor: rgba(19, 19, 19, 0.2);
+    $menu-line-color: #d8dde4;
+    $icon-active: #fce59f;
+    $image-xlarge: url("./img/xl/header.png");
+    $side-image-xlarge: url("./img/xl/side.png");
+    $image-large: url("./img/l/header.png");
+    $side-image-large: url("./img/l/side.png");
+    $image-medium: url("./img/m/header.png");
+    $side-image-medium: url("./img/m/side.png");
+    $image-small: url("./img/sm/header.png");
+    $side-image-small: url("./img/sm/side.png");
+
+    @if $skin == black {
+        $dark: #232c37;
+        $light: #2c3642;
+        $hover: #2c3642;
+        $box: #8993a2;
+        $inform: #171f29;
+        $input :#2c3642;
+        $button :#35569b;
+        $headertop: #212933;
+        $workbench: #c8d9fd;
+        $btnhover: #192330;
+        $menu-bg--color: #192330;
+        $menu-frist--color: #fff;
+        $menu-dd--color: #bbc5d5;
+        $menu-dd--hovercolor: #243143;
+        $menu-dd--hrcolor: #293645;
+        $menu-dd--btncolor: rgba(245, 245, 245, 0.2);
+        $menu-line-color: #293645;
+        $icon-active: #fff;
+        $image-xlarge: none;
+        $side-image-xlarge: none;
+        $image-large: none;
+        $side-image-large: none;
+        $image-medium: none;
+        $side-image-medium: none;
+        $image-small: none;
+        $side-image-small: none;
+    } @else if $skin == purple {
+        $dark: #292a39;
+        $light: #1f202c;
+        $hover: #1f202c;
+        $box: #a6b3cb;
+        $inform: #21314a;
+        $input :#1f202c;
+        $button :#38559c;
+        $headertop: #252635;
+        $workbench: #dae9f2;
+        $btnhover: #1f202c;
+        $menu-bg--color: #192330;
+        $menu-frist--color: #fff;
+        $menu-dd--color: #bbc5d5;
+        $menu-dd--hovercolor: #243143;
+        $menu-dd--hrcolor: #293645;
+        $menu-dd--btncolor: rgba(245, 245, 245, 0.2);
+        $menu-line-color: #293645;
+        $icon-active: #fff;
+        $image-xlarge: none;
+        $side-image-xlarge: none;
+        $image-large: none;
+        $side-image-large: none;
+        $image-medium: none;
+        $side-image-medium: none;
+        $image-small: none;
+        $side-image-small: none;
+    } @else if $skin == blue {
+        /* default blue */ 
+        $dark: #2e68aa;
+        $light: #265992;
+        $hover: #265992;
+        $box: #dae9f6; /* search box color */
+        $inform: #2272af;
+        $input :#265992;
+        $button :#3b88df;
+        $headertop: #2c629f;
+        $workbench: #dae9f2;
+        $btnhover: #265992;
+        $menu-bg--color: #fff;
+        $menu-frist--color: #333;
+        $menu-dd--color: #666;
+        $menu-dd--hovercolor: rgba(0, 0, 0, 0);
+        $menu-dd--hrcolor: #d8dde4;
+        $menu-dd--btncolor: rgba(19, 19, 19, 0.2);
+        $menu-line-color: #d8dde4;
+        $icon-active: #fff;
+        $image-xlarge: none;
+        $side-image-xlarge: none;
+        $image-large: none;
+        $side-image-large: none;
+        $image-medium: none;
+        $side-image-medium: none;
+        $image-small: none;
+        $side-image-small: none;
+    }
+
+
+    .x-header {
+        &.#{$skin},
+        .x-child.#{$skin} {
+            
+            background: $dark;
+            @media screen and (max-width: 768px) { 
+                background-image: $image-small;
+                background-position:center;
+            }
+            
+            /* 1440x900 */
+            @media screen and (min-width: 768px) and (max-width: 992px) { 
+                background-image: $image-medium;
+                background-position:center;
+            }
+            /* 1600x900 */
+            @media screen and (min-width: 992px) and (max-width: 1200px) { 
+                background-image: $image-large;
+                background-position:center;
+            }
+            
+            /* 1920x1080 */
+            @media only screen and (min-width: 1200px) { 
+                background-image: $image-xlarge;
+                background-position:center;
+            }
+            
+
+            .add-list {
+                background: $button;
+                border: none;
+
+                &:active {
+                    background: #204d74;
+                    outline: none;
+                    border: none;
+                }
+
+                &:visited {
+                    outline: none;
+                    border: none;
+                }
+            }
+
+            .search-input {
+                background: $input;
+            }
+
+            .inform {
+                background: $inform;
+            }
+
+            .user-set .arrow {
+                color: $box;
+            }
+
+            .tool > .iconfont {
+                color: $box;
+            }
+
+            .tool .notice-count {
+                border: 2px solid $dark;
+            }
+
+            .search-icon {
+                color: $box;
+            }
+
+            .tool:hover,
+            .tool.on {
+                background: $hover;
+            }
+        }
+
+        &.sub-style {
+            &.#{$skin}.sub-style,
+            .x-child.#{$skin} {
+                background: #fff;
+
+                .app-logo {
+                    background: $light;
+                }
+
+                .current {
+                    color: $light;
+                }
+
+                .tool > span,
+                .tools ul,
+                .tools ul a,
+                .tool > .iconfont {
+                    color: $light;
+                }
+
+                .search-icon:hover,
+                .tool:hover,
+                .tool.on {
+                    background: $box;
+                }
+            }
+        }
+    }
+
+    .x-aside.#{$skin},
+    .x-aside .x-child.#{$skin} {
+        background: $dark;
+        border-top: 1px solid $headertop;
+
+        @media screen and (max-width: 768px) { 
+            background-image: $side-image-small;
+            background-repeat:no-repeat;
+            background-position:center;
+        }
+        
+        /* 1440x900 */
+        @media screen and (min-width: 768px) and (max-width: 992px) { 
+            background-image: $side-image-medium;
+            background-repeat:no-repeat;
+            background-position:center;
+        }
+        /* 1600x900 */
+        @media screen and (min-width: 992px) and (max-width: 1200px) { 
+            background-image: $side-image-large;
+            background-repeat:no-repeat;
+            background-position:center;
+        }
+        
+        /* 1920x1080 */
+        @media only screen and (min-width: 1200px) { 
+            background-image: $side-image-xlarge;
+            background-repeat:no-repeat;
+            background-position:center;
+        }
+
+        .aside-nav > li:hover {
+            background: $dark;
+        }
+
+        .bt-img:hover {
+            background-color: $btnhover;
+        }
+
+        .bt-img {
+            .iconfont {
+                color: $box;
+            }
+        }
+
+        .bt-theme-active {
+            background-color: $btnhover;
+
+            .iconfont {
+                color: $icon-active;
+            }
+        }
+        .year-class {
+            .iconfont {
+                color: $icon-active;
+            }
+        }
+
+        .exit {
+            color: $box;
+        }
+        
+        .exit i:hover {
+            cursor: pointer;
+            color: $hover;
+        }
+
+        .menu-content {
+            background-color: $menu-bg--color;
+
+            .menu-list {
+                a,
+                .fa,
+                .iconfont {
+                    color: $menu-frist--color;
+                }
+            }
+
+            .itemactive {
+                .menu-name a,
+                .menu-name .iconfont {
+                    color: #4680ff;
+                }
+            }
+        }
+
+        .second-content {
+            background-color: $menu-bg--color;
+            border-left: 0.1px solid $menu-line-color;
+
+            .bubble:after {
+                border-color: $menu-bg--color #f87f89 #f87f89 $menu-bg--color;
+            }
+
+            .leftButton,
+            .rightButton {
+                text-align: center;
+                color: $menu-dd--btncolor;
+            }
+
+            .second-list:last-child {
+                border-bottom: none;
+            }
+
+            .second-list {
+                padding-bottom: 8px;
+                border-bottom: 1px solid $menu-dd--hrcolor;
+                margin-bottom: 6px;
+
+                .noticeMenu {
+                    width: 167px;
+                    height: 40px;
+                    cursor: pointer;
+
+                    .second-title {
+                        color: $menu-dd--color;
+                        display: inline-block;
+                        height: 40px;
+                        width: 140px;
+                    }
+
+                    &:hover {
+                        width: 159px;
+                        margin: 0 -5px;
+                        padding-left: 5px;
+                        background-color: $menu-dd--hovercolor;
+
+                        .second-title {
+                            color: #4680ff;
+                            display: inline-block;
+                            background-color: $menu-dd--hovercolor;
+                            height: 40px;
+                            width: 140px;
+                        }
+                    }
+                }
+
+                .second-title {
+                    color: $menu-frist--color;
+                }
+
+                .third-content {
+                    .third-title {
+                        color: $menu-dd--color;
+                    }
+
+                    li {
+                        &:hover {
+                            background-color: $menu-dd--hovercolor;
+
+                            span .third-title {
+                                color: #4680ff;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
