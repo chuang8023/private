@@ -1,10 +1,7 @@
 function PullCodeOrg (){
-	#local _Param1=$1
-	#local _Branch=`echo ${_Param1} | awk -F"/" '{print $1}'`
-	#local _BranchName=`echo ${_Param1} | awk -F"/" '{print $2}'`
 	cd $OrgPath 
 	local _OrgBranch=`git branch | grep "*" | awk '{print $2}'`
-	echo "pulling the new code....."
+	echo "pulling the org code....."
 	git checkout .
 	git pull --rebase origin ${_OrgBranch} 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
 	if [[ $? == 0 ]]; then
@@ -25,6 +22,7 @@ function PullCodeOrg (){
 }
 
 
+
 function PullCode {
 echo ""
 echo "$BranchName pulling the new code ..."
@@ -43,8 +41,6 @@ else
     cat /tmp/rundeck_code_errinfo
     exit 1
 fi
-cd $ProjPath
-#ENV=production ./deploy/syncConfig
 cd - 1>/dev/null 2>&1
 }
 

@@ -2,7 +2,6 @@ function RunGulp {
 GulpFiles=$1
 echo ""
 echo "Running gulp ..."
-#sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
 sed -i "s/minAssets:.*/minAssets: false/" $ProjConfPath/assets.yml
 #sudo -u $runuser /usr/bin/env TERM=xterm rbuild -rf 1>/dev/null
 if [ -e public/gulpfile.js ];then
@@ -35,7 +34,6 @@ fi
 if [[ $? == 0 ]];then
     echo ""
     echo "Gulp is OK !"
-    #echo -e "\033[31m" "项目访问地址为：`cat $ProjConfPath/app.php | grep "www_domain" | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`" "\033[0m"
 else
     echo ""
     echo "It looks like something wrong when run gulp !"
@@ -43,7 +41,6 @@ else
     exit 1
     
 fi
-#sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
 sed -i "s/minAssets:.*/minAssets: true/" $ProjConfPath/assets.yml
 ChangePullOwn
 }
@@ -62,7 +59,6 @@ else
         echo ""
         echo "No .js or .css or .vue!"
     fi
-   #sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
    sed -i "s/minAssets:.*/minAssets: true/" $ProjConfPath/assets.yml
 fi
 cd - 1>/dev/null 2>&1

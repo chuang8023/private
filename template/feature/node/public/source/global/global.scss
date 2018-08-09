@@ -1,0 +1,101 @@
+@import "./reset.css";
+@import "./iconfont/_iconfont.css";
+
+/**
+ * 通用样式
+ */
+.none {
+    display: none;
+}
+
+.block {
+    display: block;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.clearfix {
+    display: block;
+
+    &:after {
+        content: ".";
+        display: block;
+        height: 0;
+        visibility: hidden;
+        clear: both;
+    }
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: #2b3643;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+/* usage: @include ellipsis */
+@mixin ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* 公用样式 */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background: #f9f9f9;
+    font-family: 微软雅黑, Microsoft Yahei, arial, tahoma, sans-serif;
+}
+
+$close: 70px;
+$open: 210px;
+
+/*  内容区，决定于侧栏展示与否宽度 */
+.x-content {
+    margin-left: $close;
+    transition: margin-left 0.4s;
+    margin-top: 70px;
+}
+
+.open + .x-content {
+    margin-left: $open;
+}
+
+/* fontawesome fonts path */
+$fa-font-path: "./fontawesome/fonts";
+
+/* 将fonfontawesome的字体路径设置到当前路径 */
+@import "./fontawesome/scss/font-awesome.scss";
+
+/* 布局样式 */
+@import "./layout/header.scss";
+@import "./layout/aside.scss";
+@import "./layout/themes.scss";
+
+/* 美洽样式 */
+@import "./layout/mei-qia.scss";
+
+/* 对于perfect scrollbar样式的覆盖 */
+.ps > .ps__scrollbar-y-rail > .ps__scrollbar-y {
+    right: 0 !important;
+}
+
+.ps > .ps__scrollbar-y-rail {
+    width: 13px !important;
+}
