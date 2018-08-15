@@ -133,7 +133,6 @@ function RestartNodeNew () {
         [ $? -eq 0 ] && echo "node 已重启"
 }
 
-
 function BuildNodeNew () {
 local _OldNodeCommitID=$1
 echo ""

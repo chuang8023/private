@@ -30,16 +30,6 @@ cd $ProjPath
 git checkout .
 git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
-    PaasMysqlPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "3306/tcp") 0).HostPort}}'  Mysql_${BranchType}_${BranchDocker}`
-    PaasMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "27017/tcp") 0).HostPort}}'  Mongo_${BranchType}_${BranchDocker}`
-    OldPaasMysqlPort=`cat config/development/database.yml | grep default: -A 5 | grep port: | awk '{print $2}'`
-    OldPaasMongoPort=`cat config/development/database.yml | grep mongodb: -A 5 | grep port: | awk '{print $2}'`
-    OldOrgMysqlPort=`cat $OrgPath/conf/development.yml | grep default: -A 5 | grep port: | awk '{print $2}'`
-    OldOrgMongoPort=`cat $OrgPath/conf/development.yml | grep mongodb: -A 5 | grep port: | awk '{print $2}'`
-    sed -i "s/$OldPaasMysqlPort/$PaasMysqlPort/g" $ProjPath/config/development/database.yml 
-    sed -i "s/$OldPaasMongoPort/$PaasMongoPort/g" $ProjPath/config/development/database.yml 
-    sed -i "s/$OldOrgMysqlPort/$PaasMysqlPort/g" $OrgPath/conf/development.yml 
-    sed -i "s/$OldOrgMongoPort/$PaasMongoPort/g" $OrgPath/conf/development.yml 
     ChangePullOwn
     echo ""
     echo "$BranchName pull the new code is OK !"
@@ -125,4 +115,14 @@ else
      ExecUpdateVendor
 fi
 cd - 1>/dev/null 2>&1
+}
+
+
+function BackVendor {
+	cd  $ProjPath	
+	local _Date=`date +%Y-%m-%d`
+	echo "当前目录为：$PWD"
+	echo "开始备份vendor....."	
+	cp -r vendor /home/anyuankeji/vendor_${_Date}
+        [ $? -eq 0 ] && echo "备份vendor包成功！！"
 }

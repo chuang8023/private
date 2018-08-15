@@ -130,16 +130,20 @@ case $Param1 in
     if [[ $_DBUrl == "notModifyDBUrl" ]]; then
         _DBUrl=""
     fi
-    modifyDBurl "$_DBUrl" "check"
+    #modifyDBurl "$_DBUrl" "check"
     GetPullLog
     PullCode
-    BackupDB
+    #BackupDB
     EchoPullLog
     #UpdateVendor
-    if [[ $_notMigrate != "notMigrate" ]]; then
-        Migrate "all"
-    fi
-    Rgulp "$CommitID"
+    #if [[ $_notMigrate != "notMigrate" ]]; then
+    #    Migrate "all"
+    #fi
+    #Rgulp "$CommitID"
+    ;;
+"backvendor")
+    Main
+    BackVendor
     ;;
 "showPullLog")
     Main
