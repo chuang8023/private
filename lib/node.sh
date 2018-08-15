@@ -148,14 +148,17 @@ else
                 #git diff $_OldNodeCommitID | grep "diff --git a" | awk -F"/" '{print $4}' | grep -m 1 "$i"  > /dev/null 2>&1
                 tag=`git diff $_OldNodeCommitID | grep "diff --git a" | awk -F"/" '{print $4}' | grep -m 1 "$i"`
                 #[ $? -eq 0 ] && npm run build-static $i 1>/dev/null 2>/tmp/node_build.log
-		echo $tag
-		if [ "$i" == "$tag" ];then
-			echo "开始打包 $i"
-                	npm run build-static $i >>/tmp/node_build.log
-		fi
+                echo $tag
+                if [ "$i" == "$tag" ];then
+                        echo "开始打包 $i"
+                        npm run build-static $i >>/tmp/node_build.log
+                fi
         done
+
+        npm run build-static web 1>/dev/null 2>>/tmp/node_build.log
+        npm run build-static wap 1>/dev/null 2>>/tmp/node_build.log
         npm run build-static framework 1>/dev/null 2>>/tmp/node_build.log
-	[ $? -eq 0 ] && echo "打包成功"
+        [ $? -eq 0 ] && echo "打包成功"
 fi
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
