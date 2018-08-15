@@ -78,9 +78,11 @@ if [[ $ProjPath == "" ]]; then
     echo "Cannot find project named $ProjName !"
     exit 0
 fi
-cd $NodePath
-NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
-NodeCommitID=`git log | head -n 1 | awk '{print $2}'`
+if [[ -d $NodePath ]];then
+    cd $NodePath > /dev/null
+    NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
+    NodeCommitID=`git log | head -n 1 | awk '{print $2}'`
+fi
 
 #AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
 #echo -e "\033[31m 项目访问地址 : \033[0m"
