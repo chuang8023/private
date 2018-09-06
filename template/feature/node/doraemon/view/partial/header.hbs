@@ -1,0 +1,256 @@
+{{# header}}
+<script>
+    var Safirst = {
+        user: {
+            entId: "{{entId}}"
+        }
+    };
+</script>
+<header class="x-header {{theme}}{{#if subShow}} sub-style{{/if}}">
+    {{!-- 样式容器，从服务端渲染，在客户端脚本未初始化时快速加载主题样式，主题切换后将控制权交给vue --}}
+    <div id="x-header-app" class="x-child" :class="theme" v-cloak>
+        {{#if subShow}}
+        <a class="app-logo left" href="/appcenter" :class="{'app-long': sideOpen}">
+            <i class="fa fa-{{submenu.iconName}} fa-3x"></i>
+            <span>{{submenu.name}}</span>
+        </a>
+        {{^}}
+        <a class="logo" href="{{logo.link}}">
+            {{#if logo.banner}}
+            <img src="{{logo.banner}}">
+            {{/if}}
+        </a>
+        {{/if}}
+        {{#if inform.title}}
+        {{#if inform.informShow}}
+        <div class="inform" v-show="countDown > 0"  v-if="!{{subShow}}  && showInform" :class="[{{inform.type}} === 1 ? 'info-notice' : 'info-up']" v-cloak>
+           <i class="close-inform fa fa-times-diy" @click="closeInform('{{inform.id}}', '{{userId}}')" data-ifid="{{inform.id}}"></i>
+            {{#unless inform.countDown}}
+            <div  v-show="countDown > 5 || {{inform.extend.openCountdown}} === 0" :class="[{{inform.type}} === 1 ? 'content-notice' : 'content-up']" class="text-content">
+                <span class="inform-title-container" v-if="{{inform.type}} === 1" >
+                     <span class="inform-title"  >
+                        【{{inform.title}}
+                    </span>】
+                </span>
+               <span  class="inform-title-container" v-else-if="{{inform.type}} === 2" >
+                   <span class="inform-title"  >【升级公告】</span>
+               </span>
+                <div class="inform-intro"  v-if="{{inform.type}} === 1" >{{inform.introduce}}</div>
+                <div class="inform-intro" v-else-if="{{inform.type}} === 2" >{{inform.title}}</div>
+            </div>
+            {{/unless}}
+            <div class="count-down"  v-show="{{inform.extend.openCountdown}} === 1 && countDown <= 5">
+                <div class="count-down-title">【下线提醒】</div>
+                <div class="count-down-intro" v-if="countDown === 1" >平台即将下线～</div>
+                <div class="count-down-intro"  v-else-if="countDown > 1" >启业云还有<span class="countdown-number" data-count="{{inform.countNum}}" >[[countDown]]分钟</span>例行维护，请保存好手中的工作！</div>
+            </div>
+            <div  class="right">
+                <a class="to-detail" v-show="{{inform.addUrl}}" href="{{inform.detailHref}}" target="_blank">
+                    查看详情>>
+                </a>       
+            </div>     
+        </div>
+        {{/if}}
+        {{/if}}
+
+        {{#if subShow}}
+        <div class="current-app">
+            <span class="current">{{submenu.name}}</span>
+            <i class="iconfont icon-xiala"></i>
+            <ul>
+                {{#each system}}
+                <a href="/appcenter/appsystem/{{id}}">
+                    <li>{{name}}</li>
+                </a>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if}}
+
+        <div class="tools-container">
+            <ul class="tools">
+                <li class="search-box" :class="{show: showSearchBox}" @mouseleave="hideHistroy" v-cloak>
+                    <input class="search-input" type="text"   autocomplete="off"
+                           ref="search" @input="changeSearch" @click="doHistory" @keyup.enter="search" v-model.trim="key">
+                    <a id="gSearchGo" class="skin search-icon" href="#">
+                        <i class="iconfont icon-sousuo"  @click="search"></i>
+                    </a>
+                    <ul class="module-search" v-show="showModuleSearch" v-cloak>
+                        <li v-for="module in modules">
+                            <a :href="module.key">
+                                [[module.name]]
+                            </a>
+                        </li>
+                    </ul>
+                    {{#if searchHistory.showHistory}}
+                    <div class="search-history" v-show="showHistory">
+                        <span class="history-type">历史记录</span>
+                        <ul class="history-list">
+                            {{#each searchHistory.data}}
+                                <li @click="histroySearch('{{.}}')">
+                                <a class="history-content">{{.}}</a>
+                                <span class="clear-one-history iconfont icon-guanbi" @click.stop="deleteOneHistory"></span>
+                                </li>
+                            {{/each}}
+                        </ul>
+                        <div class="clear-history">
+                            <span class="clear-all-history"  @click="deleteAllHistory">清空搜索历史</span>
+                        </div>
+                    </div>
+                    {{/if}}
+                </li>
+
+                <li class="qrcode-target" @mouseenter="qrcode" @mouseleave="qrcodeNotshow" v-show="qycodeShow">
+                    <span class="skin tool" data-uid="{{userId}}">
+                        <i class="iconfont icon-shouji1"></i>
+                    </span>
+                    <div class="qrcode-content" v-show="qrcodeShow">
+                        <div id="qrcode-qy" v-show="qycode">
+                        </div>
+                        <div id="qrcode-safe" v-show="safecode">
+                        </div>
+                        <div class="content-wrap">
+                            <span class="scan">扫描二维码</span>
+                            <span class="download-app">下载App</span>
+                        </div>
+                    </div>
+
+                    <div class="content-wrap-both" v-show="bothShow">
+                        <div class="ios-qycode">
+                            <div id="qrcode-ios">
+                            </div>
+                            <div class="wrap-both">
+                                <i class="iconfont icon-ios"></i>
+                                <span class="download-app">iOS</span>
+                            </div>
+                        </div>
+
+                        <div class="android-qycode">
+                            <div id="qrcode-android">
+                            </div>
+                            <div class="wrap-both">
+                                <i class="iconfont icon-Android"></i>
+                                <span class="download-app">Android</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                {{!-- 新增安全无忧相关按钮 --}}
+                <li v-for="button in more51Buttons">
+                    <a :href="button.link">
+                        <span class="tool" :title="button.title">
+                            <i :class="button.icon"></i>
+                        </span>
+                    </a>
+                </li>
+                <li v-if="is51Safety">
+                    <a href="/app/!/information/FengXianPingGuGongJu">
+                        <span class="tool" title="风险评估工具">
+                            <i class="fa fa-wrench"></i>
+                        </span>
+                    </a>
+                </li>
+
+                {{!-- 非一级路径下不显示 --}}
+                <!--{{#unless subShow}}-->
+                <li>
+                    <a href="/paas/index">
+                        <span class="tool paas" title="PaaS后台">
+                            <i class="iconfont icon-PAAS"></i>
+                        </span>
+                    </a>
+                </li>
+                <!--{{/unless}}-->
+                <li v-if="!is51Safety">
+                    <a class="tool" href="/organization/contacts/" title="通讯录" data-entid="{{entId}}">
+                        <i class="iconfont icon-tongxunlu-"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="tool" href="/notice/index" title="消息提醒">
+                        <i class="iconfont icon-xiaoxizhongxin"></i>
+                        {{#if notice.showNotice}}
+                        <span class="notice-count">{{notice.count}}</span>
+                        {{/if}}
+                    </a>
+                </li>
+                <li>
+                    <div class="user-set tool" :class="{on: showUserSet}" title="下拉查看更多个人设置信息" @click="toggleUserSet" v-on:click.stop>
+                        <img class="avatar" src="{{avatar}}">
+                        <!--<span class="name" title="{{name}}">{{name}}</span>-->
+                        <i class="iconfont icon-xiala- arrow"></i>
+                    </div>
+                    <ul class="user-infos" v-show="showUserSet" v-cloak>
+                        {{#if users}}
+                        <li class="user-switcher" @mouseenter="inLi('role', true)" @mouseleave="inLi('role', false)">
+                            <span class="li-sub">
+                                <i class="iconfont icon-jiaohuan"></i>
+                                账号切换
+                                <i class="iconfont icon-youcezhankai"></i>
+                            </span>
+                            <ul id="role-list" class="role-list" @mouseenter="hoverList">
+                                {{#each users}}
+                                <li class="role" @click="toggleRole('{{uid}}', '{{value}}')" data-uid="{{uid}}" title="{{title}}">
+                                    {{title}}
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                        {{/if}}
+
+                        {{#if ents}}
+                        <li class="ent-switcher" @mouseenter="inLi('ent', true)" @mouseleave="inLi('ent', false)">
+                            <span class="li-sub">
+                                <i class="iconfont icon-jiaohuan1"></i>
+                                企业切换
+                                <i class="iconfont icon-youcezhankai"></i>
+                            </span>
+                            <ul id="ent-list" class="ent-list" data-entid="{{entId}}" @mouseenter="hoverList">
+                                {{#each ents}}
+                                <li @click="toggleEnt('{{eid}}')" title="{{value}}" data-eid="{{eid}}">
+                                    {{value}}
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                        {{/if}}
+
+                        <li class="theme-swither">
+                            <span class="li-sub changeTheme" :class="{on: showSkinList}"
+                                  @mouseenter="toggleSkinList" @mouseleave="toggleSkinList"
+                                  data-trusterid="{{trusterId}}" data-uid="{{userId}}" data-entid="{{entId}}" title="试试换个皮肤">
+                                <i class="iconfont icon-pifu"></i>
+                                换肤
+                            </span>
+                            <ul class="skin-list" v-show="showSkinList" v-cloak @mouseenter="toggleSkinList" @mouseleave="toggleSkinList">
+                                {{#each skins}}
+                                    <li class="skin-li" @click="toggleSkin('{{color}}')">
+                                        <i class="square-icon fa{{#if checked}} fa-check-square{{^}} fa-square{{/if}} {{color}}"></i>
+                                        {{name}}
+                                    </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+
+                        {{#unless showTrusteeship}}
+                            <li>
+                                <a id="li-sub" class="li-sub" href="/user/setting" >
+                                    <i class="iconfont icon-shezhi1"></i>
+                                    个人设置
+                                </a>
+                            </li>
+                        {{/unless}}
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <x-box :show.sync="box.show" :title="box.title" :mask="box.mask"
+               :btns="box.btns" :content="box.content" v-on:dialog="dialogEvent">
+        </x-box>
+    </div>
+
+</header>
+
+{{/ header}}

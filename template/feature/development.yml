@@ -1,0 +1,30 @@
+application:
+    dispatcher: { catchException: true }
+app:
+    application_name: AYSaaS-BRANCHNAME
+    useSSL: false
+    is_debug: true
+    fileio_domain: 'fileio.BRANCHTYPE.BRANCHNAME.aysaas.com:WEBPORT'
+    static_domain: 'static.BRANCHTYPE.BRANCHNAME.aysaas.com:WEBPORT'
+database:
+    servers: { default: { name: localhost, host: 127.0.0.1, port: MYSQLPORT, dbname: master, user: master, password: pZdxysqJX4bK4VrB }, mongodb: { name: localhost, host: 127.0.0.1, port: MONGOPORT, dbname: master, user: master, password: L9jD7srDBdS7Nfob } }
+    charset: utf8
+    split_enable: false
+    default: default
+    master_slave_enable: false
+    table_preg: '/`?(ent_\w+|sys_\w+)[`?|\s?]/iU'
+    dao_path: model/dao
+    model_path: /var/www/www.BRANCHTYPE.BRANCHNAME.aysaas.com/saas/deploy/../model/dao
+    sqlAnalysis: false
+queue:
+    tubes: [default]
+    host: 127.0.0.1
+redis:
+    servers: { default: '127.0.0.1:6379' }
+    auth: '83752661'
+    store_log: false
+services:
+    jwt_algs: HS256
+    jwt_key: '9&p3RG?B'
+opensearch:
+    active: false

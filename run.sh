@@ -61,6 +61,9 @@ if [[ $INFOType == "File" ]]; then
             #只能按顺序在末尾新增，千万不可更改已有的顺序，灾难！
             ProjType=`echo $LINE | awk -F"|" '{print $2}' | awk 'gsub(/^ *| *$/,"")'`
             ProjPath=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'`
+            NginxName=`echo $LINE | awk -F"|" '{print $3}' |awk -F"/" '{print $4}'| awk 'gsub(/^ *| *$/,"")'`
+            BranchType=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'| awk -F"/" '{print $4}' | awk -F"." '{print $2}'`
+            BranchDocker=`echo $LINE | awk -F"|" '{print $3}' | awk 'gsub(/^ *| *$/,"")'| awk -F"/" '{print $4}' | awk -F"." '{print $3}'`
             DBType=`echo $LINE | awk -F"|" '{print $4}' | awk 'gsub(/^ *| *$/,"")'`
 	    OrgPath=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
             #DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
@@ -127,16 +130,20 @@ case $Param1 in
     if [[ $_DBUrl == "notModifyDBUrl" ]]; then
         _DBUrl=""
     fi
-    modifyDBurl "$_DBUrl" "check"
+    #modifyDBurl "$_DBUrl" "check"
     GetPullLog
     PullCode
-    BackupDB
+    #BackupDB
     EchoPullLog
     #UpdateVendor
-    if [[ $_notMigrate != "notMigrate" ]]; then
-        Migrate "all"
-    fi
-    Rgulp "$CommitID"
+    #if [[ $_notMigrate != "notMigrate" ]]; then
+    #    Migrate "all"
+    #fi
+    #Rgulp "$CommitID"
+    ;;
+"backvendor")
+    Main
+    BackVendor
     ;;
 "showPullLog")
     Main
@@ -216,12 +223,18 @@ rbuild|rgulp)
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
-    UpdateVendor
+   # UpdateVendor
     Migrate "all"
     Rgulp "-f"
     EmptyCache "all" "rebuild_to_redis"
     Cache "all" "rebuild_to_redis"
     RestartResque
+    ;;
+"gconode")
+    Main
+    ChkoutNodeBranch "$Param3"
+    BuildNode
+    RestartPm2
     ;;
 "cleanUserChatToken")
     _DBHost=$Param3
@@ -290,7 +303,7 @@ rbuild|rgulp)
    ;;
 "updateVendor")
     Main
-    UpdateVendor
+    #UpdateVendor
     ;;
 "autoMigrate")
     Main
@@ -436,11 +449,11 @@ rbuild|rgulp)
   ;;
 "updatenode")
   Main
-  PullNode
+  PullNode $Param3
   BuildNode
   RestartPm2
   ;;
-"gconode")
+"gconewnode")
   Main
   ChkoutNodeBranch $Param3
   PullNodeNew
@@ -450,7 +463,7 @@ rbuild|rgulp)
 "updatenodenew")
   Main
   PullNodeNew 
-  BuildNodeNew $Node_CommitID
+  BuildNodeNew $NodeCommitID
   RestartNodeNew
   ;;
 esac

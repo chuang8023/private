@@ -1,32 +1,34 @@
 function PullCodeOrg (){
-	echo $OrgPath
 	cd $OrgPath 
-	echo "$OrgPath pulling the new code....."
+	local _OrgBranch=`git branch | grep "*" | awk '{print $2}'`
+	echo "pulling the org code....."
 	git checkout .
-	git pull --rebase origin master 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
+	git pull --rebase origin ${_OrgBranch} 1>/dev/null 2>/tmp/rundeck_orgcode_errinfo
 	if [[ $? == 0 ]]; then
 	        ChangePullOwn
 	        echo ""
-        	echo "master pull the new code is OK !"
+        	echo "${_OrgBranch} pull the new code is OK !"
        	 	cd - 1>/dev/null 2>&1
 	else
    		 echo ""
-    	         echo "master pull the new code is Fail !"
+    	         echo "${_OrgBranch} pull the new code is Fail !"
 	         echo "---------------------------------------------"
                  cat /tmp/rundeck_code_errinfo
 	         exit 1
 	fi
+	cd $ProjPath
+	./deploy/syncConfig
 
 }
+
 
 
 function PullCode {
 echo ""
 echo "$BranchName pulling the new code ..."
 cd $ProjPath
- git checkout .
- git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
-
+git checkout .
+git pull --rebase origin $BranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
     ChangePullOwn
     echo ""
@@ -39,6 +41,7 @@ else
     cat /tmp/rundeck_code_errinfo
     exit 1
 fi
+cd - 1>/dev/null 2>&1
 }
 
 function ChangePullOwn {
@@ -112,4 +115,14 @@ else
      ExecUpdateVendor
 fi
 cd - 1>/dev/null 2>&1
+}
+
+
+function BackVendor {
+	cd  $ProjPath	
+	local _Date=`date +%Y-%m-%d`
+	echo "当前目录为：$PWD"
+	echo "开始备份vendor....."	
+	cp -r vendor /home/anyuankeji/vendor_${_Date}
+        [ $? -eq 0 ] && echo "备份vendor包成功！！"
 }
