@@ -456,7 +456,6 @@ rbuild|rgulp)
 "gconewnode")
   Main
   ChkoutNodeBranch $Param3
-  PullNodeNew
   BuildNodeNew "-f"
   RestartNodeNew
   ;;
