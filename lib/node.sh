@@ -77,7 +77,8 @@ echo ""
 echo "$NodeBranchName pulling the new node code ..."
 cd $NodePath
 local _nodebranch=`git branch | grep "*"|awk '{print $2}' |sed 's/ //g'`
-git pull --rebase origin ${_nodebranch} 1>/dev/null 2>/tmp/rundeck_code_errinfo
+#git pull --rebase origin ${_nodebranch} 1>/dev/null 2>/tmp/rundeck_code_errinfo
+git pull origin ${_nodebranch} 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
