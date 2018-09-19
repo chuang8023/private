@@ -50,58 +50,63 @@ else
         echo "Checkout to $_Option is Fail !"
         echo "--------------------------------------"
         cat /tmp/rundeck_branch_errinfo
-        exit 1
+        #exit 1
     fi
 fi
 cd - 1>/dev/null 2>&1
 }
 
-function ChkoutNodeBranch () {
-local _NodeBranch=$1
-ShowBranch
-GitStatus
-cd $NodePath
+#####show 新node分支
+function ShowNodeBranch {
 echo ""
-git checkout .
-git  clean -f
-echo "Checkout to $_NodeBranch ..."
-git fetch origin $_NodeBranch:$_NodeBranch 1>/dev/null 2>/tmp/rundeck_branch_errinfo &&
-git checkout $_NodeBranch
-if [[ $? == 0 ]]; then
-    ChangePullOwn
-    echo ""
-    echo "Checkout to $_NodeBranch is OK !"
-else
-    echo ""
-    echo "Checkout to $_NodeBranch is Fail !"
-    echo "--------------------------------------"
-    cat /tmp/rundeck_branch_errinfo
-    exit 1
-fi
-cd - 1>/dev/null 2>&1
+echo "The current branch :"
+echo "-------------------------"
+echo $NodeBranchName 
 }
 
-function ChkoutOrgBranch () {
-local _OrgBranch=$1
-ShowBranch
-GitStatus
-cd $OrgPath
+####新node切换分支
+function ChkoutNodeBranch () {
+local _OptionNode=$1
+ShowNodeBranch
+NodeGitStatus
+cd $NodePath
+local _nodebranch=`git branch | grep "*"|awk '{print $2}' |sed 's/ //g'`
 echo ""
-git checkout .
-git  clean -f
-echo "Checkout to $_OrgBranch ..."
-git fetch origin $_OrgBranch:$_OrgBranch 1>/dev/null 2>/tmp/rundeck_branch_errinfo &&
-git checkout $_OrgBranch
-if [[ $? == 0 ]]; then
-    ChangePullOwn
-    echo ""
-    echo "Checkout to $_OrgBranch is OK !"
+if [[ $_OptionNode == "all" ]]; then
+    echo "Drop all changes that are not saved ..."
+    git checkout .
+    git  clean -f
+    if [[ $? == 0 ]]; then
+        echo ""
+        echo "OK !"
+        GitStatus
+    else
+        echo ""
+        echo "Fail !"
+        exit 1
+    fi
 else
-    echo ""
-    echo "Checkout to $_OrgBranch is Fail !"
-    echo "--------------------------------------"
-    cat /tmp/rundeck_branch_errinfo
-    exit 1
+    git checkout .
+    git  clean -f
+    echo "Checkout to $_OptionNode ..."
+    if [ ${_nodebranch} != ${_OptionNode} ];then
+	    git fetch origin $_OptionNode:$_OptionNode 1>/dev/null 2>/tmp/rundeck_branch_errinfo
+    	    git checkout $_OptionNode
+    else
+	echo "您当前就在$_OptionNode分支上！！！"
+    	git checkout $_OptionNode
+    fi
+    if [[ $? == 0 ]]; then
+        ChangePullOwn
+        echo ""
+        echo "Checkout to $_OptionNode is OK !"
+    else
+        echo ""
+        echo "Checkout to $_OptionNode is Fail !"
+        echo "--------------------------------------"
+        cat /tmp/rundeck_branch_errinfo
+        exit 1
+    fi
 fi
 cd - 1>/dev/null 2>&1
 }
