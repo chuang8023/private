@@ -72,8 +72,6 @@ if [[ $INFOType == "File" ]]; then
         fi
     done < $ConfigPath/projinfo
 fi
-cd $NodePath
-NodeBranchName=`git branch | grep "^*" |awk '{print $2}'|sed 's/ //g'`
 
 if [[ $ProjPath == "" ]]; then
     echo ""

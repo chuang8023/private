@@ -21,7 +21,6 @@ local _Option=$1
 ShowBranch
 GitStatus
 cd $ProjPath
-echo $ProjPath
 echo ""
 if [[ $_Option == "all" ]]; then
     echo "Drop all changes that are not saved ..."
