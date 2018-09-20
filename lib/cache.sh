@@ -57,10 +57,6 @@ if [[ -n $_Option ]]; then
     echo ""
     echo "deleting table sys_user_chat_token ..."
 
-    #Local DB=`cat $ProjConfPath/database.php | grep -w -m 1 dbname | awk -F "'" '{print $4}'`
-    #Local USER=`cat $ProjConfPath/database.php | grep -w -m 1 user | awk -F "'" '{print $4}'`
-    #Local HOST=`cat $ProjConfPath/database.php | grep -w -m 1 host | awk -F "'" '{print $4}'`
-    #Local PASS=`cat $ProjConfPath/database.php | grep -w -m 1 password | awk -F "'" '{print $4}'`
     Local DB=`cat $ProjConfPath/database.yml | grep -w -m 1 dbname | awk -F":" '{print $2}'|sed "s/ //g"`
     Local USER=`cat $ProjConfPath/database.yml | grep -w -m 1 user | awk -F ":" '{print $2}'|sed "s/ //g"`
     Local HOST=`cat $ProjConfPath/database.yml | grep -w -m 1 host | awk -F ":" '{print $2}'|sed "s/ //g"`
@@ -90,6 +86,13 @@ AppName=`cat $AppNamePath|grep "application_name" | awk -F":" '{print $2}'|sed "
 RedisPassPath="$ProjPath/config/$ProjType/redis.yml"
 RedisPass=`cat $RedisPassPath|grep auth | awk -F":" '{print $2}' |sed "s/ //g"`
 RedisHost=`cat $RedisPassPath|grep default | awk -F":" '{print $2}'|sed 's/ //'|sed "s/'//g"`
+=======
+AppNamePath="$ProjPath/config/$ProjType/app.yml"
+AppName=`cat $AppNamePath|grep application_name|awk -F "=>" '{print $2}'|sed 's/,//'`
+#RedisPassPath="$ProjPath/config/$ProjType/redis.php"
+RedisPassPath="$ProjPath/config/$ProjType/redis.yml"
+RedisPass=`cat $RedisPassPath|grep auth|awk -F "," '{print $1}'|awk -F "=>" '{print $2}'`
+RedisHost=`cat $RedisPassPath|grep default|awk -F "=>" '{print $2}'|sed 's/,//'|sed 's/:6379//'|sed "s/'//g"`
 redis-cli -p 6379 -h $RedisHost -a $RedisPass keys "$AppName*" | xargs redis-cli -p 6379 -h $RedisHost -a  $RedisPass del >> /dev/null
  if [[ $? == 0 ]]; then
         echo ""

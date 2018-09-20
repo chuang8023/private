@@ -18,7 +18,6 @@ function PullCodeOrg (){
 	fi
 	cd $ProjPath
 	./deploy/syncConfig
-
 }
 
 
@@ -88,7 +87,7 @@ function UpdateVendor {
         [[ $IsSocket == true ]] && StopWebsocket
         echo ""
         echo "Updating vendor ..."
-        ./script/vendor unpackaging
+	~/bin/composer.phar update
          if [[ $? == 0 ]]; then
                 ChangePullOwn
                 echo ""

@@ -72,6 +72,8 @@ if [[ $INFOType == "File" ]]; then
         fi
     done < $ConfigPath/projinfo
 fi
+cd $NodePath
+NodeBranchName=`git branch | grep "^*" |awk '{print $2}'|sed 's/ //g'`
 
 if [[ $ProjPath == "" ]]; then
     echo ""
@@ -135,11 +137,11 @@ case $Param1 in
     PullCode
     #BackupDB
     EchoPullLog
-    #UpdateVendor
+    UpdateVendor
     #if [[ $_notMigrate != "notMigrate" ]]; then
     #    Migrate "all"
     #fi
-    #Rgulp "$CommitID"
+    Rgulp "$CommitID"
     ;;
 "backvendor")
     Main
@@ -223,11 +225,11 @@ rbuild|rgulp)
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
-   # UpdateVendor
+    UpdateVendor
     Migrate "all"
     Rgulp "-f"
-    EmptyCache "all" "rebuild_to_redis"
-    Cache "all" "rebuild_to_redis"
+    #EmptyCache "all" "rebuild_to_redis"
+    #Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
 "gconode")
@@ -303,7 +305,7 @@ rbuild|rgulp)
    ;;
 "updateVendor")
     Main
-    #UpdateVendor
+    UpdateVendor
     ;;
 "autoMigrate")
     Main

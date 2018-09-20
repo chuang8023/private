@@ -2,7 +2,7 @@ function PullNode () {
 echo ""
 echo "$NodeBranchName pulling the new node code ..."
 cd $NodePath
-git pull --rebase origin master 1>/dev/null 2>/tmp/rundeck_code_errinfo
+git pull --rebase origin $NodeBranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
