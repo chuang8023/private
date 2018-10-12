@@ -465,4 +465,8 @@ rbuild|rgulp)
   BuildNodeNew $NodeCommitID
   RestartNodeNew
   ;;
+"updateupload")
+  Main
+  UpdateUpload
+  ;;
 esac
