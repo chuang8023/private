@@ -1,0 +1,25 @@
+servers:
+    default:
+        name: localhost
+        host: MongoHost
+        port: 27017
+        dbname: templateRelease
+        user: MongoUser
+        replicaSet: ''
+        password: MongoPass
+    appstore:
+        replicaSet: ''
+        name: localhost
+        host: MongoHost
+        port: 27017
+        dbname: appstore_templateRelease
+        user: appstore_templateRelease
+        password: MongoPass 
+    portal:
+        replicaSet: ''
+        name: localhost
+        host: MongoHost
+        port: 27017
+        dbname: portal_templateRelease
+        user: portal_templateRelease
+        password: MongoPass

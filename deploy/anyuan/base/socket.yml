@@ -1,0 +1,13 @@
+gateway:
+    server: 'Websocket://0.0.0.0:3232'
+    name: SenderGateway
+    count: 4
+    lanIp: 127.0.0.1
+    startPort: 48000
+businessworker:
+    name: SenderBusinessWorker
+    count: 4
+    driverType: 3
+register:
+    server: 'text://0.0.0.0:1111'
+    address: '127.0.0.1:1111'

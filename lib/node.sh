@@ -80,6 +80,12 @@ echo ""
 echo "$NodeBranchName pulling the new node code ..."
 cd $NodePath
 git pull --rebase origin $NodeBranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
+if [[ -d node_modules ]];then
+	echo "删除旧目录，重新生成"
+	rm -rf node_modules 1>/dev/null 2 >>/tmp/rundeck_code_errinfo
+fi
+tar -zxf node_modules.tar.gz
+npm i 1>/dev/null 2 >>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
@@ -94,41 +100,11 @@ else
 fi
 }
 
-#function RestartNodeNew () {
-#	server_domain=`echo "$ProjPath" |awk -F"/" '{print $4}'`
-#	echo "开始重启node服务"
-#	cd $NodePath
-#	npm run stop
-#	[ $? -eq 0 ] && echo "node已停止" && npm start
-#        [ $? -eq 0 ] && echo "node 已重启"
-#}
-#
-#
-#function BuildNodeNew () {
-#echo ""
-#echo "$NodeBranchName build the  node code ..."
-#cd $NodePath
-#npm run build-static 1>/dev/null 2>/tmp/rundeck_code_errinfo
-#if [[ $? == 0 ]]; then
-#find . -user root -exec chown $runuser:$runuser {} \;
-#    echo ""
-#    echo "$NodeBranchName build  node code is OK !"
-#    cd - 1>/dev/null 2>&1
-#else
-#    echo ""
-#    echo "$NodeBranchName build node code is Fail !"
-#    echo "---------------------------------------------"
-#    cat /tmp/rundeck_code_errinfo
-#    exit 1
-#fi
-#}
 ####新node重启＆打包
 function RestartNodeNew () {
         server_domain=`echo "$ProjPath" |awk -F"/" '{print $4}'`
         echo "开始重启node服务"
         cd $NodePath
-        #npm run stop
-        #[ $? -eq 0 ] && echo "node已停止" &&  npm start 
         npm run deploy
         [ $? -eq 0 ] && echo "node 已重启"
 }

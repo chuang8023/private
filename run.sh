@@ -4,6 +4,7 @@ Param1=$1
 Param2=$2
 Param3=$3
 Param4=$4
+Param5=$5
 
 cd `dirname $0`
 . config/rundeck.cf
@@ -29,6 +30,7 @@ cd `dirname $0`
 . lib/node.sh
 . lib/ShowProj.sh
 . lib/ShowConfig.sh
+. lib/Sync.sh
 
 function RealPath () {
 local _Path=$1
@@ -81,10 +83,6 @@ fi
 cd $NodePath
 NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
 NodeCommitID=`git log | head -n 1 | awk '{print $2}'`
-
-#AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-#echo -e "\033[31m 项目访问地址 : \033[0m"
-#echo -e "\033[31m" $AccessAddr "\033[0m"
 
 case $ProjType in
 "production") ;;
@@ -139,7 +137,7 @@ case $Param1 in
     #if [[ $_notMigrate != "notMigrate" ]]; then
     #    Migrate "all"
     #fi
-    #Rgulp "$CommitID"
+    Rgulp "$CommitID"
     ;;
 "backvendor")
     Main
@@ -458,5 +456,9 @@ rbuild|rgulp)
   PullNodeNew
   BuildNodeNew $NodeCommitID
   RestartNodeNew
+  ;;
+"sync")
+  Main
+  Sync $Param2 $Param3 $Param4 $Param5
   ;;
 esac
