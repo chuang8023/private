@@ -26,6 +26,7 @@ function RestartResque {
 echo ""
 local _Name=""
 echo "Restarting Queue ..."
+echo $ProjPath
 cd $ProjPath
     if [ $QueueName = "queue" ]; then
 	  # rm -rf log/queue/*
@@ -59,6 +60,7 @@ if [[ $? = 0 ]]; then
         kill -9 ${PIDNum[i]} 2>/dev/null
     done
 fi
+service supervisor restart all
 ChkStopResque
 cd - 1>/dev/null 2>&1
 }

@@ -1,6 +1,5 @@
 function OpenDebug () {
 echo "Opening the debug ..."
-#sed -i "s/is_debug'.*/is_debug' => true,/" $ProjConfPath/app.php
 sed -i "s/is_debug:.*/is_debug: true/" $ProjConfPath/app.yml
 [ $ProjType == "production" ] || [ $ProjType == "development" ] && sed -i "s/\$debug = false;/\$debug = true;/" $ProjPath/bootstrap.php
  if [[ $? == 0 ]]; then
@@ -15,7 +14,6 @@ fi
 
 function CloseDebug () {
 echo "Closing the debug ..."
-#sed -i "s/is_debug'.*/is_debug' => false,/" $ProjConfPath/app.php
 sed -i "s/is_debug:.*/is_debug: false/" $ProjConfPath/app.yml
 [ $ProjType == "production" ] || [ $ProjType == "development" ] && sed -i "s/\$debug = true;/\$debug = false;/" $ProjPath/bootstrap.php
  if [[ $? == 0 ]]; then

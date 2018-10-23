@@ -6,13 +6,13 @@ cd $ProjPath
 local _PaasBranch=`git branch | grep "*" |awk '{print $2}'|sed 's/ //g'`
 echo "Pass端当前分支为："$_PaasBranch
 
-cd $NodePath 
-local _NodeBranch=`git branch | grep "*" |awk '{print $2}'|sed 's/ //g'`
-echo "Node端当前分支为："$_NodeBranch
+#cd $NodePath 
+#local _NodeBranch=`git branch | grep "*" |awk '{print $2}'|sed 's/ //g'`
+#echo "Node端当前分支为："$_NodeBranch
 
-cd $OrgPath 
-local _OrgBranch=`git branch | grep "*" |awk '{print $2}'|sed 's/ //g'`
-echo "Org端当前分支为："$_OrgBranch
+#cd $OrgPath 
+#local _OrgBranch=`git branch | grep "*" |awk '{print $2}'|sed 's/ //g'`
+#echo "Org端当前分支为："$_OrgBranch
 }
 
 function ChkoutBranch () {

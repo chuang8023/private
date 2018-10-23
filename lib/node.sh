@@ -2,7 +2,7 @@ function PullNode () {
 echo ""
 echo "$NodeBranchName pulling the new node code ..."
 cd $NodePath
-git pull --rebase origin master 1>/dev/null 2>/tmp/rundeck_code_errinfo
+git pull --rebase origin $NodeBranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
@@ -125,7 +125,6 @@ else
                         npm run build-static $i >>/tmp/node_build.log
                 fi
         done
-
         npm run build-static web 1>/dev/null 2>>/tmp/node_build.log
         npm run build-static wap 1>/dev/null 2>>/tmp/node_build.log
         npm run build-static framework 1>/dev/null 2>>/tmp/node_build.log

@@ -18,7 +18,6 @@ function PullCodeOrg (){
 	fi
 	cd $ProjPath
 	./deploy/syncConfig
-
 }
 
 
@@ -84,11 +83,11 @@ fi
 
 function UpdateVendor {
    function ExecUpdateVendor {
- 	IsSocket=`cat $ProjConfPath/app.php|grep is_socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true|sed 's/ //'`
+ 	IsSocket=`cat $ProjConfPath/app.yml|grep is_socket|awk -F "=>" '{print $2}'|sed 's/,.*//'|grep true|sed 's/ //'`
         [[ $IsSocket == true ]] && StopWebsocket
         echo ""
         echo "Updating vendor ..."
-        ./script/vendor unpackaging
+	/home/$runuser/bin/composer.phar update
          if [[ $? == 0 ]]; then
                 ChangePullOwn
                 echo ""
@@ -101,19 +100,19 @@ function UpdateVendor {
                 exit 1
          fi
 		 }	
-cd $ProjPath
-if [ -e vendor/version ];then
-	Lastet_Vendor=`cat script/vendor|sed -n 2p|awk -F "=" '{print $2}'`
-	Server_Vendor=`cat vendor/version`
-	if [[ $Lastet_Vendor = $Server_Vendor ]] ;then
-
-		 echo "" && echo "Not need to update vendor !" 
-	else
-	        ExecUpdateVendor
-	fi
-else
-     ExecUpdateVendor
-fi
+#cd $ProjPath
+#if [ -e vendor/version ];then
+#	Lastet_Vendor=`cat script/vendor|sed -n 2p|awk -F "=" '{print $2}'`
+#	Server_Vendor=`cat vendor/version`
+#	if [[ $Lastet_Vendor = $Server_Vendor ]] ;then
+#
+#		 echo "" && echo "Not need to update vendor !" 
+#	else
+#	        ExecUpdateVendor
+#	fi
+#else
+#     ExecUpdateVendor
+#fi
 cd - 1>/dev/null 2>&1
 }
 
