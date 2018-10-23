@@ -76,11 +76,11 @@ fi
 if [[ $ProjPath == "" ]]; then
     echo ""
     echo "Cannot find project named $ProjName !"
-    exit 0
+    #exit 0
 fi
 cd $NodePath
 NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
-NodeCommitID=`git log | head -n 1 | awk '{print $2}'`
+Node_CommitID=`git log | grep commit -m1 | awk '{print $2}'|sed "s/ //g"`
 
 #AccessAddr=`cat ${ProjPath}/config/${ProjType}/app.php | grep "www_domain" | awk -F"=>" '{print $2}'  | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
 #echo -e "\033[31m 项目访问地址 : \033[0m"
@@ -130,16 +130,20 @@ case $Param1 in
     if [[ $_DBUrl == "notModifyDBUrl" ]]; then
         _DBUrl=""
     fi
-    modifyDBurl "$_DBUrl" "check"
+    #modifyDBurl "$_DBUrl" "check"
     GetPullLog
     PullCode
-    BackupDB
+    #BackupDB
     EchoPullLog
-    #UpdateVendor
-    if [[ $_notMigrate != "notMigrate" ]]; then
-        Migrate "all"
-    fi
+    UpdateVendor
+    #if [[ $_notMigrate != "notMigrate" ]]; then
+    #    Migrate "all"
+    #fi
     Rgulp "$CommitID"
+    ;;
+"backvendor")
+    Main
+    BackVendor
     ;;
 "showPullLog")
     Main
@@ -219,11 +223,11 @@ rbuild|rgulp)
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
-   # UpdateVendor
+    UpdateVendor
     Migrate "all"
     Rgulp "-f"
-    EmptyCache "all" "rebuild_to_redis"
-    Cache "all" "rebuild_to_redis"
+    #EmptyCache "all" "rebuild_to_redis"
+    #Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
 "gconode")
@@ -299,7 +303,7 @@ rbuild|rgulp)
    ;;
 "updateVendor")
     Main
-    #UpdateVendor
+    UpdateVendor
     ;;
 "autoMigrate")
     Main
@@ -449,9 +453,15 @@ rbuild|rgulp)
   BuildNode
   RestartPm2
   ;;
+"gconewnode")
+  Main
+  ChkoutNodeBranch $Param3
+  BuildNodeNew "-f"
+  RestartNodeNew
+  ;;
 "updatenodenew")
   Main
-  PullNodeNew
+  PullNodeNew 
   BuildNodeNew $NodeCommitID
   RestartNodeNew
   ;;

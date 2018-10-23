@@ -34,8 +34,6 @@ fi
 if [[ $? == 0 ]];then
     echo ""
     echo "Gulp is OK !"
-    #echo -e "\033[31m" "项目访问地址为：`cat $ProjConfPath/app.php | grep "www_domain" | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`" "\033[0m"
-    echo -e "\033[31m" "项目访问地址为：$NginxName:$webPort" "\033[0m"
 else
     echo ""
     echo "It looks like something wrong when run gulp !"

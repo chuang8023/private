@@ -26,6 +26,7 @@ function RestartResque {
 echo ""
 local _Name=""
 echo "Restarting Queue ..."
+echo $ProjPath
 cd $ProjPath
     if [ $QueueName = "queue" ]; then
 	  # rm -rf log/queue/*
@@ -35,17 +36,17 @@ cd $ProjPath
            ENV=$ProjType ./deploy/$QueueName restart 1>/dev/null << EOF  
 Y
 EOF
-   	   if [ $? -eq 1 ];then
-		echo "重启队列失败，删除队列配置文件和队列日志，重新生成配置文件，重启supervisor"
-	   	rm -rf log/queue/*
-	       #_Name=`cat config/$ProjType/app.php | grep "application_name" | awk '{print $3}' | sed "s/'//g" | sed "s/,//g"`
-	  	_Name=`cat config/$ProjType/app.yml | grep "application_name" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g"`
-	   	rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
-	   	ENV=$ProjType ./deploy/supervisor
-	   	sudo -u $runuser supervisorctl stop all 1>/dev/null
-	   	sudo -u $runuser service supervisor restart 1>/dev/null
-	   fi
-      else
+   	  # if [ $? -eq 1 ];then
+	  #      echo "重启队列失败，删除队列配置文件和队列日志，重新生成配置文件，重启supervisor"
+	  # 	rm -rf log/queue/*
+	  #     #_Name=`cat config/$ProjType/app.php | grep "application_name" | awk '{print $3}' | sed "s/'//g" | sed "s/,//g"`
+	  #	_Name=`cat config/$ProjType/app.yml | grep "application_name" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g"`
+	  # 	rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
+	  # 	ENV=$ProjType ./deploy/supervisor
+	  # 	sudo -u $runuser supervisorctl stop all 1>/dev/null
+	  # 	sudo -u $runuser service supervisor restart 1>/dev/null
+	  # fi
+    else
 	   sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
 	   sleep 2
 	   sudo -u $runuser /usr/bin/env TERM=xterm ENV=$ProjType ./deploy/$QueueName stop 1>/dev/null
@@ -59,6 +60,7 @@ if [[ $? = 0 ]]; then
         kill -9 ${PIDNum[i]} 2>/dev/null
     done
 fi
+service supervisor restart all
 ChkStopResque
 cd - 1>/dev/null 2>&1
 }
