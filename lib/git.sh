@@ -39,3 +39,12 @@ fi
 GitStatus
 cd - 1>/dev/null 2>&1
 }
+
+###新node状态查看
+function NodeGitStatus {
+cd $NodePath
+echo ""
+echo "The current git status:"
+echo "--------------------------"
+git status
+}

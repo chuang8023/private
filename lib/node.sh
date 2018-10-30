@@ -2,7 +2,7 @@ function PullNode () {
 echo ""
 echo "$NodeBranchName pulling the new node code ..."
 cd $NodePath
-git pull --rebase origin master 1>/dev/null 2>/tmp/rundeck_code_errinfo
+git pull --rebase origin $NodeBranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
@@ -71,29 +71,22 @@ fi
 
 
 
-
-
-
 ###新node
 function PullNodeNew () {
 echo ""
 echo "$NodeBranchName pulling the new node code ..."
 cd $NodePath
-git pull --rebase origin $NodeBranchName 1>/dev/null 2>/tmp/rundeck_code_errinfo
-if [[ -d node_modules ]];then
-	echo "删除旧目录，重新生成"
-	rm -rf node_modules 1>/dev/null 2 >>/tmp/rundeck_code_errinfo
-fi
-tar -zxf node_modules.tar.gz
-npm i 1>/dev/null 2 >>/tmp/rundeck_code_errinfo
+local _nodebranch=`git branch | grep "*"|awk '{print $2}' |sed 's/ //g'`
+#git pull --rebase origin ${_nodebranch} 1>/dev/null 2>/tmp/rundeck_code_errinfo
+git pull origin ${_nodebranch} 1>/dev/null 2>/tmp/rundeck_code_errinfo
 if [[ $? == 0 ]]; then
 find . -user root -exec chown $runuser:$runuser {} \;
     echo ""
-    echo "$NodeBranchName pull the new node code is OK !"
+    echo "${_nodebranch} pull the new node code is OK !"
     cd - 1>/dev/null 2>&1
 else
     echo ""
-    echo "$NodeBranchName pull the new node code is Fail !"
+    echo "${_nodebranch} pull the new node code is Fail !"
     echo "---------------------------------------------"
     cat /tmp/rundeck_code_errinfo
     exit 1
@@ -115,6 +108,7 @@ echo ""
 echo "$NodeBranchName build the  node code ..."
 cd $NodePath
 
+npm i 1>/dev/null 2>/tmp/node_build.log
 if [ "$_OldNodeCommitID" == "-f" ];then
         npm run build-static 1>/dev/null 2>/tmp/node_build.log
 else
@@ -129,7 +123,6 @@ else
                         npm run build-static $i >>/tmp/node_build.log
                 fi
         done
-
         npm run build-static web 1>/dev/null 2>>/tmp/node_build.log
         npm run build-static wap 1>/dev/null 2>>/tmp/node_build.log
         npm run build-static framework 1>/dev/null 2>>/tmp/node_build.log

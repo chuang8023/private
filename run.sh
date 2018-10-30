@@ -78,11 +78,11 @@ fi
 if [[ $ProjPath == "" ]]; then
     echo ""
     echo "Cannot find project named $ProjName !"
-    exit 0
+    #exit 0
 fi
 cd $NodePath
 NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
-NodeCommitID=`git log | head -n 1 | awk '{print $2}'`
+NodeCommitID=`git log | grep commit -m1 | awk '{print $2}'|sed "s/ //g"`
 
 case $ProjType in
 "production") ;;
@@ -133,7 +133,7 @@ case $Param1 in
     PullCode
     #BackupDB
     EchoPullLog
-    #UpdateVendor
+    UpdateVendor
     #if [[ $_notMigrate != "notMigrate" ]]; then
     #    Migrate "all"
     #fi
@@ -221,11 +221,11 @@ rbuild|rgulp)
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
-   # UpdateVendor
+    UpdateVendor
     Migrate "all"
     Rgulp "-f"
-    EmptyCache "all" "rebuild_to_redis"
-    Cache "all" "rebuild_to_redis"
+    #EmptyCache "all" "rebuild_to_redis"
+    #Cache "all" "rebuild_to_redis"
     RestartResque
     ;;
 "gconode")
@@ -301,7 +301,7 @@ rbuild|rgulp)
    ;;
 "updateVendor")
     Main
-    #UpdateVendor
+    UpdateVendor
     ;;
 "autoMigrate")
     Main
@@ -451,9 +451,15 @@ rbuild|rgulp)
   BuildNode
   RestartPm2
   ;;
+"gconewnode")
+  Main
+  ChkoutNodeBranch $Param3
+  BuildNodeNew "-f"
+  RestartNodeNew
+  ;;
 "updatenodenew")
   Main
-  PullNodeNew
+  PullNodeNew 
   BuildNodeNew $NodeCommitID
   RestartNodeNew
   ;;
