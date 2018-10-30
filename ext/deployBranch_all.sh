@@ -76,7 +76,7 @@ Port2=""
 Port3=""
 TNodePort1=""
 TNodePort2=""
-NodePort2=""
+NodePort1=""
 NodePort2=""
 
 #######################################
@@ -140,12 +140,12 @@ if [[ $_Param1 != "NoCheck" ]]; then
     CheckTemplate
     cd $CodePath
     echo "Test branch name $BranchName ..."
-    echo $PWD
     git fetch origin $BranchName:$BranchName 1>/dev/null
     if [[ $? != 0 ]]; then
         echo ""
-        echo "Branch name is wrong or network  is not good , check branch name and try it again !"
-        exit 1
+        echo "AnYunProj代码仓库不存在此分支，尝试切换代码仓库"
+	git remote set-url origin git@git.qycloud.com.cn:proj/Latest.git
+        git fetch origin $BranchName:$BranchName 1>/dev/null
     else
         echo ""
         echo "Test branch name $BranchName is OK !"
@@ -319,6 +319,7 @@ sed -i "s/TNodePort2/$NodePort2/" /var/www/node_$SysName/.deploy.yml
 sed -i "s/TInternalIp/$InternalIp/" /var/www/node_$SysName/config/deploy.js
 sed -i "s/TWebPort2/$Port2/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/services.yml
 sed -i "s/$TSysType/$SysType/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/services.yml
+sed -i "s/$TSysName/$SysName/" /var/www/www.$SysType.$SysName.aysaas.com/config/$ENVType/services.yml
 
 sed -i "s/$TSysName/$SysName/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
 sed -i "s/$TSysType/$SysType/" /etc/nginx/sites-available/www.$SysType.$SysName.aysaas.com
@@ -474,7 +475,7 @@ echo "Restart nginx is OK !"
 }
 
 function DeploySupervisor {
-cd $ProjPath
+cd /var/www/www.$SysType.$SysName.aysaas.com
 ENV=$ProjType ./deploy/supervisor 1>/dev/null
 if  [ $? -eq 0 ];then
 	sudo supervisorctl restart all

@@ -5,7 +5,7 @@ keywords: 安元科技
 queueType: 1
 is_debug: true
 is_testing_api: false
-is_rcloud_push: true
+is_rcloud_push: false
 is_project: true
 skip_identity: true
 preview_domain: 'dp.qycloud.com.cn/op/view.aspx?src='

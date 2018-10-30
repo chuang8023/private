@@ -37,8 +37,10 @@ MixSysName=`ConversionA2a "$MixSysName"`
 
 sed -i "s/$PaasSysType/$MixSysType/" /var/www/www.$PaasSysType.$PaasSysName.aysaas.com/config/$ENVType/services.yml
 sed -i "s/$PaasSysName/$MixSysName/" /var/www/www.$PaasSysType.$PaasSysName.aysaas.com/config/$ENVType/services.yml
-sed -i "s/${PaasSysType}.${PaasSysName}.aysaas.com:$_Param4/${MixSysType}.${MixSysName}.aysaas.com:$_Param3/g" /var/www/node_$PaasSysName/config/deploy.js 
-sed -i "s/7008/$_Param3/g" /var/www/node_$PaasSysName/config/deploy.js 
+sed -i "s/*.${PaasSysType}.${PaasSysName}.aysaas.com:${_Param4}/*.${MixSysType}.${MixSysName}.aysaas.com:${_Param3}/g" /var/www/node_$PaasSysName/config/deploy.js 
+sed -i "s/*.${PaasSysType}.${PaasSysName}.aysaas.com:7008/*.${MixSysType}.${MixSysName}.aysaas.com:${_Param3}/g" /var/www/node_$PaasSysName/config/deploy.js 
+#sed -i "s/$_Param4/$_Param3/g" /var/www/node_$PaasSysName/config/deploy.js 
+#sed -i "s/7008/$_Param3/g" /var/www/node_$PaasSysName/config/deploy.js 
 sed -i "s/${PaasSysType}.${PaasSysName}.aysaas.com;/${MixSysType}.${MixSysName}.aysaas.com;/g" /etc/nginx/sites-available/www.$PaasSysType.$PaasSysName.aysaas.com
 sed -i "s/www.${PaasSysType}.${PaasSysName}.aysaas.com;/www.${MixSysType}.${MixSysName}.aysaas.com;/" /etc/nginx/sites-available/node_$PaasSysName
 sed -i "s/$_Param4/$_Param3/" /etc/nginx/sites-available/node_$PaasSysName
@@ -48,4 +50,5 @@ unset _Param3
 unset _Param4
 nginx -t
 nginx -s reload
+echo "项目访问地址为:www.$PaasSysType.$PaasSysName.aysaas.com:23113"
 }
