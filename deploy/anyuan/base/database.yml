@@ -1,0 +1,23 @@
+servers:
+    default:
+        name: localhost
+        host: MysqlHost 
+        port: 3306
+        dbname: templateRelease 
+        user: MysqlUser
+        password: 'MysqlPass'
+    opensearch:
+        name: localhost
+        host: localhost
+        port: 3306
+        dbname: opensearch
+        user: root
+        password: '123456'
+charset: utf8
+split_enable: false
+default: default
+master_slave_enable: false
+table_preg: '/`?(ent_\w+|sys_\w+)[`?|\s?]/iU'
+dao_path: model/dao
+model_path: /home/anyuan/workspace/project/saas/deploy/../model/dao
+sqlAnalysis: false

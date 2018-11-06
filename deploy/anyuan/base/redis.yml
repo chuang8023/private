@@ -1,0 +1,5 @@
+servers:
+    default: 'RedisHost:6379'
+    organization: 'RedisHost:6379'
+auth: 'aykj@83752661'
+store_log: false

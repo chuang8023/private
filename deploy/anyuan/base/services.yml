@@ -1,0 +1,3 @@
+gateway: 'www.feature.templateRelease.aysaas.com:TWebPort2'
+jwt_algs: HS256
+jwt_key: '9&p3RG?B'

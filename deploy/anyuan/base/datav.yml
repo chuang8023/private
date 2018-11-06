@@ -1,0 +1,6 @@
+# Java应用IP和端口
+datav_host: 172.16.237.156:8080
+# Elasticsearch应用IP
+datav_es_host: 172.16.46.57
+# 是否走Java新接口
+datav_api: false
