@@ -1,0 +1,16 @@
+www_ayiot_com_cn:
+    datacenter_rawwriteafter: {  }
+    datacenter_delrecordafter: {  }
+    database_sync:
+        - iot
+www_51jiugang_aysaas_com:23008:
+    datacenter_validatedata:
+        - safety
+    datacenter_rawwriteafter:
+        - safety
+        - iot
+    datacenter_delrecordafter:
+        - safety
+        - iot
+    database_sync:
+        - iot

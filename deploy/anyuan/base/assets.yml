@@ -1,0 +1,18 @@
+minAssets: true 
+storage_servers:
+    127.0.0.1: templateRelease
+fileio_type: base
+fileio_key:
+    AccessKeyId: '11'
+    AccessKeySecret: '22'
+oss:
+    bucket: 51boshi
+    endPoint: oss-cn-hangzhou.aliyuncs.com
+    expires: 60
+    debug: true
+not_contain_global:
+    - controller_page_home@index
+default_theme: blue
+module_scss_path: rbuild/scss/
+global_scss_path: public/global/scss/
+scss_build_path: public/build/

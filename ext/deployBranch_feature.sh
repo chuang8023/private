@@ -32,8 +32,8 @@ SQLname="template.sql"
 DBIP="localhost"
 DBUser="root"
 DBPasswd="saas"
-MysqlDockerImage="mysql:dev.5.6.31"
-MongoDockerImage="mongo:dev.3.2.8"
+MysqlDockerImage="mysql:dev.5.7.21"
+MongoDockerImage="mongo:dev.3.4.16"
 
 #Mongo info
 MongoAdminUser="admin"
@@ -225,7 +225,7 @@ else
         which cnpm > /dev/null 2>&1
         [ $? -eq 1 ] && echo "install cnpm" && npm install -g cnpm --registry=https://registry.npm.taobao.org
         echo "update node modules...."
-        NODE_ENV="development" cnpm i
+        NODE_ENV="production" cnpm i
 	npm i >/dev/null 2>&1
         npm install canvas >/dev/null 2>&1
 	[ $? -eq 0 ] && npm run static 1>/dev/null 2>/tmp/rundeck_code_errinfo
@@ -309,12 +309,12 @@ NodePath=/var/www/Node-$sBranchName
 cd $NodePath
 git pull --rebase origin $NodeName:$NodeName
 
-######修改node-development.js
+######修改node-production.js
 NodePort=`NginxPort`
-sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/development.js
-sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/development.js
+sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
+sed -i "s/fileio:.*/fileio: 'http:\/\/fileio.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
 sed -i "s/port:.*/port: $NodePort,/" /var/www/Node-$sBranchName/config/production.js
 sed -i "s/api:.*/api: 'http:\/\/www.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
 sed -i "s/static:.*/static: 'http:\/\/nodestatic.$Branch.$sBranchName.aysaas.com:$webPort',/" /var/www/Node-$sBranchName/config/production.js
@@ -413,34 +413,29 @@ DockerMongoPort=`docker inspect -f '{{ (index (index .NetworkSettings.Ports "270
 
 if [[ $justModifyDB == "justModifyDB" ]]; then
     cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
-    #TMongoPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.port'));"|awk -F ',' '{print $1}'`
-    #TMysqlPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
+    #TMongoPort=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.port'));"|awk -F ',' '{print $1}'`
+    #TMysqlPort=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"|awk -F ',' '{print $1}'`
 
-    TMongoPort=`cat config/development/database.yml | grep mongodb -A 8 | grep port |awk '{print $2}'`
-    TMysqlPort=`cat config/development/database.yml | grep default -A 8 | grep port |awk '{print $2}'`
-    cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
-    OrgMysqlPort=`cat conf/development.yml | grep database -A 8 | grep port |awk '{print $2}'`
-    OrgMongoPort=`cat conf/development.yml | grep mongodb -A 8 | grep port |awk '{print $2}'`
-    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.yml
-    sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.yml
-    sed -i "s/$OrgMysqlPort/$DockerMysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-    sed -i "s/$OrgMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+    TMongoPort=`cat config/production/mongo.yml | grep default -A 8 | grep port |awk '{print $2}'| sed "s/'//g"`
+    TMysqlPort=`cat config/production/database.yml | grep default -A 8 | grep port |awk '{print $2}'`
+    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/database.yml
+    sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/mongo.yml
 else
-    sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/services.yml
-    sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/services.yml
-    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.yml
-    sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/database.yml
+    sed -i "s/$TBranchName/$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/services.yml
+    sed -i "s/$TBranch/$Branch/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/services.yml
+    sed -i "s/$TMysqlPort/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/database.yml
+    sed -i "s/$TMongoPort/$DockerMongoPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/database.yml
 
     sed -i "s/$TWebPort/$webPort/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TPhpPort/$phpPort/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TBranch/$Branch/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
     sed -i "s/$TBranchName/$sBranchName/g" /etc/nginx/sites-available/www.$Branch.$sBranchName.aysaas.com
 
-    sed -i "s/application_name: AYSaaS-master/application_name: AYSaaS-$sBranchName/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/app.yml
+    sed -i "s/application_name: AYSaaS-master/application_name: AYSaaS-$sBranchName/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/app.yml
 
     #####2017-07-27 更新队列配置文件，从base中获取最新的queue.php不再使用模板内的queue.php，默认开启多进程
-    cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/queue.yml /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/queue.yml
-    #sed -i "s/multiProcess: false/multiProcess: true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/queue.yml
+    cp /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/base/queue.yml /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/queue.yml
+    #sed -i "s/multiProcess: false/multiProcess: true/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/queue.yml
 
     cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
     if [ -e ./deploy/supervisor ] ;then
@@ -517,8 +512,9 @@ else
 function DockerMysql {
 	docker images $MysqlDockerImage|grep 'mysql' > /dev/null
 	if [ ! $? -eq 0 ];then
-		docker pull docker.aysaas.com/development/$MysqlDockerImage
-		docker tag  docker.aysaas.com/development/$MysqlDockerImage $MysqlDockerImage
+		docker login hub.qycloud.com.cn -u push -p Push123456
+		docker pull hub.qycloud.com.cn/dev/$MysqlDockerImage
+		docker tag  hub.qycloud.com.cn/dev/$MysqlDockerImage $MysqlDockerImage
 	fi
 	docker ps -a|grep -w $DockerMysqlName > /dev/null 2>&1
 	if [ ! $? -eq 0 ];then
@@ -531,8 +527,8 @@ function DockerMysql {
 function DockerMongo {
 	docker images $MongoDockerImage|grep 'mongo' > /dev/null
 	if [ ! $? -eq 0 ];then
-		docker pull docker.aysaas.com/development/$MongoDockerImage
-		docker tag docker.aysaas.com/development/$MongoDockerImage $MongoDockerImage
+		docker pull hub.qycloud.com.cn/dev/$MongoDockerImage
+		docker tag hub.qycloud.com.cn/dev/$MongoDockerImage $MongoDockerImage
 	fi
 	docker ps -a|grep -w $DockerMongoName > /dev/null 2>&1
 	if [ ! $? -eq 0 ];then
@@ -569,7 +565,7 @@ echo "Create crontab is OK !"
 }
 
 function EchoFeatureInfo {
-echo "$ReleaseName|development|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS|aliyun|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg||/var/www/Node-$sBranchName" >> $RundeckPath/config/projinfo
+echo "$ReleaseName|production|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS|aliyun|/var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg||/var/www/Node-$sBranchName" >> $RundeckPath/config/projinfo
 cat $RundeckPath/config/projinfo | sort | uniq > $RundeckPath/config/_tmp.projinfo
 mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
 }
@@ -577,7 +573,7 @@ mv $RundeckPath/config/_tmp.projinfo $RundeckPath/config/projinfo
 function DelCode {
 echo ""
 local _Name=""
-_Name=`cat /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/development/app.yml | grep "application_name" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g"`
+_Name=`cat /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS/config/production/app.yml | grep "application_name" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g"`
 echo "Delete code ..."
 rm -rf /var/www/www.$Branch.$sBranchName.aysaas.com
 rm -rf /etc/supervisor/conf.d/${_Name}_queue.conf
@@ -723,42 +719,42 @@ function PullOrg  {
 	cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg
  	git pull --rebase origin $OrgBranch:$OrgBranch
         cd /var/www/www.$Branch.$sBranchName.aysaas.com/$TigSaaS
-        MysqlName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.name'));"`
-        MysqlHost=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.host'));"`
-        MysqlPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"`
-        MysqlUser=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.user'));"`
-        MysqlPass=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.password'));"`
-        MysqlDBName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.default.dbname'));"`
+        MysqlName=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.default.name'));"`
+        MysqlHost=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.default.host'));"`
+        MysqlPort=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.default.port'));"`
+        MysqlUser=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.default.user'));"`
+        MysqlPass=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.default.password'));"`
+        MysqlDBName=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.default.dbname'));"`
 
-        MongoName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.name'));"`
-        MongoHost=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"`
-        MongoPort=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.port'));"`
-        MongoUser=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.user'));"`
-        MongoPass=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.password'));"`
-        MongoDBName=`ENV=development php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.dbname'));"`
+        MongoName=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.name'));"`
+        MongoHost=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.host'));"`
+        MongoPort=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.port'));"`
+        MongoUser=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.user'));"`
+        MongoPass=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.password'));"`
+        MongoDBName=`ENV=production php -r "include 'bootstrap.php'; print( \Config('database.servers.mongodb.dbname'));"`
 
-        QueueHost=`cat config/development/queue.yml | grep "host:" | awk '{print $2}'`
-        RedisHost=`cat config/development/redis.yml | grep "default:"|sed "s/'//g" |awk '{print $2}'`
-        RedisAuth=`cat config/development/redis.yml | grep "auth:"|sed "s/'//g" |awk '{print $2}'`
+        QueueHost=`cat config/production/queue.yml | grep "host:" | awk '{print $2}'`
+        RedisHost=`cat config/production/redis.yml | grep "default:"|sed "s/'//g" |awk '{print $2}'`
+        RedisAuth=`cat config/production/redis.yml | grep "auth:"|sed "s/'//g" |awk '{print $2}'`
 
-	sed -i "s/MysqlName/$MysqlName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/MysqlHost/$MysqlHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/MysqlPort/$MysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml 
-	sed -i "s/MysqlDbname/$MysqlDBName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml 
-	sed -i "s/MysqlUser/$MysqlUser/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/MysqlPasswd/$MysqlPass/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+	sed -i "s/MysqlName/$MysqlName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/MysqlHost/$MysqlHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/MysqlPort/$MysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml 
+	sed -i "s/MysqlDbname/$MysqlDBName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml 
+	sed -i "s/MysqlUser/$MysqlUser/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/MysqlPasswd/$MysqlPass/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
 
-	sed -i "s/MysqlName/$MysqlName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/MysqlHost/$MysqlHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/MysqlPort/$MysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml 
-	sed -i "s/MysqlDbname/$MysqlDBName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml 
-	sed -i "s/MysqlUser/$MysqlUser/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/MysqlPasswd/$MysqlPass/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+	sed -i "s/MysqlName/$MysqlName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/MysqlHost/$MysqlHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/MysqlPort/$MysqlPort/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml 
+	sed -i "s/MysqlDbname/$MysqlDBName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml 
+	sed -i "s/MysqlUser/$MysqlUser/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/MysqlPasswd/$MysqlPass/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
 
-       	sed -i "s/application_name: .*/application_name: AYSaaS-$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/QueueHost/$QueueHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/RedisHost/$RedisHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-	sed -i "s/RedisAuth/$RedisAuth/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+       	sed -i "s/application_name: .*/application_name: AYSaaS-$sBranchName/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/QueueHost/$QueueHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/RedisHost/$RedisHost/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+	sed -i "s/RedisAuth/$RedisAuth/" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
 	chown -R anyuan:anyuan /var/www/www.$Branch.$sBranchName.aysaas.com
 }
 
@@ -787,12 +783,12 @@ function SetDns() {
 #    ./deploy/syncConfig
 #else
 #    ########2018-01-02 兼容master分支
-#    cp /root/scripts/rundeck/template/feature/development.yml /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/
-#    sed -i "s/BRANCHTYPE/$Branch/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-#    sed -i "s/BRANCHNAME/$sBranchName/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-#    sed -i "s/MYSQLPORT/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-#    sed -i "s/MONGOPORT/$DockerMongoPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
-#    sed -i "s/WEBPORT/$webPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/development.yml
+#    cp /root/scripts/rundeck/template/feature/production.yml /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/
+#    sed -i "s/BRANCHTYPE/$Branch/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+#    sed -i "s/BRANCHNAME/$sBranchName/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+#    sed -i "s/MYSQLPORT/$DockerMysqlPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+#    sed -i "s/MONGOPORT/$DockerMongoPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
+#    sed -i "s/WEBPORT/$webPort/g" /var/www/www.$Branch.$sBranchName.aysaas.com/$TigOrg/conf/production.yml
 #fi
 #}
 
@@ -801,7 +797,8 @@ function SetDns() {
 function JenKins() {
 
 	#curl -X POST http://192.168.0.251:8080/jenkins/job/CheckIntegrationEnv/buildWithParameters --user apiadmin:aykj83752661
-	curl -X POST http://192.168.0.251:8080/jenkins/job/CheckIntegrationEnv/build --user apiadmin:aykj83752661
+#	curl -X POST http://192.168.0.251:8080/jenkins/job/CheckIntegrationEnv/build --user apiadmin:aykj83752661
+	curl -X POST http://jekins.aysaas.com:23457/jenkins/job/Requests/build --user apiadmin:aykj83752661
 	[ $? -eq 0 ] && echo "调用jenkins成功"
 }
 
