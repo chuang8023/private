@@ -98,8 +98,6 @@ function RestartNodeNew () {
         server_domain=`echo "$ProjPath" |awk -F"/" '{print $4}'`
         echo "开始重启node服务"
         cd $NodePath
-        #npm run stop
-        #[ $? -eq 0 ] && echo "node已停止" &&  npm start 
         npm run deploy
         [ $? -eq 0 ] && echo "node 已重启"
 }

@@ -134,3 +134,10 @@ n
 n
 EOF
 }
+function UpdateUpload () {
+	scp -P7642 root@221.226.186.58:/opt/ftpd/data/upload.tar.gz .
+	rm -rf $ProjPath/upload
+	[ $? -eq 0 ] && tar -zxf upload.tar.gz -C $ProjPath
+	chown -R $runuser:$runuser $ProjPath/upload	
+	chmod -R 777 $ProjPath/upload
+}
