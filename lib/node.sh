@@ -120,6 +120,10 @@ else
         echo $i
         echo "开始打包 $i"
         npm run build-static $i >>/tmp/node_build.log
+	if [ "$i" == "service" ];then
+		npm run build-static view >>/tmp/node_build.log
+		npm run build-static form >>/tmp/node_build.log
+	fi
     done
     npm run build-static framework 1>/dev/null 2>>/tmp/node_build.log
     [ $? -eq 0 ] && echo "打包成功"

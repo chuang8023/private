@@ -461,6 +461,7 @@ rbuild|rgulp)
   ;;
 "updatenodenew")
   Main
+  GetNodePullLog
   PullNodeNew 
   BuildNodeNew $NodeCommitID
   RestartNodeNew
