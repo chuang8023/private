@@ -221,12 +221,12 @@ rbuild|rgulp)
     _BranchName=$Param3
     Main
     ChkoutBranch "$_BranchName"
-    UpdateVendor
-    Migrate "all"
-    Rgulp "-f"
+    #UpdateVendor
+    #Migrate "all"
+    #Rgulp "-f"
     #EmptyCache "all" "rebuild_to_redis"
     #Cache "all" "rebuild_to_redis"
-    RestartResque
+    #RestartResque
     ;;
 "gconode")
     Main
