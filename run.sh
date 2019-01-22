@@ -31,6 +31,7 @@ cd `dirname $0`
 . lib/ShowProj.sh
 . lib/ShowConfig.sh
 . lib/Sync.sh
+. lib/Sdk.sh
 
 function RealPath () {
 local _Path=$1
@@ -71,6 +72,7 @@ if [[ $INFOType == "File" ]]; then
             #DBId=`echo $LINE | awk -F"|" '{print $5}' | awk 'gsub(/^ *| *$/,"")'`
             #CloneDBId=`echo $LINE | awk -F"|" '{print $6}' | awk 'gsub(/^ *| *$/,"")'`
             NodePath=`echo $LINE | awk -F"|" '{print $7}' | awk 'gsub(/^ *| *$/,"")'`
+            NginxConfigPath=`echo $LINE | awk -F"|" '{print $8}' | awk 'gsub(/^ *| *$/,"")'`
         fi
     done < $ConfigPath/projinfo
 fi
@@ -83,6 +85,13 @@ fi
 cd $NodePath
 NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
 NodeCommitID=`git log | grep commit -m1 | awk '{print $2}'|sed "s/ //g"`
+##获取war包名称
+if [ "$NginxConfigPath" != "" ];then
+	WarName=`cat $NginxConfigPath |grep -m 1 "proxy_pass http://[1-9].[0-9].[0-9].[0-9]:*" |awk -F"/" '{print $4}'|sed 's/ //g'`
+fi
+##scp上传war包目录
+ScpDir="/home/$runuser/scpdir"
+[ ! -d  $ScpDir ] && mkdir $ScpDir && chown -R $runuser:$runuser $ScpDir && chmod -R 777 $ScpDir
 
 case $ProjType in
 "production") ;;
@@ -217,6 +226,10 @@ rbuild|rgulp)
     Main
     ShowBranch
     ;;
+"shownodeBranch")
+    Main
+    ShowNodeBranch
+    ;;
 "gco")
     _BranchName=$Param3
     Main
@@ -317,6 +330,7 @@ rbuild|rgulp)
    ;;
 "catphplog")
   Main
+  echo "查看日志"
   CatPHPLog $Param3   
    ;;
 "cattomcatlog")
@@ -464,6 +478,19 @@ rbuild|rgulp)
   BuildNodeNew $NodeCommitID
   RestartNodeNew
   ;;
+"updatesafetynode")
+  Main
+  GetNodePullLog
+  PullNodeNew 
+  BuildNodeNew $NodeCommitID
+  RestartSafetyNode
+  ;;
+"gcosafetynode")
+  Main
+  ChkoutNodeBranch $Param3
+  BuildNodeNew "-f"
+  RestartSafetyNode
+  ;;
 "updateupload")
   Main
   UpdateUpload
@@ -471,5 +498,13 @@ rbuild|rgulp)
 "sync")
   Main
   Sync $Param2 $Param3 $Param4 $Param5
+  ;;
+"transferwar")
+  Main
+  TranSferWar $Param3 $Param4 
+  ;;
+"updatewar")
+  Main
+  UpdateWar $Param3 $Param4 $Param5
   ;;
 esac

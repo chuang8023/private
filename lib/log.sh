@@ -2,10 +2,12 @@ function CatPHPLog () {
        cd $ProjPath
        local _Num=$1
        Date=`date "+%Y/%m/%d"`
+       echo $Date
        PHPLogPath="log/${Date}.php"
+       echo $PHPLogPath
        [ ! -e $PHPLogPath ] && echo "$PHPLogPath file doesn't exist!" && exit 1
        echo -e "\033[31m" "输出最新"$_Num"行日志信息：" "\033[0m"
-       tail -$_Num $PHPLogPath
+       tail -${_Num} $PHPLogPath
 }
 
 function CatResqueLog () {
