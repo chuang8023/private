@@ -82,9 +82,11 @@ if [[ $ProjPath == "" ]]; then
     echo "Cannot find project named $ProjName !"
     #exit 0
 fi
-cd $NodePath
-NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
-NodeCommitID=`git log | grep commit -m1 | awk '{print $2}'|sed "s/ //g"`
+if [ "$NodePath" != "" ];then
+	cd $NodePath
+	NodeBranchName=`git branch | grep "^*" |awk '{print $2}' |sed 's/ //g'`
+	NodeCommitID=`git log | grep commit -m1 | awk '{print $2}'|sed "s/ //g"`
+fi
 ##获取war包名称
 if [ "$NginxConfigPath" != "" ];then
 	WarName=`cat $NginxConfigPath |grep -m 1 "proxy_pass http://[1-9].[0-9].[0-9].[0-9]:*" |awk -F"/" '{print $4}'|sed 's/ //g'`
@@ -140,13 +142,13 @@ case $Param1 in
     #modifyDBurl "$_DBUrl" "check"
     GetPullLog
     PullCode
-    #BackupDB
+    #BackupDB $Param2
     EchoPullLog
     UpdateVendor
     #if [[ $_notMigrate != "notMigrate" ]]; then
     #    Migrate "all"
     #fi
-    Rgulp "$CommitID"
+    Rgulp "$CommitID" $Param2
     ;;
 "backvendor")
     Main
@@ -180,8 +182,9 @@ case $Param1 in
 "migrate")
     _ID=$Param3
     Main
-    BackupDB 
-    Migrate "$_ID"
+    ##迁移强制备份数据库
+    BackupDB "-f" $Param2 
+    Migrate "$_ID" $Param2
     ;;
 "choicemigrate")
      _MID=$Param3
@@ -191,15 +194,15 @@ case $Param1 in
      ;;
 "closeMinAssets")
     Main
-    MinAssets "close"
+    MinAssets "close" $Param2
     ;;
 "openMinAssets")
     Main
-    MinAssets "open"
+    MinAssets "open" $Param2
     ;;
 rbuild|rgulp)
     Main
-    Rgulp "-f"
+    Rgulp "-f" $Param2
     ;;
 "rebuild_org_tree")
     _Ent=$Param3
@@ -213,7 +216,7 @@ rbuild|rgulp)
     ;;
 "backupDB")
     Main
-    BackupDB "-f"
+    BackupDB "-f" $Param2
     ;;
  "ftp_backupDB")
      FTP_backupDB
@@ -330,9 +333,12 @@ rbuild|rgulp)
    ;;
 "catphplog")
   Main
-  echo "查看日志"
-  CatPHPLog $Param3   
-   ;;
+  CatPHPLog $Param3 $Param2 
+  ;;
+"catnginxlog")
+  Main
+  CatNginxLog $Param3 $Param2
+  ;;
 "cattomcatlog")
    echo $Param2
    CatTomcatLog $Param2

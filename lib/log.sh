@@ -1,13 +1,24 @@
 function CatPHPLog () {
        cd $ProjPath
        local _Num=$1
-       Date=`date "+%Y/%m/%d"`
-       echo $Date
-       PHPLogPath="log/${Date}.php"
-       echo $PHPLogPath
+       local _Env=$2
+       if [ "$_Env" == "qycloud" ];then
+	Date=`date "+%Y-%m-%d"`
+        PHPLogPath="log/monitor/${Date}.log"
+       else
+        Date=`date "+%Y/%m/%d"`
+        PHPLogPath="log/${Date}.php"
+       fi
        [ ! -e $PHPLogPath ] && echo "$PHPLogPath file doesn't exist!" && exit 1
        echo -e "\033[31m" "输出最新"$_Num"行日志信息：" "\033[0m"
-       tail -${_Num} $PHPLogPath
+       tail -n ${_Num} $PHPLogPath
+}
+
+function CatNginxLog () {
+       local _Num=$1
+       NginxLogPath="/var/log/nginx/www.update.gszhaj.aysaas.com-error.log.1"
+       echo -e "\033[31m" "输出最新"$_Num"行日志信息：" "\033[0m"
+       tail -n ${_Num} $NginxLogPath
 }
 
 function CatResqueLog () {

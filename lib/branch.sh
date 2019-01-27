@@ -61,7 +61,7 @@ function ShowNodeBranch {
 echo ""
 echo "The current branch :"
 echo "-------------------------"
-echo $NodeBranchName 
+echo "node当前分支为:"$NodeBranchName 
 }
 
 ####新node切换分支

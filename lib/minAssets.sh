@@ -1,10 +1,15 @@
 function MinAssets () {
 local _Status=$1
+local _Env=$2
 
 if [[ $_Status == "close" ]]; then
     echo ""
     echo "Closing the minassets ..."
-    sed -i "s/minAssets:.*/minAssets: false/" $ProjConfPath/assets.yml
+    if [ "${_Env}" == "qycloud" ];then
+    	sed -i "s/minAssets:.*/minAssets: false/" $ProjConfPath/assets.yml
+    else
+	sed -i "s/minAssets'.*/minAssets' => false,/" $ProjConfPath/assets.php
+    fi
     if [[ $? == 0 ]]; then
         echo ""
         echo "Close the minassets is OK !"
@@ -18,7 +23,11 @@ fi
 if [[ $_Status == "open" ]]; then
     echo ""
     echo "Opening the minassets ..."
-    sed -i "s/minAssets:.*/minAssets: true/" $ProjConfPath/assets.yml
+    if [ "${_Env}" == "qycloud" ];then
+    	sed -i "s/minAssets:.*/minAssets: true/" $ProjConfPath/assets.yml
+    else
+	sed -i "s/minAssets'.*/minAssets' => true,/" $ProjConfPath/assets.php
+    fi
     if [[ $? == 0 ]]; then
         echo ""
         echo "Open the minassets is OK !"

@@ -1,48 +1,55 @@
 function RunBackup {
 Param1=$1
+local _Env=$2
 echo ""
 echo "Backuping database ..."
-while read LINE
-do
-    #local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
-    #case $_Key in
-    #"host")
-    #    local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-    #    ;;
-    #"port")
-    #    local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-    #    ;;
-    #"dbname")
-    #    local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-    #    ;;
-    #"user")
-    #    local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-    #    ;;
-    #"password")
-    #    local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
-    #    break;
-    #    ;;
-    #esac
-    local _Key=`echo $LINE | awk -F":" '{print $1}'|sed 's/ //'|sed "s/'//g"`
-    case $_Key in
-    "host")
-        local _Host=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
-        ;;
-    "port")
-        local _Port=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
-        ;;
-    "dbname")
-        local _DBName=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
-        ;;
-    "user")
-        local _DBUser=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
-        ;;
-    "password")
-        local _DBPasswd=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
-	break;
-        ;;
-    esac
-done < $ProjConfPath/database.yml
+if [ "${_Env}" == "qycloud" ];then
+	while read LINE
+    	do
+    	    local _Key=`echo $LINE | awk -F":" '{print $1}'|sed 's/ //'|sed "s/'//g"`
+    	    case $_Key in
+    	    "host")
+    	        local _Host=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
+    	        ;;
+    	    "port")
+    	        local _Port=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
+    	        ;;
+    	    "dbname")
+    	        local _DBName=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
+    	        ;;
+    	    "user")
+    	        local _DBUser=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
+    	        ;;
+    	    "password")
+    	        local _DBPasswd=`echo $LINE | awk '{print $2}'|sed 's/ //'|sed "s/'//g"`
+    	        break;
+    	        ;;
+    	    esac
+    	done < $ProjConfPath/database.yml
+else
+	while read LINE
+	do
+	    local _Key=`echo $LINE | grep "=>" | awk -F"=>" '{print $1}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g"`
+	    case $_Key in
+	    "host")
+	        local _Host=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+	        ;;
+	    "port")
+	        local _Port=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+	        ;;
+	    "dbname")
+	        local _DBName=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+	        ;;
+	    "user")
+	        local _DBUser=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+	        ;;
+	    "password")
+	        local _DBPasswd=`echo $LINE | awk -F"=>" '{print $2}' | awk 'gsub(/^ *| *$/,"")' | sed "s/'//g" | sed "s/,$//"`
+	        break;
+	        ;;
+	    esac
+	done < $ProjConfPath/database.php
+fi
 
 if [ "$Param1" == "toftp" ];then
       ping -c 1 192.168.0.201 |grep '0% packet loss' > /dev/null 2>&1
@@ -71,7 +78,7 @@ EOF
   rm ${_DBName}_$TimeStamp.sql.tar.gz
   cd -
   echo "${_DBName} has been backup to ftp server"
-  echo -e "\033[31m" "根据下面提供的下载http链接，打开浏览器下载。用户名与密码请咨询SA" "\033[0m"
+  echo -e "\033[31m" "根据下面提供的下载http链接，打开浏览器下载。用户名:zhangruixiang 密码:zhangrui1988" "\033[0m"
   echo "Download  url is  http://www.download.aysaas.com:3300/databases/mysql/$SiteType/${_DBName}_$TimeStamp.sql.tar.gz"
   exit 0
 fi
@@ -192,14 +199,16 @@ fi
 }
 
 function BackupDB {
+local _Envirment=$2
 cd $ProjPath
 if [[ $1 == "-f" ]]; then
-    RunBackup
+    RunBackup $1 ${_Envirment}
 fi
-local NeedMigrate=`git diff $CommitID | grep "diff --git a/db/migrations/"`
-if [[ $NeedMigrate != "" && $DBType == "base" ]]; then
-    RunBackup
-fi
+##迁移强制备份数据库
+#local NeedMigrate=`git diff $CommitID | grep "diff --git a/db/migrations/"`
+#if [[ $NeedMigrate != "" && $DBType == "base" ]]; then
+#    RunBackup
+#fi
 cd - 1>/dev/null 2>&1
 }
 

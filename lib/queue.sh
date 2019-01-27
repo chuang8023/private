@@ -26,7 +26,6 @@ function RestartResque {
 echo ""
 local _Name=""
 echo "Restarting Queue ..."
-echo $ProjPath
 cd $ProjPath
     if [ $QueueName = "queue" ]; then
 	  # rm -rf log/queue/*
