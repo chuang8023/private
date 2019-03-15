@@ -89,7 +89,7 @@ else
     git checkout .
     git  clean -f
     echo "Checkout to $_OptionNode ..."
-    if [ ${_nodebranch} != ${_OptionNode} ];then
+    if [ "${_nodebranch}" != "${_OptionNode}" ];then
 	    git fetch origin $_OptionNode:$_OptionNode 1>/dev/null 2>/tmp/rundeck_branch_errinfo
     	    git checkout $_OptionNode
     else
