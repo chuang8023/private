@@ -5,7 +5,6 @@ local _Envirment=$2
 echo ""
 echo "Running gulp ..."
 #sudo -u $runuser /usr/bin/env TERM=xterm rbuild -rf 1>/dev/null
-
 if [ "${_Envirment}" == "qycloud" ];then
        sed -i "s/minAssets:.*/minAssets: false/" $ProjConfPath/assets.yml
    else
@@ -28,6 +27,7 @@ if [ -e public/gulpfile.js ];then
 	
 	cd ..
 	echo "start gulp ....."
+        chown -R $runuser:$runuser $ProjPath/
 	gulp ge --cwd=public
               # echo $GulpFiles|egrep "\.js|\.json"
               # gulp js >/dev/null 2>&1
